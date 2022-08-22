@@ -1,0 +1,152 @@
+\documentclass{article}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{amsmath}
+\geometry{
+	a4paper,
+	left=20mm,
+	right=20mm,
+	top=20mm,
+	bottom=20mm
+}
+\lstset{
+	language=c,
+	tabsize=4,
+	keepspaces,
+	showstringspaces=false,
+}
+\graphicspath{ {./pictures} }
+\setlength{\parindent}{4em}
+
+\newcommand\subject{Архітектура комп'ютера}
+\newcommand\lecturer{доцент кафедри ПЗ\\Крук О.Г.}
+\newcommand\teacher{доцент кафедри ПЗ\\Крук О.Г.}
+\newcommand\mygroup{ПЗ-22}
+\newcommand\lab{1}
+\newcommand\theme{Моделювання логічних елементів в середовищі системи Proteus. Синтез та моделювання простих логічних схем}
+\newcommand\purpose{Набути практичних навиків моделювання логічних елементів та схем в середовищі системи програм Proteus; закріпити вміння складати за таблицею істиності логічні функції в досконалій диз'юнктивній та кон'юнктивній нормальній формі; опанувати синтез простих комбінаційних схем за логічними функціями}
+
+\begin{document}
+\begin{normalsize}
+	\begin{titlepage}
+		\thispagestyle{empty}
+		\begin{center}
+			\textbf{МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\\
+				НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ "ЛЬВІВСЬКА ПОЛІТЕХНІКА"}
+		\end{center}
+		\begin{flushright}
+			Інститут \textbf{КНІТ}\\
+			Кафедра \textbf{ПЗ}
+		\end{flushright}
+		\vspace{200pt}
+		\begin{center}
+			\textbf{ЗВІТ}\\
+			\vspace{10pt}
+			До лабораторної роботи № \lab\\
+			\textbf{На тему}: “\textit{\theme}”\\
+			\textbf{З дисципліни}: “\subject”
+		\end{center}
+		\vspace{112pt}
+		\begin{flushright}
+			
+			\textbf{Лектор}:\\
+			\lecturer\\
+			\vspace{28pt}
+			\textbf{Виконав}:\\
+			
+			студент групи \mygroup\\
+			Коваленко Д.М.\\
+			\vspace{28pt}
+			\textbf{Прийняла}:\\
+			
+			\teacher\\
+			
+			\vspace{28pt}
+			«\rule{1cm}{0.15mm}» \rule{1.5cm}{0.15mm} 2022 р.\\
+			$\sum$ = \rule{1cm}{0.15mm}……………\\
+			
+		\end{flushright}
+		\vspace{\fill}
+		\begin{center}
+			\textbf{Львів — 2022}
+		\end{center}
+	\end{titlepage}
+		
+	\begin{description}
+		\item[Тема.] \theme.
+		\item[Мета.] \purpose.
+	\end{description}
+
+	\section*{Теоретичні відомості}
+	Основні логічні операції, визначені аксіомами алгебри логіки можна реалізувати основними логічними елементами - інвертор (НЕ/NOT), диз'юнктор (АБО/OR), кон'юнктор (І/AND).
+	
+	З принципу двоїстості слідує, що будь-яку логічну функцію можна задати лише двома основними операціями: АБО та НЕ або ж І та НЕ.
+	
+	На практиці замість елементів АБО та НЕ використовують елемент Пірса, що є їх поєднанням, а замість елементів І та НЕ використовують елемент Шеффера.
+	
+	Proteus - це САПР для проектування найрізноманітніших електронних пристроїв.
+	Інтерфейс програми є дуже подібним до класичного графічного інтерфейсу найбільш поширених програм.
+	
+	\section*{Лабораторне завдання}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.75]{v}
+	\end{figure}	
+	
+	\section*{Результат роботи}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{s1}	
+		\caption{Схема 1}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.57]{g1}
+		\caption{Графік "Inventory"}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.57]{g2}
+		\caption{Графік "Dyzjunktory"}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.57]{g3}
+		\caption{Графік "Konjunktory"}
+	\end{figure}
+
+	\subsection*{ДДНФ}
+	\begin{Large}
+		\begin{gather}
+			\overline{x_2}\overline{x_1}\overline{x_0}+\overline{x_2}\overline{x_1}x_0+\overline{x_2}x_1\overline{x_0}+x_2x_1\overline{x_0}+x_2x_1x_0	\nonumber
+		\end{gather}
+	\end{Large}
+
+	\subsection*{ДКНФ}
+	\begin{Large}
+		\begin{gather}
+			(x_2+\overline{x_1}+\overline{x_0})(\overline{x_2}+x_1+x_0)(\overline{x_2}+x_1+\overline{x_0})			\nonumber
+		\end{gather}
+	\end{Large}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.29]{s2}	
+		\caption{Схема 2}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{g4}	
+		\caption{Графік "Syntez"}
+	\end{figure}	
+
+	\section*{Висновок}
+	Під час виконання лабораторної роботи я навчився моделювати логічні елементи та схеми в середовищі системи програм Proteus; закріпив вміння складати за таблицею істиності логічні функції в досконалій диз'юнктивній та кон'юнктивній нормальній формі; навчився синтезувати прості комбінаційні схеми за логічними функціями.
+	    
+\end{normalsize}
+\end{document}

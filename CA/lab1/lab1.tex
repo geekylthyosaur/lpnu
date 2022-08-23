@@ -11,8 +11,8 @@
 	a4paper,
 	left=20mm,
 	right=20mm,
-	top=20mm,
-	bottom=20mm
+	top=15mm,
+	bottom=15mm
 }
 \lstset{
 	language=c,
@@ -82,6 +82,12 @@
 		\item[Мета.] \purpose.
 	\end{description}
 
+	\section*{Лабораторне завдання}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.75]{v}
+	\end{figure}	
+
 	\section*{Теоретичні відомості}
 	Основні логічні операції, визначені аксіомами алгебри логіки можна реалізувати основними логічними елементами - інвертор (НЕ/NOT), диз'юнктор (АБО/OR), кон'юнктор (І/AND).
 	
@@ -92,18 +98,34 @@
 	Proteus - це САПР для проектування найрізноманітніших електронних пристроїв.
 	Інтерфейс програми є дуже подібним до класичного графічного інтерфейсу найбільш поширених програм.
 	
-	\section*{Лабораторне завдання}
-	\begin{figure}[H]
-		\centering
-		\includegraphics[scale=0.75]{v}
-	\end{figure}	
+	\section*{Хід роботи}
+	\subsection*{Період цифрового сигналу}
+	\begin{large}
+		\begin{gather}
+			T=\frac{1}{45\text{кГц}}=\frac{1}{45000\text{Гц}}=0.0000222\text{с}\nonumber
+		\end{gather}
+	\end{large}
+
+	\subsection*{ДДНФ заданої функції}
+	\begin{large}
+		\begin{gather}
+			\overline{x_2}\overline{x_1}\overline{x_0}+\overline{x_2}\overline{x_1}x_0+\overline{x_2}x_1\overline{x_0}+x_2x_1\overline{x_0}+x_2x_1x_0	\nonumber
+		\end{gather}
+	\end{large}
 	
-	\section*{Результат роботи}
+	\subsection*{ДКНФ заданої функції}
+	\begin{large}
+		\begin{gather}
+			(x_2+\overline{x_1}+\overline{x_0})(\overline{x_2}+x_1+x_0)(\overline{x_2}+x_1+\overline{x_0})\nonumber
+		\end{gather}
+	\end{large}
+
 	\begin{figure}[H]
 		\centering
-		\includegraphics[scale=0.35]{s1}	
+		\includegraphics[scale=0.36]{s1}	
 		\caption{Схема 1}
 	\end{figure}
+
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.57]{g1}
@@ -120,20 +142,6 @@
 		\caption{Графік "Konjunktory"}
 	\end{figure}
 
-	\subsection*{ДДНФ}
-	\begin{Large}
-		\begin{gather}
-			\overline{x_2}\overline{x_1}\overline{x_0}+\overline{x_2}\overline{x_1}x_0+\overline{x_2}x_1\overline{x_0}+x_2x_1\overline{x_0}+x_2x_1x_0	\nonumber
-		\end{gather}
-	\end{Large}
-
-	\subsection*{ДКНФ}
-	\begin{Large}
-		\begin{gather}
-			(x_2+\overline{x_1}+\overline{x_0})(\overline{x_2}+x_1+x_0)(\overline{x_2}+x_1+\overline{x_0})			\nonumber
-		\end{gather}
-	\end{Large}
-
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.29]{s2}	
@@ -144,6 +152,8 @@
 		\includegraphics[scale=0.35]{g4}	
 		\caption{Графік "Syntez"}
 	\end{figure}	
+
+	На графіку "Syntez" криві $G22\_8\_F1$ та $G22\_8\_F2$ повністню співпадають, тому можна зробити висновок, що ДДНФ та ДКНФ мають один результат при поданні логічної функції.
 
 	\section*{Висновок}
 	Під час виконання лабораторної роботи я навчився моделювати логічні елементи та схеми в середовищі системи програм Proteus; закріпив вміння складати за таблицею істиності логічні функції в досконалій диз'юнктивній та кон'юнктивній нормальній формі; навчився синтезувати прості комбінаційні схеми за логічними функціями.

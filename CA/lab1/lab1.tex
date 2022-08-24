@@ -12,7 +12,7 @@
 	left=20mm,
 	right=20mm,
 	top=15mm,
-	bottom=15mm
+	bottom=15mm,
 }
 \lstset{
 	language=c,
@@ -40,16 +40,16 @@
 				НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ "ЛЬВІВСЬКА ПОЛІТЕХНІКА"}
 		\end{center}
 		\begin{flushright}
-			Інститут \textbf{КНІТ}\\
+			\textbf{ІКНІ}\\
 			Кафедра \textbf{ПЗ}
 		\end{flushright}
 		\vspace{200pt}
 		\begin{center}
 			\textbf{ЗВІТ}\\
 			\vspace{10pt}
-			До лабораторної роботи № \lab\\
-			\textbf{На тему}: “\textit{\theme}”\\
-			\textbf{З дисципліни}: “\subject”
+			до лабораторної роботи № \lab\\
+			\textbf{на тему}: “\textit{\theme}”\\
+			\textbf{з дисципліни}: “\subject”
 		\end{center}
 		\vspace{112pt}
 		\begin{flushright}
@@ -62,7 +62,7 @@
 			студент групи \mygroup\\
 			Коваленко Д.М.\\
 			\vspace{28pt}
-			\textbf{Прийняла}:\\
+			\textbf{Прийняв}:\\
 			
 			\teacher\\
 			
@@ -82,50 +82,62 @@
 		\item[Мета.] \purpose.
 	\end{description}
 
-	\section*{Лабораторне завдання}
-	\begin{figure}[H]
+	\section*{Індивідуальне завдання}
+\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.75]{v}
 	\end{figure}	
 
 	\section*{Теоретичні відомості}
+	Логічний елемент - це електронне коло, що реалізує одну з елементарних логічних операцій.
+	
+	Логічна операція є елементарною якщо її можна описати булевою функцією одного або двох аргументів.
+	
 	Основні логічні операції, визначені аксіомами алгебри логіки можна реалізувати основними логічними елементами - інвертор (НЕ/NOT), диз'юнктор (АБО/OR), кон'юнктор (І/AND).
 	
 	З принципу двоїстості слідує, що будь-яку логічну функцію можна задати лише двома основними операціями: АБО та НЕ або ж І та НЕ.
-	
 	На практиці замість елементів АБО та НЕ використовують елемент Пірса, що є їх поєднанням, а замість елементів І та НЕ використовують елемент Шеффера.
 	
 	Proteus - це САПР для проектування найрізноманітніших електронних пристроїв.
 	Інтерфейс програми є дуже подібним до класичного графічного інтерфейсу найбільш поширених програм.
 	
 	\section*{Хід роботи}
+	\begingroup
+	\setlength{\belowdisplayskip}{-15pt}
+	\setlength{\abovedisplayskip}{0pt}
 	\subsection*{Період цифрового сигналу}
 	\begin{large}
 		\begin{gather}
-			T=\frac{1}{45\text{кГц}}=\frac{1}{45000\text{Гц}}=0.0000222\text{с}\nonumber
+			T=\frac{1}{f};\hspace{22mm}T=\frac{1}{48\text{кГц}}=\frac{1}{48000\text{Гц}}=0.0000208\text{с}\nonumber
 		\end{gather}
 	\end{large}
-
+	\subsection*{Кінцевий момент часу моделювання}
+	\begin{large}
+		\begin{gather}
+			t\text{к}=2T;\hspace{22mm}t\text{к}=2\cdot0.0000208=0.0000416\text{с}\nonumber
+		\end{gather}
+	\end{large}
 	\subsection*{ДДНФ заданої функції}
 	\begin{large}
 		\begin{gather}
-			\overline{x_2}\overline{x_1}\overline{x_0}+\overline{x_2}\overline{x_1}x_0+\overline{x_2}x_1\overline{x_0}+x_2x_1\overline{x_0}+x_2x_1x_0	\nonumber
+			F_1=\overline{x_2}\overline{x_1}\overline{x_0}+\overline{x_2}\overline{x_1}x_0+\overline{x_2}x_1\overline{x_0}+x_2x_1\overline{x_0}+x_2x_1x_0	\nonumber
 		\end{gather}
 	\end{large}
-	
+
 	\subsection*{ДКНФ заданої функції}
 	\begin{large}
 		\begin{gather}
-			(x_2+\overline{x_1}+\overline{x_0})(\overline{x_2}+x_1+x_0)(\overline{x_2}+x_1+\overline{x_0})\nonumber
+			F_2=(x_2+\overline{x_1}+\overline{x_0})(\overline{x_2}+x_1+x_0)(\overline{x_2}+x_1+\overline{x_0})\nonumber
 		\end{gather}
 	\end{large}
-
+	\endgroup
+	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[scale=0.36]{s1}	
+		\includegraphics[scale=0.34]{s1}	
 		\caption{Схема 1}
 	\end{figure}
-
+\vspace{-2mm}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.57]{g1}
@@ -155,8 +167,8 @@
 
 	На графіку "Syntez" криві $G22\_8\_F1$ та $G22\_8\_F2$ повністню співпадають, тому можна зробити висновок, що ДДНФ та ДКНФ мають один результат при поданні логічної функції.
 
-	\section*{Висновок}
-	Під час виконання лабораторної роботи я навчився моделювати логічні елементи та схеми в середовищі системи програм Proteus; закріпив вміння складати за таблицею істиності логічні функції в досконалій диз'юнктивній та кон'юнктивній нормальній формі; навчився синтезувати прості комбінаційні схеми за логічними функціями.
+	\section*{Висновки}
+	Під час виконання лабораторної роботи я навчився моделювати логічні елементи та схеми в середовищі системи програм Proteus; закріпив вміння складати за таблицею істиності логічні функції в досконалій диз'юнктивній та кон'юнктивній нормальній формі; синтезував прості схеми ДДНФ та ДКНФ логічної функції. Змоделював графіки цих функцій, що співпадають, тому можна зробити висновок, що моделювання виконано правильно.
 	    
 \end{normalsize}
 \end{document}

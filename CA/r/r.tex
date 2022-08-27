@@ -30,8 +30,6 @@
 \newcommand\teacher{доцент кафедри ПЗ\\Крук О.Г.}
 \newcommand\mygroup{ПЗ-22}
 \newcommand\lab{1}
-\newcommand\theme{}
-\newcommand\purpose{}
 
 \begin{document}
 \begin{normalsize}
@@ -85,10 +83,17 @@
 	\end{figure}
 
 	\section*{Хід роботи}
-	\subsection*{ДДНФ:}
+	\subsection*{Мінтерми та макстерми}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.6]{2}
+		\caption{Мінтерми та макстерми}
+	\end{figure}
+
+	\subsection*{ДДНФ}
 	\begin{Large}
 		\begin{gather}
-			\overline{x_4x_3x_2x_1}+\overline{x_4x_3}x_2x_1+\overline{x_4}x_3\overline{x_2}x_1+\nonumber\\
+			F=\overline{x_4x_3x_2x_1}+\overline{x_4x_3}x_2x_1+\overline{x_4}x_3\overline{x_2}x_1+\nonumber\\
 			+\overline{x_4}x_3x_2x_1+x_4\overline{x_3x_2x_1}+x_4\overline{x_3x_2}x_1+\nonumber\\
 			+x_4\overline{x_3}x_2x_1+
 			x_4x_3\overline{x_2x_1}+
@@ -103,10 +108,9 @@
 		\caption{Карта Карно}
 	\end{figure}
 
-	\subsection*{$\bm{F_{min1}}$}
 	\begin{Large}
 		\begin{gather}
-			x_2x_1+\overline{x_3x_2x_1}+\overline{x_4}x_3x_1+x_4\overline{x_2x_1}+x_4\overline{x_3x_2}\nonumber
+			F_{min1}=x_2x_1+\overline{x_3x_2x_1}+\overline{x_4}x_3x_1+x_4\overline{x_2x_1}+x_4\overline{x_3x_2}\nonumber
 		\end{gather}
 	\end{Large}
 
@@ -117,17 +121,16 @@
 		\caption{Квайна - Мак-Класкі}
 	\end{figure}
 
-	\subsection*{$\bm{F_{min2}}$}
 	\begin{Large}
 		\begin{gather}
-			\overline{x_3x_2x_1}+x_2x_1+\overline{x_4}x_3x_1+x_3\overline{x_2x_1}+x_4\overline{x_3x_2}\nonumber		
+			F_{min2}=\overline{x_3x_2x_1}+x_2x_1+\overline{x_4}x_3x_1+x_3\overline{x_2x_1}+x_4\overline{x_3x_2}\nonumber		
 		\end{gather}
 	\end{Large}
 
 	\subsection*{ДКНФ} 
 	\begin{Large}
 		\begin{gather}
-			(x_4+x_3+x_2+\overline{x_1})
+			W=(x_4+x_3+x_2+\overline{x_1})
 			(x_4+x_3+\overline{x_2}+x_1)
 			(x_4+\overline{x_3}+x_2+x_1)\nonumber\\
 			(x_4+\overline{x_3}+\overline{x_2}+x_1)
@@ -136,9 +139,23 @@
 			(\overline{x_4}+\overline{x_3}+\overline{x_2}+x_1)\nonumber
 		\end{gather}
 	\end{Large}
-	
+
+	\subsection*{Період цифрового сигналу}
+	\begin{Large}
+		\begin{gather}
+			T=\frac{1}{f};\hspace{22pt}T=\frac{1}{45000\text{Гц}}=0.0000222\text{с}\nonumber
+		\end{gather}
+	\end{Large}
+
+	\subsection*{Кінцевий момент часу моделювання}
+	\begin{Large}
+		\begin{gather}
+			t_\text{к}=T=0.0000222\text{с}\nonumber
+		\end{gather}
+	\end{Large}
+
 	\section*{Результат роботи}
-	\begin{landscape}
+		\begin{landscape}
 		\thispagestyle{empty}
 		\begin{figure}[p]
 			\vspace*{-2cm}
@@ -149,10 +166,47 @@
 	\end{landscape}
 
 	\begin{figure}[H]
+		\begin{minipage}[h]{0.47\linewidth}
+			\begin{center}
+				\includegraphics[width=1\linewidth]{g4} 
+				\caption{Генератор  X4}
+			\end{center} 
+		\end{minipage}
+		\hfill
+		\vspace{0.2 cm}
+		\begin{minipage}[h]{0.47\linewidth}
+			\begin{center}
+				\includegraphics[width=1\linewidth]{g3} 
+				\caption{Генератор  X3}
+			\end{center}
+		\end{minipage}
+		\vfill
+		\vspace{0.2 cm}
+		\begin{minipage}[h]{0.47\linewidth}
+			\begin{center}
+				\includegraphics[width=1\linewidth]{g2} 
+				\caption{Генератор  X2}
+			\end{center}
+		\end{minipage}
+		\hfill
+		\begin{minipage}[h]{0.47\linewidth}
+			\begin{center}
+				\includegraphics[width=1\linewidth]{g1} 
+				\caption{Генератор  X1}
+			\end{center}
+		\end{minipage}
+	\end{figure}
+
+	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.3]{g}
 		\caption{Графік "Syntez".}
 	\end{figure}
+
+	На графіку $"Syntez"$, криві $PZ22\_8\_F$, $PZ22\_8\_Fmin1$, $PZ22\_8\_Fmin2$ та $PZ22\_8\_W$ повністю співпадають, тому можна зробити висновок, що спрощення логічних функцій методом карт Карно та Квайна - Мак-Класкі виконано правильно та є ефективним способом зменшення кількості необхідних обчислень.
+
+	\section*{Висновки}
+	Під час виконання розрахункової роботи я синтезував схему на підставі ДДНФ та ДКНФ логічної функції та мінімізованої логічної функції методом карт Карно та методом Квайна - Мак-Класкі. Змоделював графіки цих функції, що співпадають, тому можна зробити висновок, що моделювання виконано правильно.
 	    
 \end{normalsize}
 \end{document}

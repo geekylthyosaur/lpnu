@@ -51,23 +51,31 @@ pub fn run() {
             .dyn_into::<HtmlTableElement>()
             .unwrap();
         table.set_inner_html("");
-        for vec in data {
+        for i in 0..data.len() {
+            let diff = if let Some(b) = data.get(i + 1) {
+                Data::diff(&data[i], &b)
+            } else {
+                vec![100, 100]
+            };
             let row = table
                 .insert_row()
                 .unwrap()
                 .dyn_into::<HtmlTableRowElement>()
                 .unwrap();
-            for n in vec {
+            for j in 0..data[i].len() {
                 let cell = row
                     .insert_cell()
                     .unwrap()
                     .dyn_into::<HtmlTableCellElement>()
                     .unwrap();
                 let text = document()
-                    .create_text_node(&n.v.to_string())
+                    .create_text_node(&data[i][j].v.to_string())
                     .dyn_into::<Text>()
                     .unwrap();
                 cell.append_child(&text).unwrap();
+                if diff.contains(&j) {
+                    cell.set_bg_color("rgb(255,200,200)");
+                }
             }
         }
     }) as Box<dyn FnMut()>);

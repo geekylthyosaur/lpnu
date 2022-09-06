@@ -7,6 +7,7 @@
 \usepackage{listings}
 \usepackage{float}
 \usepackage{amsmath}
+\usepackage{subfig}
 \geometry{
 	a4paper,
 	left=20mm,
@@ -109,12 +110,38 @@
 		\end{gather}
 	\end{large}
 	\endgroup
-	
+
+	\section*{Схема пріоритетного шифратора 8x3}	
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.25]{s1}	
 		\caption{Схема 1}
 	\end{figure}
+
+	\section*{Генератори до схеми приорітетного шифратора 8x3}
+	\begin{figure}[H]
+		\centering
+		\subfloat[Генератор F0]{{\includegraphics[width=0.45\textwidth]{f0}}}
+		\hspace{5px}
+		\subfloat[Генератор F1]{{\includegraphics[width=0.45\textwidth]{f1}}}
+		
+		\subfloat[Генератор F2]{{\includegraphics[width=0.45\textwidth]{f2}}}
+		\hspace{5px}
+		\subfloat[Генератор F3]{{\includegraphics[width=0.45\textwidth]{f3}}}
+	\end{figure}
+
+	\begin{figure}[H]
+	\centering			
+		\subfloat[Генератор F4]{{\includegraphics[width=0.45\textwidth]{f4}}}
+		\hspace{5px}
+		\subfloat[Генератор F5]{{\includegraphics[width=0.45\textwidth]{f5}}}
+
+		\subfloat[Генератор F6]{{\includegraphics[width=0.45\textwidth]{f6}}}
+		\hspace{5px}
+		\subfloat[Генератор F7]{{\includegraphics[width=0.45\textwidth]{f7}}}    
+	\end{figure}
+
+	\section*{Графік до схеми пріоритетного шифратора 8x3}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.34]{g1}	
@@ -123,38 +150,98 @@
 
 	За отриманим графіком виконання схеми пріоритетного шифратора видно, що заданий пріоритет є таким: 1, 7, 4, 5, 3, 6, 2, що повністю співпадає з заданим варіантом, отже, можна зробити виновок, що моделювання виконано правильно.
 
+	\section*{Схема лінійного дешифратора 3x8}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.34]{s2}	
 		\caption{Схема 2}
 	\end{figure}
+
+	\section*{Генератори до схеми лінійного дешифратора 3x8}
+	\begin{figure}[H]
+		\centering
+		\subfloat[Генератор Z0]{{\includegraphics[width=0.45\textwidth]{z0}}}
+		\hspace{5px}
+		\subfloat[Генератор Z1]{{\includegraphics[width=0.45\textwidth]{z1}}}
+		
+		\subfloat[Генератор Z2]{{\includegraphics[width=0.45\textwidth]{z2}}}
+	\end{figure}
+
+	\section*{Графік до схеми лінійного дешифратора 3x8}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.34]{g2}	
 		\caption{Графік 2}
 	\end{figure}
 
+	За отриманим графіком виконання схеми лінійного дешифратора видно, що часові діаграми вхідних та вихідних сигналів на кожному з восьми проміжків відповідають заданій таблиці істиності дешифратора, отже, можна зробити виновок, що моделювання виконано правильно.
+
+	\section*{Схема мультиплексора 5 в 1}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.34]{s3}	
 		\caption{Схема 3}
 	\end{figure}
+
+	\section*{Генератори до схеми мультиплексора 5 в 1}
+	\begin{figure}[H]
+		\centering
+		\subfloat[Генератор A0]{{\includegraphics[width=0.45\textwidth]{a0}}}
+		\hspace{5px}
+		\subfloat[Генератор A1]{{\includegraphics[width=0.45\textwidth]{a1}}}
+		
+		\subfloat[Генератор A2]{{\includegraphics[width=0.45\textwidth]{a2}}}
+		\hspace{5px}
+		\subfloat[Генератор D0]{{\includegraphics[width=0.45\textwidth]{d0}}}
+	\end{figure}	
+		
+	\begin{figure}[H]
+	\centering		
+		\subfloat[Генератор D1]{{\includegraphics[width=0.45\textwidth]{d1}}}
+		\hspace{5px}
+		\subfloat[Генератор D2]{{\includegraphics[width=0.45\textwidth]{d2}}}
+		
+		\subfloat[Генератор D3]{{\includegraphics[width=0.45\textwidth]{d3}}}
+		\hspace{5px}
+		\subfloat[Генератор D4]{{\includegraphics[width=0.45\textwidth]{d4}}}
+	\end{figure}
+
+	\section*{Графік до схеми мультиплексора 5 в 1}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.34]{g3}	
 		\caption{Графік 3}
 	\end{figure}
 
+	За отриманим графіком виконання схеми мультиплексора видно, що часові діаграми вхідних та вихідних сигналів на кожному з восьми проміжків відповідають заданій таблиці істиності мультиплексора, отже, можна зробити виновок, що моделювання виконано правильно.
+
+	\section*{Схема демультиплексора 1 в 5}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.34]{s4}	
 		\caption{Схема 4}
 	\end{figure}
+
+	\section*{Генератори до схеми демультиплексора 1 в 5}
+	\begin{figure}[H]
+		\centering
+		\subfloat[Генератор A0]{{\includegraphics[width=0.45\textwidth]{a0}}}
+		\hspace{5px}
+		\subfloat[Генератор A1]{{\includegraphics[width=0.45\textwidth]{a1}}}
+		
+		\subfloat[Генератор A2]{{\includegraphics[width=0.45\textwidth]{a2}}}
+		\hspace{5px}
+		\subfloat[Генератор D]{{\includegraphics[width=0.45\textwidth]{d}}}
+	\end{figure}	
+
+	\section*{Графік до схеми демультиплексора 1 в 5}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.34]{g4}	
 		\caption{Графік 4}
 	\end{figure}
+
+	За отриманим графіком виконання схеми демультиплексора видно, що часові діаграми вхідних та вихідних сигналів на кожному з восьми проміжків відповідають заданій таблиці істиності демультиплексора, отже, можна зробити виновок, що моделювання виконано правильно.
 
 	\section*{Висновки}
 	Під час виконання лабораторної роботи я закріпив практичні навики моделювання логічних схем в середовищі системи програм Proteus. 

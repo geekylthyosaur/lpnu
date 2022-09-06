@@ -44,16 +44,42 @@ pub fn run() {
             .dyn_into::<HtmlElement>()
             .unwrap()
             .set_inner_html(&len.to_string());
-        let data = Sorted::sort(&mut Data::new(len as usize));
+        let mut input_data = Data::new(len as usize);
+        let table = document()
+            .get_element_by_id("before")
+            .unwrap()
+            .dyn_into::<HtmlTableElement>()
+            .unwrap();
+        table.set_inner_html("");
+        for i in 0..input_data[0].v.len() {
+            let row = table
+                .insert_row()
+                .unwrap()
+                .dyn_into::<HtmlTableRowElement>()
+                .unwrap();
+            for j in 0..input_data.len() {
+                let cell = row
+                    .insert_cell()
+                    .unwrap()
+                    .dyn_into::<HtmlTableCellElement>()
+                    .unwrap();
+                let text = document()
+                    .create_text_node(&input_data[j].v[i].to_string())
+                    .dyn_into::<Text>()
+                    .unwrap();
+                cell.append_child(&text).unwrap();
+            }
+        }
+        let output_data = Sorted::sort(&mut input_data);
         let table = document()
             .get_element_by_id("table")
             .unwrap()
             .dyn_into::<HtmlTableElement>()
             .unwrap();
         table.set_inner_html("");
-        for i in 0..data.len() {
-            let diff = if let Some(b) = data.get(i + 1) {
-                Data::diff(&data[i], &b)
+        for i in 0..output_data.len() {
+            let diff = if let Some(b) = output_data.get(i + 1) {
+                Data::diff(&output_data[i], &b)
             } else {
                 vec![100, 100]
             };
@@ -62,20 +88,45 @@ pub fn run() {
                 .unwrap()
                 .dyn_into::<HtmlTableRowElement>()
                 .unwrap();
-            for j in 0..data[i].len() {
+            for j in 0..output_data[i].len() {
                 let cell = row
                     .insert_cell()
                     .unwrap()
                     .dyn_into::<HtmlTableCellElement>()
                     .unwrap();
                 let text = document()
-                    .create_text_node(&data[i][j].v.to_string())
+                    .create_text_node(&output_data[i][j].v[0].to_string())
                     .dyn_into::<Text>()
                     .unwrap();
                 cell.append_child(&text).unwrap();
                 if diff.contains(&j) {
                     cell.set_bg_color("rgb(255,200,200)");
                 }
+            }
+        }
+        let table = document()
+            .get_element_by_id("after")
+            .unwrap()
+            .dyn_into::<HtmlTableElement>()
+            .unwrap();
+        table.set_inner_html("");
+        for i in 0..input_data[0].v.len() {
+            let row = table
+                .insert_row()
+                .unwrap()
+                .dyn_into::<HtmlTableRowElement>()
+                .unwrap();
+            for j in 0..input_data.len() {
+                let cell = row
+                    .insert_cell()
+                    .unwrap()
+                    .dyn_into::<HtmlTableCellElement>()
+                    .unwrap();
+                let text = document()
+                    .create_text_node(&input_data[j].v[i].to_string())
+                    .dyn_into::<Text>()
+                    .unwrap();
+                cell.append_child(&text).unwrap();
             }
         }
     }) as Box<dyn FnMut()>);

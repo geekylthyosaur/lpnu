@@ -1,0 +1,21 @@
+[package]
+name = "lab"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+wasm-bindgen = "0.2.81"
+js-sys = "0.3.58"
+rand = "0.8.5"
+getrandom = { version = "0.2.7", features = ["js"] }
+console_error_panic_hook = "0.1.7"
+fake = { version = "2.5.0", features = ["derive"] }
+
+[dependencies.web-sys]
+version = "0.3.58"
+features = [
+    "Document", "Element", "Window", "HtmlElement", "Text", "HtmlTableElement", "HtmlInputElement", "HtmlTableRowElement", "HtmlTableColElement", "HtmlTableCellElement", "CssStyleDeclaration", "console"
+]

@@ -126,6 +126,26 @@
 		\caption{Схема 1}
 	\end{figure}
 
+	\begin{Large}
+		\begin{align}
+			\begin{gathered}
+				H_1 = F_1\nonumber\\		
+				H_7 = \overline{F_1}\land F_7\nonumber\\
+				H_4 = \overline{F_1}\land \overline{F_7}\land F_4\nonumber\\
+				H_5 = \overline{F_1}\land \overline{F_7}\land \overline{F_4}\land F_5\nonumber\\
+				H_3 = \overline{F_1}\land \overline{F_7}\land \overline{F_4}\land \overline{F_5}\land F_3\nonumber\\
+				H_6 = \overline{F_1}\land \overline{F_7}\land \overline{F_4}\land \overline{F_5}\land \overline{F_3}\land F_6\nonumber\\
+				H_2 = \overline{F_1}\land \overline{F_7}\land \overline{F_4}\land \overline{F_5}\land \overline{F_3}\land \overline{F_6}\land F_2\nonumber
+			\end{gathered}
+			&&
+			\begin{gathered}
+				X_0=F_1\lor F_3\lor F_5\lor F_7\nonumber\\
+				X_0=F_2\lor F_3\lor F_6\lor F_7\nonumber\\
+				X_0=F_4\lor F_5\lor F_6\lor F_7\nonumber
+			\end{gathered}
+		\end{align}
+	\end{Large}
+
 	\section*{Генератори до схеми приорітетного шифратора 8x3}
 	\begin{figure}[H]
 		\centering
@@ -165,14 +185,27 @@
 		\caption{Схема 2}
 	\end{figure}
 
+	\begin{Large}
+			\begin{gather}
+				V_0=Z_2\land \overline{Z_1}\land \overline{Z_0}\nonumber\\
+				V_1=Z_2\land \overline{Z_1}\land Z_0\nonumber\\
+				V_2=Z_2\land Z_1\land \overline{Z_0}\nonumber\\
+				V_3=\overline{Z_2}\land \overline{Z_1}\land Z_0\nonumber\\
+				V_4=\overline{Z_2}\land \overline{Z_1}\land Z_0\nonumber\\
+				V_5=Z_2\land Z_1\land Z_0\land 0\nonumber\\
+				V_6=Z_2\land Z_1\land Z_0\land 0\nonumber\\
+				V_7=Z_2\land Z_1\land Z_0\land 0\nonumber
+			\end{gather}
+	\end{Large}
+
 	\section*{Генератори до схеми лінійного дешифратора 3x8}
 	\begin{figure}[H]
 		\centering
-		\subfloat[Генератор Z0]{{\includegraphics[width=0.45\textwidth]{z0}}}
+		\subfloat[Генератор Z0]{{\includegraphics[width=0.43\textwidth]{z0}}}
 		\hspace{5px}
-		\subfloat[Генератор Z1]{{\includegraphics[width=0.45\textwidth]{z1}}}
+		\subfloat[Генератор Z1]{{\includegraphics[width=0.43\textwidth]{z1}}}
 		
-		\subfloat[Генератор Z2]{{\includegraphics[width=0.45\textwidth]{z2}}}
+		\subfloat[Генератор Z2]{{\includegraphics[width=0.43\textwidth]{z2}}}
 	\end{figure}
 
 	\section*{Графік до схеми лінійного дешифратора 3x8}
@@ -190,6 +223,12 @@
 		\includegraphics[scale=0.34]{s3}	
 		\caption{Схема 3}
 	\end{figure}
+
+	\begin{Large}
+		\begin{gather}
+			D=(A_0\land\overline{A_1}\land\overline{A_2}\land D_4)\lor (\overline{A_0}\land\overline{A_1}\land\overline{A_2}\land D_3)\lor (\overline{A_0}\land A_1\land A_2\land D_2)\lor\nonumber\\\lor (A_0\land\overline{A_1}\land A_2\land D_1)\lor (\overline{A_0}\land\overline{A_1}\land A_2\land D_0)\nonumber
+		\end{gather}
+	\end{Large}
 
 	\section*{Генератори до схеми мультиплексора 5 в 1}
 	\begin{figure}[H]
@@ -229,6 +268,16 @@
 		\includegraphics[scale=0.34]{s4}	
 		\caption{Схема 4}
 	\end{figure}
+
+	\begin{Large}
+		\begin{gather}
+			Y_0=\overline{A_0}\land\overline{A_1}\land A_2\land D\nonumber\\
+			Y_1=A_0\land\overline{A_1}\land A_2\land D\nonumber\\
+			Y_2=\overline{A_0}\land A_1\land A_2\land D\nonumber\\
+			Y_3=\overline{A_0}\land\overline{A_1}\land\overline{A_2}\land D\nonumber\\
+			Y_4=A_0\land\overline{A_1}\land\overline{A_2}\land D\nonumber
+		\end{gather}
+	\end{Large}
 
 	\section*{Генератори до схеми демультиплексора 1 в 5}
 	\begin{figure}[H]

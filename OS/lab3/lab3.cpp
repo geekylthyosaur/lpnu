@@ -1,14 +1,15 @@
 #include <iostream>
 #include <string>
 #include <Windows.h>
+#include <fstream>
 
 using namespace std;
 
 string getPriorityClass(PROCESS_INFORMATION* pi, int i);
 void setPriorityClass(PROCESS_INFORMATION* pi, int p, int i);
 void getProcessTimes(PROCESS_INFORMATION* pi, FILETIME* lpc, FILETIME* lpe, FILETIME* lpk, FILETIME* lpu, int i);
-void createProcess(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int i);
-void createProcesses(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int PC);
+void createProcess(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int i, int PC, int N);
+void createProcesses(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int PC, int N);
 void resumeThread(PROCESS_INFORMATION* pi, int i);
 void suspendThread(PROCESS_INFORMATION* pi, int i);
 void closeProcessHandles(PROCESS_INFORMATION* pi, int i);
@@ -41,8 +42,42 @@ int main()
     HANDLE* handles = new HANDLE[PC];
     FILETIME ft[4];
     SYSTEMTIME tm[4];
+    
+    cout << "Generating random array " << N << "x" << N << " ... ";
 
-    createProcesses(si, pi, handles, cmd, PC);
+    int** array = new int* [N];
+    for (int i = 0; i < N; i++) array[i] = new int[N];
+
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            array[i][j] = rand();
+        }
+    }
+    cout << "Done!" << endl;
+
+    cout << "Writing array to file ... ";
+
+    ofstream file;
+    file.open("array.txt");
+    for (int i = 0; i < N; i++)
+    {
+        for (int j = 0; j < N; j++)
+        {
+            if (j == N-1)
+                file << array[i][j];
+            else 
+                file << array[i][j] << ",";
+        }
+        file << "\n";
+    }
+    file.close();
+
+    cout << "Done!" << endl;
+
+    createProcesses(si, pi, handles, cmd, PC, N);
 
     char op;
     int i;
@@ -108,7 +143,7 @@ void getProcessTimes(PROCESS_INFORMATION* pi, FILETIME* lpc, FILETIME* lpe, FILE
     GetProcessTimes(pi[i].hProcess, lpc, lpe, lpk, lpu);
 }
 
-void createProcess(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int i)
+void createProcess(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int i, int PC, int N)
 {
     ZeroMemory(&si[i], sizeof(si[i]));
     si[i].cb = sizeof(si[i]);
@@ -138,12 +173,12 @@ void createProcess(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, ws
     }
 }
 
-void createProcesses(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int PC)
+void createProcesses(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int PC, int N)
 {
     for (int i = 0; i < PC; i++)
     {
         cout << "Creating process " << i + 1 << " ... ";
-        createProcess(si, pi, handles, cmd, i);
+        createProcess(si, pi, handles, cmd + L" " + to_wstring((N/PC)*i) + L" " + to_wstring((N / PC) * (i + 1)), i, PC, N);
     }
 }
 
@@ -173,7 +208,7 @@ void closeProcessesHandles(PROCESS_INFORMATION* pi, int PC)
 
 void terminateProcess(PROCESS_INFORMATION* pi, int i)
 {
-    cout << "Terminating process " << i + 1 << " ... ";
+    cout << "Terminating process " << i << " ... ";
 
     TerminateProcess(pi[i].hProcess, WM_CLOSE);
     closeProcessHandles(pi, i);

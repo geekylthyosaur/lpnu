@@ -110,14 +110,15 @@
 #include <iostream>
 #include <string>
 #include <Windows.h>
+#include <fstream>
 
 using namespace std;
 
 string getPriorityClass(PROCESS_INFORMATION* pi, int i);
 void setPriorityClass(PROCESS_INFORMATION* pi, int p, int i);
 void getProcessTimes(PROCESS_INFORMATION* pi, FILETIME* lpc, FILETIME* lpe, FILETIME* lpk, FILETIME* lpu, int i);
-void createProcess(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int i);
-void createProcesses(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int PC);
+void createProcess(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int i, int PC, int N);
+void createProcesses(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int PC, int N);
 void resumeThread(PROCESS_INFORMATION* pi, int i);
 void suspendThread(PROCESS_INFORMATION* pi, int i);
 void closeProcessHandles(PROCESS_INFORMATION* pi, int i);
@@ -151,7 +152,41 @@ int main()
 	FILETIME ft[4];
 	SYSTEMTIME tm[4];
 	
-	createProcesses(si, pi, handles, cmd, PC);
+	cout << "Generating random array " << N << "x" << N << " ... ";
+	
+	int** array = new int* [N];
+	for (int i = 0; i < N; i++) array[i] = new int[N];
+	
+	std::srand(static_cast<unsigned int>(std::time(nullptr)));
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < N; j++)
+		{
+			array[i][j] = rand();
+		}
+	}
+	cout << "Done!" << endl;
+	
+	cout << "Writing array to file ... ";
+	
+	ofstream file;
+	file.open("array.txt");
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < N; j++)
+		{
+			if (j == N-1)
+			file << array[i][j];
+			else 
+			file << array[i][j] << ",";
+		}
+		file << "\n";
+	}
+	file.close();
+	
+	cout << "Done!" << endl;
+	
+	createProcesses(si, pi, handles, cmd, PC, N);
 	
 	char op;
 	int i;
@@ -217,7 +252,7 @@ void getProcessTimes(PROCESS_INFORMATION* pi, FILETIME* lpc, FILETIME* lpe, FILE
 	GetProcessTimes(pi[i].hProcess, lpc, lpe, lpk, lpu);
 }
 
-void createProcess(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int i)
+void createProcess(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int i, int PC, int N)
 {
 	ZeroMemory(&si[i], sizeof(si[i]));
 	si[i].cb = sizeof(si[i]);
@@ -247,12 +282,12 @@ void createProcess(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, ws
 	}
 }
 
-void createProcesses(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int PC)
+void createProcesses(STARTUPINFO* si, PROCESS_INFORMATION* pi, HANDLE* handles, wstring cmd, int PC, int N)
 {
 	for (int i = 0; i < PC; i++)
 	{
 		cout << "Creating process " << i + 1 << " ... ";
-		createProcess(si, pi, handles, cmd, i);
+		createProcess(si, pi, handles, cmd + L" " + to_wstring((N/PC)*i) + L" " + to_wstring((N / PC) * (i + 1)), i, PC, N);
 	}
 }
 
@@ -282,7 +317,7 @@ void closeProcessesHandles(PROCESS_INFORMATION* pi, int PC)
 
 void terminateProcess(PROCESS_INFORMATION* pi, int i)
 {
-	cout << "Terminating process " << i + 1 << " ... ";
+	cout << "Terminating process " << i << " ... ";
 	
 	TerminateProcess(pi[i].hProcess, WM_CLOSE);
 	closeProcessHandles(pi, i);
@@ -297,62 +332,80 @@ void terminateProcesses(PROCESS_INFORMATION* pi, int PC)
 		terminateProcess(pi, pc);
 	}
 }
+
 	\end{lstlisting}
 
 	\begin{lstlisting}
 #include <iostream>
-#include <cstdlib>
 #include <chrono>
+#include <fstream>
+#include <string>
+#include <vector>
 
 using namespace std;
 using namespace std::chrono;
 
 void bubble_sort(int* array, int N);
+vector<string> split(string s, string delimiter);
 
 int main(int argc, char** argv)
 {
-	if (argc < 2) return -1;
+	if (argc < 4) return -1;
 	
-	int N = atoi(argv[1]);
+	int Ncol = atoi(argv[1]);
+	int startRow = atoi(argv[2]);
+	int endRow = atoi(argv[3]);
+	int Nrow = endRow - startRow;
 	
-	cout << "Got N = " << N << endl;
-	cout << "Generating random array " << N << "x" << N << " ... ";
+	cout << "Reading array from file " << Ncol << "x" << Nrow << " ... ";
 	
-	int** array = new int*[N];
-	for (int i = 0; i < N; i++) array[i] = new int[N];
-	
-	std::srand(static_cast<unsigned int>(std::time(nullptr)));
-	for (int i = 0; i < N; i++)
+	string line;
+	ifstream file("C:\\Users\\Dmytro\\source\\repos\\lab3\\lab3\\array.txt");
+	int** array = new int* [Nrow];
+	for (int i = 0; i < startRow; i++)
 	{
-		for (int j = 0; j < N; j++)
-		{
-			array[i][j] = rand();
-		}
+		getline(file, line);
 	}
+	for (int i = 0; i < Nrow; i++)
+	{
+		getline(file, line);
+		array[i] = new int[Ncol];
+		
+		auto vec = split(line, ",");
+		for (int j = 0; j < Ncol; j++)
+		{
+			array[i][j] = atoi(vec[j].c_str());
+			cout << vec[j] << " ";
+		}
+		cout << endl;
+	}
+	file.close();
+	
 	cout << "Done!" << endl;
 	
 	cout << "Sorting array ... " << endl;
 	
 	auto start = high_resolution_clock::now();
-	for (int i = 0; i < N; i++)
+	for (int i = 0; i < Nrow; i++)
 	{
 		cout << "Sorting row " << i << endl;
-		bubble_sort(array[i], N);
+		bubble_sort(array[i], Ncol);
 	}
 	auto stop = high_resolution_clock::now();
 	auto duration = duration_cast<milliseconds>(stop - start);
 	cout << "Sorting took: " << duration.count() << "ms" << endl;
 	
 	cout << "Print sorted array? [y/N] ";
-	char op = getchar();
+	// char op = getchar();
+	char op = 'y';
 	
 	if (op == 'y')
 	{
 		cout << "Sorted array: " << endl;
 		
-		for (int i = 0; i < N; i++)
+		for (int i = 0; i < Nrow; i++)
 		{
-			for (int j = 0; j < N; j++)
+			for (int j = 0; j < Ncol; j++)
 			{
 				cout << array[i][j] << ", ";
 			}
@@ -379,6 +432,22 @@ void bubble_sort(int* array, int N)
 		}
 	}
 }
+
+vector<string> split(string s, string delimiter) {
+	size_t pos_start = 0, pos_end, delim_len = delimiter.length();
+	string token;
+	vector<string> res;
+	
+	while ((pos_end = s.find(delimiter, pos_start)) != string::npos) {
+		token = s.substr(pos_start, pos_end - pos_start);
+		pos_start = pos_end + delim_len;
+		res.push_back(token);
+	}
+	
+	res.push_back(s.substr(pos_start));
+	return res;
+}
+
 	\end{lstlisting}
 	
 	\begin{figure}[H]

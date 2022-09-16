@@ -121,36 +121,45 @@
 		\begin{lstlisting}
 use crate::data::Data;
 
-pub fn sort(input: &mut [Data]) -> Vec<Vec<Data>> {
-	let mut res = vec![input.to_vec()];
-	if input.len() > 1 {
-		let pivot = lomuto_partition(&mut input[..], &mut res);
-		sort(&mut input[..pivot]);
-		sort(&mut input[pivot + 1..]);
-	}
-	res.push(input.to_vec());
-	res
+pub fn sort(arr: &mut [Data], res: &mut Vec<Vec<Data>>) {
+	let len = arr.len();
+	_quick_sort(arr, 0, (len - 1) as isize, res);
 }
 
-fn lomuto_partition(input: &mut [Data], res: &mut Vec<Vec<Data>>) -> usize {
-	let pivot = input.len() - 1;
-	let mut swap = 0;
-	for i in 0..pivot {
-		if input[i] < input[pivot] {
-			if swap != i {
-				input.swap(swap, i);
-				res.push(input.to_vec());
-			}
-			swap += 1;
+fn _quick_sort(arr: &mut [Data], low: isize, high: isize, res: &mut Vec<Vec<Data>>) {
+	if low < high {
+		let p = partition(arr, low, high, res);
+		_quick_sort(arr, low, p - 1, res);
+		_quick_sort(arr, p + 1, high, res);
+	}
+}
+
+fn partition(arr: &mut [Data], low: isize, high: isize, res: &mut Vec<Vec<Data>>) -> isize {
+	let pivot = high as usize;
+	let mut store_index = low - 1;
+	let mut last_index = high;
+	
+	loop {
+		store_index += 1;
+		while arr[store_index as usize] < arr[pivot] {
+			store_index += 1;
+		}
+		last_index -= 1;
+		while last_index >= 0 && arr[last_index as usize] > arr[pivot] {
+			last_index -= 1;
+		}
+		if store_index >= last_index {
+			break;
+		} else {
+			arr.swap(store_index as usize, last_index as usize);
+			res.push(arr.to_vec());
 		}
 	}
-	
-	if swap != pivot {
-		input.swap(swap, pivot);
-		res.push(input.to_vec());
-	}
-	swap
+	arr.swap(store_index as usize, pivot as usize);
+	res.push(arr.to_vec());
+	store_index
 }
+
 \end{lstlisting}
 		
 		\section*{Результат роботи}

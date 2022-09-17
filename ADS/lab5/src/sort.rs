@@ -20,14 +20,13 @@ pub fn sort(input: &mut [Data], res: &mut Vec<Vec<Data>>) {
             tmp.push(input[j]);
             j += 1;
         }
+        res.push(tmp.to_vec());
     }
     if i < mid {
         tmp.extend_from_slice(&input[i..mid]);
     } else if j < len {
         tmp.extend_from_slice(&input[j..len]);
     }
-    res.push(tmp.to_vec());
 
     input.copy_from_slice(&tmp[..]);
 }
-

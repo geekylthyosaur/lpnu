@@ -19,6 +19,10 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        person.h
+        person.cpp
+        blood.h
+        blood.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

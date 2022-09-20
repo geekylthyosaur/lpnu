@@ -23,6 +23,8 @@ set(PROJECT_SOURCES
         person.cpp
         blood.h
         blood.cpp
+        list.h
+        list.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

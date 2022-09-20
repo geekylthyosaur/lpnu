@@ -16,20 +16,20 @@ enum Type {
 class Blood
 {
 private:
-    int mPressureLow;
     int mPressureHigh;
+    int mPressureLow;
     bool mRhD;
     Type mType;
 
 public:
-    Blood(int pressureL, int pressureH, bool rhd, Type type);
+    Blood() = default;
+    Blood(int pressureH, int pressureL, bool rhd, Type type);
 
-    QString getPressure(); // -> 120/80
-    QString getType(); // -> AB+
+    QString getPressure();
+    QString getType();
 
-    bool operator > (Blood* b) { return this->mPressureLow + this->mPressureHigh > b->mPressureHigh + b->mPressureLow; }
-    bool operator < (Blood* b);
-    bool operator == (Blood* b);
+    bool operator > (Blood b) { return this->mPressureLow + this->mPressureHigh > b.mPressureHigh + b.mPressureLow; }
+    bool operator < (Blood b) { return this->mPressureLow + this->mPressureHigh < b.mPressureHigh + b.mPressureLow; }
 };
 
 #endif // BLOOD_H

@@ -2,6 +2,7 @@
 #define PERSON_H
 
 #include "QString"
+#include "QFile"
 #include "blood.h"
 
 class Person
@@ -11,14 +12,12 @@ private:
     QString mSurname;
     QString mName;
     int     mAge;
-    Blood   blood;
+    Blood * mBlood;
     int     mHeartRate;
 public:
-    Person();
-    Person(int n, QString surname, QString name, int age, Blood blood, int hr);
+    Person() = default;
+    Person(int n, QString surname, QString name, int age, Blood* blood, int hr);
     Person(const Person &other);
-    friend ostream & operator << (ostream &out, const Person &p);
-    friend istream & operator >> (istream &in,  Person &p);
 };
 
 #endif // PERSON_H

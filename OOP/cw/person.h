@@ -10,13 +10,12 @@ class Person
 private:
     int     mN;
     QString mSurname;
-    QString mName;
     int     mAge;
     Blood * mBlood;
     int     mHeartRate;
 public:
     Person() = default;
-    Person(int n, QString surname, QString name, int age, Blood* blood, int hr);
+    Person(int n, QString surname, int age, Blood* blood, int hr);
     Person(const Person &other);
 };
 

@@ -12,8 +12,11 @@ private:
 public:
     List() = default;
 
-    friend void operator << (QFile &out, const Person &p);
-    friend void operator >> (Person &p, QFile &in);
+    void push(Person* p);
+    Person* get(int i);
+
+    friend void operator << (QFile &input, const List* l);
+    friend void operator >> (QFile &input, List* l);
 };
 
 #endif // LIST_H

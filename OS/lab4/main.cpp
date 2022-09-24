@@ -6,14 +6,17 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sys/times.h>
 
 using namespace std;
 
-void suspend(pid_t pid);
-void resume(pid_t pid);
-void kill(pid_t pid);
-void renice(pid_t pid);
+void gettimes(int pid);
+void suspend(int pid);
+void resume(int pid);
+void kill(int pid);
+void renice(int pid);
 
+time_t time_begin;
 int main(void) {
     int* pids;
     int pid;
@@ -65,6 +68,8 @@ int main(void) {
 
     cout << "Done!" << endl;
 
+    time_begin = clock();
+
     for (int i = 0; i < PC; i++) {
         pid = fork();
         switch(pid) {
@@ -100,17 +105,24 @@ int main(void) {
         if (op == 'e') break;
         cout << "Process index: ";
         cin >> i;
-        if (op == 's') {
-            cout << pids[i] << ": Stop" << endl;
-            kill(pids[i], SIGSTOP);
-        }
-        if (op == 'r') kill(pids[i], SIGCONT);
-        if (op == 'k') kill(pids[i], SIGKILL);
-        if (op == 't') ;
+        if (op == 's') suspend(pids[i]);
+        if (op == 'r') resume(pids[i]);
+        if (op == 'k') kill(pids[i]);
+        if (op == 't') gettimes(pids[i]);
         if (op == 'p') renice(pids[i]);
     }
 
+    for (int i = 0; i < PC; i++) {
+        kill(pids[i]);
+    }
+
     return 0;
+}
+
+void gettimes(int pid) {
+    char s[100];
+    sprintf(s, "ps -o time %d | grep 0", pid);
+    system(s);
 }
 
 void kill(int pid) {
@@ -122,7 +134,8 @@ void resume(int pid) {
 }
 
 void suspend(int pid) {
-    kill(pid, SIGTSTP);
+    cout << pid << endl;
+    kill(pid, SIGSTOP);
 }
 
 void renice(int pid) {
@@ -130,7 +143,7 @@ void renice(int pid) {
     char cmd[100];
     cout << "New priority: ";
     cin >> nice;
-    sprintf(cmd, "/bin/renice -n %d -p %d", nice, pid);
+    sprintf(cmd, "/bin/doas /bin/renice -n %d -p %d", nice, pid);
     system(cmd);
 }
 

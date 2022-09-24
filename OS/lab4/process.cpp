@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <unistd.h>
 
 using namespace std;
 using namespace std::chrono;
@@ -12,6 +13,11 @@ vector<string> split(string s, string delimiter);
 
 int main(int argc, char** argv)
 {
+    ofstream f;
+    f.open("pid");
+    f << getpid();
+    f.close();
+
     if (argc < 4) return -1;
 
     int Ncol = atoi(argv[1]);
@@ -22,7 +28,7 @@ int main(int argc, char** argv)
     cout << "Reading array from file " << Ncol << "x" << Nrow << " ... ";
 
     string line;
-    ifstream file("array.txt");
+    ifstream file("/home/dmytro/lpnu/OS/lab4/array.txt");
     int** array = new int* [Nrow];
     for (int i = 0; i < startRow; i++)
     {
@@ -66,8 +72,7 @@ int main(int argc, char** argv)
         cout << endl;
     }
 
-    return 0;
-}
+    return 0;}
 
 void bubble_sort(int* array, int N) 
 {

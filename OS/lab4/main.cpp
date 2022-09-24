@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "stdlib.h"
 #include <unistd.h>
+#include <signal.h>
 #include <sys/wait.h>
 #include <iostream>
 #include <string>
@@ -8,9 +9,16 @@
 
 using namespace std;
 
+void suspend(pid_t pid);
+void resume(pid_t pid);
+void kill(pid_t pid);
+void renice(pid_t pid);
+
 int main(void) {
-    pid_t pid;
+    int* pids;
+    int pid;
     int status, PC = 0, N = 0;
+    char op;
 
     while (N < 1) {
         cout << "Enter value of N (> 1000): ";
@@ -22,6 +30,7 @@ int main(void) {
         cin >> PC;
     }
 
+    pids = new int[PC];
     cout << "Generating random array " << N << "x" << N << " ... ";
 
     int** array = new int* [N];
@@ -70,14 +79,58 @@ int main(void) {
                 sprintf(s1, "%d", N);
                 sprintf(s2, "%d",(N/PC)*i);
                 sprintf(s3, "%d", (N/PC)*(i+1));
-                execl("/bin/footclient", "-e", "./process", s1, s2, s3, NULL);
+                execl("/bin/footclient", "--", "./process", s1, s2, s3, NULL);
                 return 0;
-            default:
-                //Error
+            default: 
+                usleep(100000);
+                string line;
+                ifstream file("pid");
+                getline(file, line);
+                file.close();
+
+                pids[i] = atoi(line.c_str());
                 break;
         }
     }
 
+    int i;
+    while (true) {
+        cout << "Suspend [s], Resume [r], Exit [e], Kill [k], Times [t], Priority [p]: ";
+        cin >> op;
+        if (op == 'e') break;
+        cout << "Process index: ";
+        cin >> i;
+        if (op == 's') {
+            cout << pids[i] << ": Stop" << endl;
+            kill(pids[i], SIGSTOP);
+        }
+        if (op == 'r') kill(pids[i], SIGCONT);
+        if (op == 'k') kill(pids[i], SIGKILL);
+        if (op == 't') ;
+        if (op == 'p') renice(pids[i]);
+    }
+
     return 0;
+}
+
+void kill(int pid) {
+    kill(pid, SIGKILL);
+}
+
+void resume(int pid) {
+    kill(pid, SIGCONT);
+}
+
+void suspend(int pid) {
+    kill(pid, SIGTSTP);
+}
+
+void renice(int pid) {
+    int nice;
+    char cmd[100];
+    cout << "New priority: ";
+    cin >> nice;
+    sprintf(cmd, "/bin/renice -n %d -p %d", nice, pid);
+    system(cmd);
 }
 

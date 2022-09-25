@@ -38,17 +38,27 @@ QString Blood::getPressure()
 
 QString Blood::getType()
 {
+    QString result = QString::fromStdString("");
     switch (this->mType)
     {
     case 1:
-        return QString::fromStdString("O");
+        result = "O";
+        break;
     case 2:
-        return QString::fromStdString("A");
+        result = "A";
+        break;
     case 3:
-        return QString::fromStdString("B");
+        result = "B";
+        break;
     case 4:
-        return QString::fromStdString("AB");
+        result = "AB";
+        break;
     default:
-        return QString::fromStdString("ERROR");
+        result = "ERROR";
+        break;
     }
+    if (this->mRhD)
+        return result += "+";
+    else
+        return result += "-";
 }

@@ -1,5 +1,5 @@
 #include "mainwindow.h"
-#include "./ui_mainwindow.h"
+#include "ui_mainwindow.h"
 #include "person.h"
 #include "QFileDialog"
 #include "list.h"
@@ -30,4 +30,6 @@ void MainWindow::on_actionSave_triggered()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
         tr("Save File"), "/home/dmytro/", tr("Data file (*.csv)"));
+    QFile file(fileName);
+    file << list;
 }

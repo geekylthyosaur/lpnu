@@ -1,5 +1,6 @@
 #include "list.h"
 #include "QTextStream"
+#include "QDebug"
 
 void List::push(Person* p)
 {
@@ -17,9 +18,9 @@ void operator << (QFile &output, const List* l)
     if (output.open(QIODevice::ReadWrite))
     {
         QTextStream stream(&output);
-        for (Person* p : l)
+        for (Person* p : l->mVec)
         {
-            stream << p->mN << "," << p->mSurname << "," << p->mAge << "," << p->mBlood->getPressure() << " " << p->mBlood->getType() << p->mHeartRate << endl;
+            stream << p->getN() << "," << p->getSurname() << "," << p->getAge() << "," << p->getBlood()->getPressure() << " " << p->getBlood()->getType() << "," << p->getHeartRate() << Qt::endl;
         }
     }
 }
@@ -33,13 +34,7 @@ void operator >> (QFile &input, List* l)
         while (!in.atEnd())
         {
             QString line = in.readLine();
-            auto tokens = line.split(",");
-            int n = tokens[0].toInt();
-            QString surname = tokens[1];
-            int age = tokens[2].toInt();
-            Blood* blood = new Blood(tokens[3]);
-            int heart_rate = tokens[4].toInt();
-            Person* p = new Person(n, surname, age, blood, heart_rate);
+            Person* p = new Person(line);
             l->push(p);
         }
         input.close();

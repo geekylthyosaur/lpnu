@@ -12,7 +12,7 @@ use web_sys::{
 
 use data::Data;
 use utils::document;
-use sort::sort;
+use sort::merge_sort;
 
 use std::{cell::RefCell, rc::Rc};
 
@@ -45,11 +45,11 @@ pub fn run() {
             .unwrap()
             .set_inner_html(&len.to_string());
         let mut d = Data::new(len as usize);
+        let len = d.len();
         let mut data = Vec::new();
         data.push(d.clone());
-        sort(&mut d, &mut data);
+        merge_sort(&mut d, &mut data, 0, len - 1);
         data.push(d.clone());
-       
         let table = document()
             .get_element_by_id("table")
             .unwrap()
@@ -57,6 +57,11 @@ pub fn run() {
             .unwrap();
         table.set_inner_html("");
         for i in 0..data.len() {
+            let diff = if let Some(b) = data.get(i + 1) {
+                Data::diff(&data[i], &b)
+            } else {
+                vec![100, 100]
+            };
             let row = table
                 .insert_row()
                 .unwrap()
@@ -69,10 +74,13 @@ pub fn run() {
                     .dyn_into::<HtmlTableCellElement>()
                     .unwrap();
                 let text = document()
-                    .create_text_node(&data[i][j].v.to_string())
+                    .create_text_node(&format!("{:.3}", data[i][j].v).to_string())
                     .dyn_into::<Text>()
                     .unwrap();
                 cell.append_child(&text).unwrap();
+                if diff.contains(&j) {
+                    cell.set_bg_color("rgb(255,200,200)");
+                }
             }
         }
     }) as Box<dyn FnMut()>);

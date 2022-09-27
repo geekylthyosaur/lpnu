@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>lab 6</title>
+    </head>
+    <body>
+        <div id="root">
+            <div id="controls">
+                <input type="range" min="1" max="10" value="5" id="slider">
+                <h3 id="slider_value"></h3>
+            </div>
+            <div id="data">
+                <table id="table">
+                </table>
+            </div>
+        </div>
+        <style>
+            #slider {display:inline-block;margin-right:10px;} 
+            #slider_value {display:inline-block;}
+            table, th, td {
+                border: 1px solid;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                border-spacing:0 5px
+            }
+            td {
+                text-align: center;
+                padding-top: .5em;
+                padding-bottom: .5em;
+            }
+        </style>
+    </body>
+</html>

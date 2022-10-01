@@ -2,6 +2,8 @@
 #define LIST_H
 
 #include "QVector"
+#include "QFile"
+
 #include "person.h"
 
 class List
@@ -15,7 +17,7 @@ public:
     void push(Person* p);
     Person* get(int i);
 
-    friend void operator << (QFile &input, const List* l);
+    friend void operator << (QFile &output, const List* l);
     friend void operator >> (QFile &input, List* l);
 };
 

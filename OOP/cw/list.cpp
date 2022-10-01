@@ -20,7 +20,7 @@ void operator << (QFile &output, const List* l)
         QTextStream stream(&output);
         for (Person* p : l->mVec)
         {
-            stream << p->getN() << "," << p->getSurname() << "," << p->getAge() << "," << p->getBlood()->getPressure() << " " << p->getBlood()->getType() << "," << p->getHeartRate() << Qt::endl;
+            stream << p;
         }
     }
 }
@@ -33,8 +33,8 @@ void operator >> (QFile &input, List* l)
         QTextStream in(&input);
         while (!in.atEnd())
         {
-            QString line = in.readLine();
-            Person* p = new Person(line);
+            Person* p = nullptr;
+            in >> p;
             l->push(p);
         }
         input.close();

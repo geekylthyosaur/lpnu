@@ -36,29 +36,27 @@ QString Blood::getPressure()
     return QString::number(this->mPressureHigh) + "/" + QString::number(this->mPressureLow);
 }
 
+QString Blood::getRhD()
+{
+    if (this->mRhD)
+        return QString::fromStdString("+");
+    else
+        return QString::fromStdString("-");
+}
+
 QString Blood::getType()
 {
-    QString result = QString::fromStdString("");
     switch (this->mType)
     {
     case 1:
-        result = "O";
-        break;
+        return QString::fromStdString("O");
     case 2:
-        result = "A";
-        break;
+        return QString::fromStdString("A");
     case 3:
-        result = "B";
-        break;
+        return QString::fromStdString("B");
     case 4:
-        result = "AB";
-        break;
+        return QString::fromStdString("AB");
     default:
-        result = "ERROR";
-        break;
+        return QString::fromStdString("ERROR");
     }
-    if (this->mRhD)
-        return result += "+";
-    else
-        return result += "-";
 }

@@ -16,6 +16,7 @@ public:
 
     void push(Person* p);
     Person* get(int i);
+    int len();
 
     friend void operator << (QFile &output, const List* l);
     friend void operator >> (QFile &input, List* l);

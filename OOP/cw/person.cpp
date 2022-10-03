@@ -1,5 +1,4 @@
 #include "person.h"
-#include "QDebug";
 
 Person::Person(int n, QString surname, int age, Blood* blood, int heartRate)
 {
@@ -18,13 +17,6 @@ Person::Person(QString person)
     this->mAge = tokens[2].toInt();
     this->mBlood = new Blood(tokens[3]);
     this->mHeartRate = tokens[4].toInt();
-    qDebug() << this->mN
-             << this->mSurname
-             << this->mAge
-             << this->mBlood->getPressure()
-             << this->mBlood->getType()
-             << this->mHeartRate
-             << Qt::endl;
 }
 
 void operator << (QTextStream &output, const Person* p)

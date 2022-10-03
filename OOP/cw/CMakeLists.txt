@@ -19,12 +19,10 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
-        person.h
-        person.cpp
-        blood.h
-        blood.cpp
-        list.h
-        list.cpp
+        person.h person.cpp
+        blood.h blood.cpp
+        list.h list.cpp
+        app.h app.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

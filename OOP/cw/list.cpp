@@ -1,6 +1,5 @@
 #include "list.h"
 #include "QTextStream"
-#include "QDebug"
 
 void List::push(Person* p)
 {
@@ -10,6 +9,11 @@ void List::push(Person* p)
 Person* List::get(int i)
 {
     return this->mVec.at(i);
+}
+
+int List::len()
+{
+    return this->mVec.length();
 }
 
 // file << list

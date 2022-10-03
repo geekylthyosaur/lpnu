@@ -20,6 +20,7 @@ public:
     Blood(int pressureH, int pressureL, bool rhd, int type);
 
     QString getPressure();
+    QString getRhD();
     QString getType();
 
     bool operator > (Blood b) { return this->mPressureLow + this->mPressureHigh > b.mPressureHigh + b.mPressureLow; }

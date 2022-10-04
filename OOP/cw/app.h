@@ -18,6 +18,8 @@ public:
     void addPerson();
     void removePerson();
     void updateTable();
+    void readFromFile(QString fileName);
+    void writeToFile(QString fileName);
 };
 
 #endif // APP_H

@@ -1,6 +1,7 @@
 #include "blood.h"
 
 #include "QStringList"
+#include "QDebug"
 
 Blood::Blood(int pressureH, int pressureL, bool rhd, int type)
 {

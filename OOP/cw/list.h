@@ -9,7 +9,7 @@
 class List
 {
 private:
-    QVector<Person*> mVec;
+    QVector<Person  *> mVec;
 
 public:
     List() = default;

@@ -4,6 +4,7 @@
 #include "list.h"
 #include "app.h"
 #include "QFileDialog"
+#include "QDebug"
 
 App* app;
 
@@ -21,25 +22,25 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::on_actionOpen_triggered()
-{/*
+{
     QString fileName = QFileDialog::getOpenFileName(this,
         tr("Open File"), "/home/dmytro/", tr("Data file (*.csv)"));
     if (!fileName.isEmpty())
     {
-        QFile file(fileName);
-        file >> list;
-    }*/
+        app->readFromFile(fileName);
+        app->updateTable();
+    }
 }
 
 void MainWindow::on_actionSave_triggered()
-{/*
+{
     QString fileName = QFileDialog::getSaveFileName(this,
         tr("Save File"), "/home/dmytro/", tr("Data file (*.csv)"));
     if (!fileName.isEmpty())
     {
-        QFile file(fileName);
-        file << list;
-    }*/
+        app->writeToFile(fileName);
+        app->updateTable();
+    }
 }
 
 void MainWindow::on_addPersonBtn_clicked()

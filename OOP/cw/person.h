@@ -24,7 +24,7 @@ public:
     int     getN()          const { return this->mN;         }
     QString getSurname()    const { return this->mSurname;   }
     int     getAge()        const { return this->mAge;       }
-    Blood*  getBlood()      const { return this->mBlood;     }
+    Blood * getBlood()      const { return this->mBlood;     }
     int     getHeartRate()  const { return this->mHeartRate; }
 
     friend void operator << (QTextStream &output, const Person* p);

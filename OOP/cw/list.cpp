@@ -1,14 +1,15 @@
 #include "list.h"
 #include "QTextStream"
+#include "QDebug"
 
-void List::push(Person* p)
+void List::push(Person * p)
 {
     this->mVec.append(p);
 }
 
-Person* List::get(int i)
+Person * List::get(int i)
 {
-    return this->mVec.at(i);
+    return this->mVec[i];
 }
 
 int List::len()
@@ -37,8 +38,8 @@ void operator >> (QFile &input, List* l)
         QTextStream in(&input);
         while (!in.atEnd())
         {
-            Person* p = nullptr;
-            in >> p;
+            QString line = input.readLine();
+            Person * p = new Person(line);
             l->push(p);
         }
         input.close();

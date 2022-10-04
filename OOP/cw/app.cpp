@@ -32,6 +32,7 @@ void App::updateTable()
         for (int j = 0; j < 7; j++)
         {
             QTableWidgetItem * item = new QTableWidgetItem();
+
             switch (j)
             {
             case 0:
@@ -59,4 +60,16 @@ void App::updateTable()
             ui->tableWidget->setItem(i, j, item);
         }
     }
+}
+
+void App::readFromFile(QString fileName)
+{
+    QFile file(fileName);
+    file >> this->list;
+}
+
+void App::writeToFile(QString fileName)
+{
+    QFile file(fileName);
+    file << this->list;
 }

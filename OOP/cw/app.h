@@ -18,8 +18,10 @@ public:
     void addPerson();
     void removePerson();
     void updateTable();
+    void clearTable();
     void readFromFile(QString fileName);
     void writeToFile(QString fileName);
+    void sort(int columnIndex);
 };
 
 #endif // APP_H

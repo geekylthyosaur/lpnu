@@ -41,3 +41,23 @@ void operator >> (QTextStream &input, Person * p)
 {
 
 }
+
+bool operator < (const Person& p1, const Person& p2)
+{
+    return p1.getN() < p2.getN();
+}
+
+bool operator > (const Person& p1, const Person& p2)
+{
+    return p1.getN() > p2.getN();
+}
+
+bool operator <= (const Person& p1, const Person& p2)
+{
+    return p1.getN() <= p2.getN();
+}
+
+bool operator >= (const Person& p1, const Person& p2)
+{
+    return p1.getN() >= p2.getN();
+}

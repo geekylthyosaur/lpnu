@@ -22,9 +22,7 @@ void App::addPerson()
 
 void App::updateTable()
 {
-    ui->tableWidget->setColumnCount(7);
-    ui->tableWidget->setRowCount(0);
-
+    this->clearTable();
     for (int i = 0; i < list->len(); i++)
     {
         ui->tableWidget->insertRow(i);
@@ -62,6 +60,12 @@ void App::updateTable()
     }
 }
 
+void App::clearTable()
+{
+    ui->tableWidget->setColumnCount(7);
+    ui->tableWidget->setRowCount(0);
+}
+
 void App::readFromFile(QString fileName)
 {
     QFile file(fileName);
@@ -72,4 +76,9 @@ void App::writeToFile(QString fileName)
 {
     QFile file(fileName);
     file << this->list;
+}
+
+void App::sort(int columnIndex)
+{
+    this->list->quickSort(columnIndex, 0, this->list->len() - 1);
 }

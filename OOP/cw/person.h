@@ -29,6 +29,12 @@ public:
 
     friend void operator << (QTextStream &output, const Person* p);
     friend void operator >> (QTextStream &input, Person* p);
+
+    friend bool operator < (const Person& p1, const Person& p2);
+    friend bool operator > (const Person& p1, const Person& p2);
+
+    friend bool operator <= (const Person& p1, const Person& p2);
+    friend bool operator >= (const Person& p1, const Person& p2);
 };
 
 #endif // PERSON_H

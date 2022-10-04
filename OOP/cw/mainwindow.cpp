@@ -14,6 +14,11 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     app = new App(ui);
+    auto header = ui->tableWidget->horizontalHeader();
+    connect(header, &QHeaderView::sectionClicked, [this](int columnIndex) {
+        app->sort(columnIndex);
+        app->updateTable();
+    });
 }
 
 MainWindow::~MainWindow()
@@ -39,7 +44,6 @@ void MainWindow::on_actionSave_triggered()
     if (!fileName.isEmpty())
     {
         app->writeToFile(fileName);
-        app->updateTable();
     }
 }
 

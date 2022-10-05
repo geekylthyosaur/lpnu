@@ -4,6 +4,7 @@
 #include "QString"
 #include "QTextStream"
 #include "blood.h"
+#include "QDebug"
 
 class Person
 {
@@ -30,11 +31,11 @@ public:
     friend void operator << (QTextStream &output, const Person* p);
     friend void operator >> (QTextStream &input, Person* p);
 
-    friend bool operator < (const Person& p1, const Person& p2);
-    friend bool operator > (const Person& p1, const Person& p2);
+    bool operator < (const Person& other) const { qDebug() << "A"; return this->mN < other.getN(); }
+    bool operator > (const Person& other) const { qDebug() << "A"; return this->mN > other.getN(); }
 
-    friend bool operator <= (const Person& p1, const Person& p2);
-    friend bool operator >= (const Person& p1, const Person& p2);
+    bool operator <= (const Person& other) const { qDebug() << "A"; return this->mN <= other.getN(); }
+    bool operator >= (const Person& other) const { qDebug() << "A"; return this->mN >= other.getN(); }
 };
 
 #endif // PERSON_H

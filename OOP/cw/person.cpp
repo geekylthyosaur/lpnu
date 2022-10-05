@@ -20,6 +20,15 @@ Person::Person(QString person)
     this->mHeartRate = tokens[4].toInt();
 }
 
+Person::Person(const Person &other)
+{
+    this->mN = other.getN();
+    this->mSurname = other.getSurname();
+    this->mAge = other.getAge();
+    this->mBlood = other.getBlood();
+    this->mHeartRate = other.getHeartRate();
+}
+
 void operator << (QTextStream &output, const Person* p)
 {
     output << p->getN()
@@ -40,24 +49,4 @@ void operator << (QTextStream &output, const Person* p)
 void operator >> (QTextStream &input, Person * p)
 {
 
-}
-
-bool operator < (const Person& p1, const Person& p2)
-{
-    return p1.getN() < p2.getN();
-}
-
-bool operator > (const Person& p1, const Person& p2)
-{
-    return p1.getN() > p2.getN();
-}
-
-bool operator <= (const Person& p1, const Person& p2)
-{
-    return p1.getN() <= p2.getN();
-}
-
-bool operator >= (const Person& p1, const Person& p2)
-{
-    return p1.getN() >= p2.getN();
 }

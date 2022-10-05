@@ -16,7 +16,7 @@ void App::addPerson()
             ui->bloodtypeLE->text() +
             ui->rhdLE->text() + "," +
             ui->heartrateLE->text();
-    Person* p = new Person(s);
+    Person p = Person(s);
     this->list->push(p);
 }
 
@@ -69,6 +69,7 @@ void App::clearTable()
 void App::readFromFile(QString fileName)
 {
     QFile file(fileName);
+    this->list->clear();
     file >> this->list;
 }
 

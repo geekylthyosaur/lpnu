@@ -9,15 +9,16 @@
 class List
 {
 private:
-    QVector<Person  *> mVec;
+    QVector<Person> mVec;
     int      partition(int start, int end);
 
 public:
     List() = default;
 
     void     quickSort(int columnIndex, int start, int end);
-    void     push(Person* p);
-    Person * get(int i) const;
+    void     push(Person p);
+    void     clear();
+    Person * get(int i);
     int      len() const;
 
     friend void operator << (QFile &output, const List* l);

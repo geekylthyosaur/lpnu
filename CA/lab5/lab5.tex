@@ -8,6 +8,7 @@
 \usepackage{float}
 \usepackage{amsmath}
 \usepackage{subfig}
+\usepackage{xcolor}
 \geometry{
 	a4paper,
 	left=20mm,
@@ -16,10 +17,10 @@
 	bottom=15mm,
 }
 \lstset{
-	language=c,
 	tabsize=4,
 	keepspaces,
 	showstringspaces=false,
+	escapeinside={(*@}{@*)},
 }
 \graphicspath{ {./pictures} }
 \setlength{\parindent}{4em}
@@ -87,9 +88,7 @@
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.6]{v}
-	\end{figure}	
-
-	\section*{Теоретичні відомості}
+	\end{figure}
 	
 	\section*{Хід роботи}
 	\section*{Програма 1}
@@ -106,7 +105,7 @@
 	\begin{gather}
 		\text{3 рядок: }a= -81,-78,-82,-39,-90,-78, 24\nonumber\\
 		\text{5 рядок: }b=56,-19,-86, 34,-83,-99,-31\nonumber\\
-		\sum_{i=1}^{7}a_ib_i=-81\cdot56-78\cdot(-19)-82\cdot(-86)-39\cdot34-90\cdot(-83)-78\cdot(-99)+24\cdot(-31)=\nonumber\\=-4536+1482+7052-1326+7470+7722-744=17120\nonumber
+		\text{Скалярний добуток:}\sum_{i=1}^{7}a_ib_i=-81\cdot56-78\cdot(-19)-82\cdot(-86)-39\cdot34-90\cdot(-83)-78\cdot(-99)+24\cdot(-31)=\nonumber\\=-4536+1482+7052-1326+7470+7722-744=17120\nonumber
 	\end{gather}
 
 	\begin{figure}[H]
@@ -121,8 +120,198 @@
 		\caption{Відображення транспонованого масиву у пам'яті}
 	\end{figure}
 
-	\section*{Висновки}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=1]{4}
+		\caption{Результат обчислення скалярного добутку}
+	\end{figure}
+
+	\begin{gather}
+		\text{Стовпець 3:} -94,-45,-82,-74,86,13,-10,95\nonumber\\
+		\text{Кількість елементів, що задовільняють умову: } 6\nonumber\\
+		\text{Сума елементів, що задовільняють умову: } -114\nonumber		
+	\end{gather}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=1]{5}
+		\caption{Результат знаходження кількості та суми за заданою умовою}
+	\end{figure}
+
+	\subsection*{Код програми 2}
 	
+	\textcolor{red}{
+	\begin{LARGE}
+		\textbf{DO NOT COPY}
+	\end{LARGE}
+	\begin{small}
+		\textit{(pls)}
+	\end{small}	
+}
+	\begin{lstlisting}[language={[x86masm]Assembler}]
+.586P 
+.MODEL FLAT, STDCALL 
+
+_DATA SEGMENT 
+tmp      DD 0
+col      DD 7
+row      DD 8
+arr      DD  10, 64,-94, 77, 99, 18, 52
+		DD -23,-77,-45, 65, 77, 66,-24
+		DD -81,-78,-82,-39,-90,-78, 24
+		DD -18,-64,-74,-28,-16,-40, 91
+		DD  56,-19, 86, 34,-83,-99,-31
+		DD -70,-58, 13, 98, 90, 46,-77
+		DD  97, 85,-10, 57, 88, 99,-26
+		DD -11, 69, 95, 42,-51, 37,-51
+res      DD 224 DUP(?)  ; not initialized 4*7*8 bytes
+sclr    DD 0
+num      DD 0
+sum      DD 0
+_DATA ENDS 
+
+_TEXT SEGMENT 
+START:
+
+T1:
+	lea ECX, arr
+	lea EDX, res
+	mov EBX, 0
+
+L1:          ; EAX = 0..row
+	mov EAX, 0
+
+L2:          ; EBX = 0..col
+	lea ECX, arr  ; ECX = &arr
+	lea EDX, res  ; EDX = &res
+	
+	mov tmp, EAX  ; arr += 4*(EAX*col+EBX)
+	push EAX
+	push EDX
+	push ECX
+	mov EAX, tmp
+	mul col
+	add EAX, EBX
+	push EBX
+	mov EBX, 4
+	mul EBX
+	pop EBX
+	pop ECX
+	add ECX, EAX
+	pop EDX
+	pop EAX
+	
+	mov tmp, EAX  ; res += 4*(EBX*row+EAX)
+	push EAX
+	push ECX
+	push EDX
+	mov EAX, EBX
+	mul row
+	add EAX, tmp
+	push EBX
+	mov EBX, 4
+	mul EBX
+	pop EBX
+	pop EDX
+	add EDX, EAX
+	pop ECX
+	pop EAX
+	
+	push EAX    ; *EDX = *ECX
+	mov EAX, [ECX]
+	mov [EDX], EAX
+	pop EAX
+	
+	inc EAX      ; EAX += 1; if (EAX < row) goto L2;
+	cmp EAX, row
+	jl L2
+	
+	inc EBX      ; EBX += 1; if (EBX < col) goto L1;
+	cmp EBX, col
+	jl L1
+
+T2:
+	lea EDX, arr  ; row 3
+	add EDX, 56
+	mov EBX, EDX
+	
+	lea EDX, arr  ; row 5
+	add EDX, 112
+	mov ECX, EDX
+	mov EDX, 0
+
+L3:          ; EDX = 0..col
+	mov EAX, [EBX]  ; sclr += (*EBX)*(*ECX)
+	push EDX
+	mov EDX, [ECX]
+	imul EDX
+	pop EDX
+	add sclr, EAX
+	
+	add EBX, 4
+	add ECX, 4
+	
+	inc EDX      ; EDX += 1; if (EDX < col) goto L1;
+	cmp EDX, col
+	jl L3
+
+T3:          ; a <= -29 or a >= 83
+	lea EAX, arr  ; EAX = arr[3]
+	add EAX, 8
+	mov EDX, 0
+
+L4:
+	cmp EDX, row  ; if (EDX >= row) goto T4;
+	jge T4
+	
+	inc EDX
+	
+	mov EBX, [EAX]  ; if (EBX <= -29 || EBX >= 83) goto COUNT;
+	cmp EBX, -29
+	jle COUNT
+	cmp EBX, 83 
+	jge COUNT
+	add EAX, 28
+	jmp L4
+
+COUNT:
+	inc num
+	add EAX, 28
+	jmp L4
+
+T4:
+	lea EAX, arr  ; EAX = arr[3]
+	add EAX, 8
+	mov EDX, 0
+
+L5:
+	cmp EDX, row  ; if (EDX >= row) goto DONE;
+	jge DONE
+	
+	inc EDX
+	
+	mov EBX, [EAX]  ; if (EBX <= -29 || EBX >= 83) goto SUMUP;
+	cmp EBX, -29
+	jle SUMUP
+	cmp EBX, 83 
+	jge SUMUP
+	add EAX, 28
+	jmp L5
+
+SUMUP:
+	add sum, EBX
+	add EAX, 28
+	jmp L5
+
+DONE:
+
+RET
+_TEXT ENDS 
+END START
+	\end{lstlisting}
+
+	\section*{Висновки}
+	Під час виконання лабораторної роботи я ознайомився на прикладі циклічної програми з основними командами асемблера; розвинув навики складання програми з вкладеними циклами; відтранслював і виконати в режимі відлагодження програму, складену відповідно до свого варіанту; перевірив виконання тесту.
 	    
 \end{normalsize}
 \end{document}

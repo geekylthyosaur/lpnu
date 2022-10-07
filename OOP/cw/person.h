@@ -31,11 +31,16 @@ public:
     friend void operator << (QTextStream &output, const Person* p);
     friend void operator >> (QTextStream &input, Person* p);
 
-    bool operator < (const Person& other) const { qDebug() << "A"; return this->mN < other.getN(); }
-    bool operator > (const Person& other) const { qDebug() << "A"; return this->mN > other.getN(); }
+    bool operator < (const Person& other) const
+    {
+        return this->mHeartRate < other.getHeartRate()
+               &&
+               this->mBlood->getRhD() == other.getBlood()->getRhD();
+    }
+    bool operator > (const Person& other) const { return this->mN > other.getN(); }
 
-    bool operator <= (const Person& other) const { qDebug() << "A"; return this->mN <= other.getN(); }
-    bool operator >= (const Person& other) const { qDebug() << "A"; return this->mN >= other.getN(); }
+    bool operator <= (const Person& other) const { return this->mN <= other.getN(); }
+    bool operator >= (const Person& other) const { return this->mN >= other.getN(); }
 };
 
 #endif // PERSON_H

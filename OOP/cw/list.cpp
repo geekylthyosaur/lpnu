@@ -21,37 +21,20 @@ int List::len() const
 
 int List::partition(int start, int end)
 {
-    Person pivot = this->mVec[start];
+    int pivotIndex = end;
 
-    int count = 0;
-    for (int i = start + 1; i <= end; i++) {
-        if (*this->get(i) <= pivot)
-            count++;
-    }
+    int i = (start - 1);
 
-    int pivotIndex = start + count;
-    this->mVec.swapItemsAt(pivotIndex, start);
-
-    int i = start, j = end;
-
-    while (i < pivotIndex && j > pivotIndex) {
-
-        while (this->mVec[i] <= pivot) {
-            i++;
-        }
-
-        while (this->mVec[j] > pivot) {
-            j--;
-        }
-
-        if (i < pivotIndex && j > pivotIndex) {
-            this->mVec.swapItemsAt(i, j);
-            i += 1;
-            j -= 1;
+    for (int j = start; j < end; j++) {
+        if (this->mVec[j] < this->mVec[pivotIndex]) {
+          i++;
+          this->mVec.swapItemsAt(i, j);
         }
     }
 
-    return pivotIndex;
+    this->mVec.swapItemsAt(i + 1, end);
+
+    return (i + 1);
 }
 
 void List::quickSort(int columnIndex, int start, int end)

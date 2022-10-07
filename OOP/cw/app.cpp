@@ -46,7 +46,7 @@ void App::updateTable()
                 item->setText(p->getBlood()->getType());
                 break;
             case 4:
-                item->setText(p->getBlood()->getRhD());
+                item->setText(p->getBlood()->getRhDStr());
                 break;
             case 5:
                 item->setText(p->getBlood()->getPressure());

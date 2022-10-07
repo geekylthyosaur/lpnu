@@ -37,7 +37,7 @@ QString Blood::getPressure()
     return QString::number(this->mPressureHigh) + "/" + QString::number(this->mPressureLow);
 }
 
-QString Blood::getRhD()
+QString Blood::getRhDStr()
 {
     if (this->mRhD)
         return QString::fromStdString("+");

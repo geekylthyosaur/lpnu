@@ -10,7 +10,7 @@ class List
 {
 private:
     QVector<Person> mVec;
-    int      partition(int start, int end);
+    int      partition(int columnIndex, int start, int end);
 
 public:
     List() = default;

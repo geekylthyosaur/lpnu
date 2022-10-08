@@ -32,7 +32,7 @@ Blood::Blood(QString s)
         this->mType = 4;
 }
 
-QString Blood::getPressure()
+QString Blood::getPressureStr()
 {
     return QString::number(this->mPressureHigh) + "/" + QString::number(this->mPressureLow);
 }
@@ -45,7 +45,7 @@ QString Blood::getRhDStr()
         return QString::fromStdString("-");
 }
 
-QString Blood::getType()
+QString Blood::getTypeStr()
 {
     switch (this->mType)
     {

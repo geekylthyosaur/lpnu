@@ -28,19 +28,10 @@ public:
     Blood * getBlood()      const { return this->mBlood;     }
     int     getHeartRate()  const { return this->mHeartRate; }
 
+    bool    compare(const Person& other, const int flag) const;
+
     friend void operator << (QTextStream &output, const Person* p);
     friend void operator >> (QTextStream &input, Person* p);
-
-    bool operator < (const Person& other) const
-    {
-        return this->mHeartRate < other.getHeartRate()
-               &&
-               this->mBlood->getRhD() == other.getBlood()->getRhD();
-    }
-    bool operator > (const Person& other) const { return this->mN > other.getN(); }
-
-    bool operator <= (const Person& other) const { return this->mN <= other.getN(); }
-    bool operator >= (const Person& other) const { return this->mN >= other.getN(); }
 };
 
 #endif // PERSON_H

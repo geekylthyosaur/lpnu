@@ -29,6 +29,38 @@ Person::Person(const Person &other)
     this->mHeartRate = other.getHeartRate();
 }
 
+bool Person::compare(const Person& other, const int flag) const
+{
+    int thisPressure;
+    int otherPressure;
+    bool thisRhD;
+    bool otherRhD;
+    int thisType;
+    int otherType;
+    int thisHeartRate;
+    int otherHeartRate;
+    switch (flag)
+    {
+    case 0: // pressure
+        thisPressure = this->getBlood()->getPressureHigh() + this->getBlood()->getPressureLow();
+        otherPressure = other.getBlood()->getPressureHigh() + other.getBlood()->getPressureLow();
+        return thisPressure > otherPressure;
+    case 1: // rhd + type
+        thisRhD = this->getBlood()->getRhD();
+        otherRhD = other.getBlood()->getRhD();
+        thisType = this->getBlood()->getType();
+        otherType = other.getBlood()->getType();
+        return thisRhD > otherRhD || thisType > otherType;
+    case 2:
+        thisRhD = this->getBlood()->getRhD();
+        otherRhD = other.getBlood()->getRhD();
+        thisHeartRate = this->getHeartRate();
+        otherHeartRate = other.getHeartRate();
+        return thisRhD > otherRhD || thisHeartRate > otherHeartRate;
+    }
+    return false;
+}
+
 void operator << (QTextStream &output, const Person* p)
 {
     output << p->getN()
@@ -37,7 +69,7 @@ void operator << (QTextStream &output, const Person* p)
            << ","
            << p->getAge()
            << ","
-           << p->getBlood()->getPressure()
+           << p->getBlood()->getPressureStr()
            << " "
            << p->getBlood()->getType()
            << p->getBlood()->getRhD()

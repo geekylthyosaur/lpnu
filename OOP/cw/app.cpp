@@ -30,7 +30,7 @@ void App::updateTable()
         for (int j = 0; j < 7; j++)
         {
             QTableWidgetItem * item = new QTableWidgetItem();
-
+            item->setTextAlignment(Qt::AlignCenter);
             switch (j)
             {
             case 0:
@@ -43,13 +43,13 @@ void App::updateTable()
                 item->setText(QString::number(p->getAge()));
                 break;
             case 3:
-                item->setText(p->getBlood()->getType());
+                item->setText(p->getBlood()->getTypeStr());
                 break;
             case 4:
                 item->setText(p->getBlood()->getRhDStr());
                 break;
             case 5:
-                item->setText(p->getBlood()->getPressure());
+                item->setText(p->getBlood()->getPressureStr());
                 break;
             case 6:
                 item->setText(QString::number(p->getHeartRate()));

@@ -19,13 +19,17 @@ public:
     Blood(QString s);
     Blood(int pressureH, int pressureL, bool rhd, int type);
 
-    QString getPressure();
-    QString getRhDStr();
-    QString getType();
-    bool    getRhD() { return this->mRhD; }
+    int     getPressureHigh()   const { return this->mPressureHigh; }
+    int     getPressureLow()    const { return this->mPressureLow; }
+    bool    getRhD()            const { return this->mRhD; }
+    int     getType()           const { return this->mType; }
 
-    bool operator > (Blood b) { return this->mPressureLow + this->mPressureHigh > b.mPressureHigh + b.mPressureLow; }
-    bool operator < (Blood b) { return this->mPressureLow + this->mPressureHigh < b.mPressureHigh + b.mPressureLow; }
+    QString getPressureStr();
+    QString getRhDStr();
+    QString getTypeStr();
+
+    bool operator > (const Blood& other) const { return this->mPressureLow + this->mPressureHigh > other.mPressureHigh + other.mPressureLow; }
+    bool operator < (const Blood& other) const { return this->mPressureLow + this->mPressureHigh < other.mPressureHigh + other.mPressureLow; }
 };
 
 #endif // BLOOD_H

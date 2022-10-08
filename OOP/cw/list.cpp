@@ -19,14 +19,15 @@ int List::len() const
     return this->mVec.length();
 }
 
-int List::partition(int start, int end)
+int List::partition(int columnIndex, int start, int end)
 {
     int pivotIndex = end;
 
     int i = (start - 1);
 
     for (int j = start; j < end; j++) {
-        if (this->mVec[j] < this->mVec[pivotIndex]) {
+        if (this->mVec[pivotIndex].compare(this->mVec[j], columnIndex)) {
+        //if (this->mVec[j] < this->mVec[pivotIndex]) {
           i++;
           this->mVec.swapItemsAt(i, j);
         }
@@ -41,7 +42,7 @@ void List::quickSort(int columnIndex, int start, int end)
 {
     if (start < end)
     {
-        int pivot = this->partition(start, end);
+        int pivot = this->partition(columnIndex, start, end);
 
         this->quickSort(columnIndex, start, pivot-1);
         this->quickSort(columnIndex, pivot+1, end);

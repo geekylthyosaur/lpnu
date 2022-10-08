@@ -154,12 +154,21 @@
      <rect>
       <x>10</x>
       <y>170</y>
-      <width>781</width>
+      <width>691</width>
       <height>401</height>
      </rect>
     </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOn</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
     <property name="editTriggers">
      <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="textElideMode">
+     <enum>Qt::ElideRight</enum>
     </property>
     <property name="verticalScrollMode">
      <enum>QAbstractItemView::ScrollPerPixel</enum>
@@ -170,6 +179,9 @@
     <property name="columnCount">
      <number>7</number>
     </property>
+    <attribute name="verticalHeaderVisible">
+     <bool>false</bool>
+    </attribute>
     <column/>
     <column/>
     <column/>
@@ -201,8 +213,26 @@
     </property>
     <addaction name="actionAdd"/>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <widget class="QMenu" name="menuSort">
+     <property name="title">
+      <string>Sort by</string>
+     </property>
+     <addaction name="actionby_Blood_Pressure"/>
+     <addaction name="actionType_and_RhD"/>
+     <addaction name="actionRhD_and_Heart_Rate"/>
+    </widget>
+    <addaction name="menuSort"/>
+    <addaction name="actionBest_Donors"/>
+    <addaction name="actionBest_Recepients"/>
+    <addaction name="actionDonors_Recipients"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
+   <addaction name="menuView"/>
   </widget>
   <action name="actionOpen">
    <property name="text">
@@ -217,6 +247,36 @@
   <action name="actionAdd">
    <property name="text">
     <string>Add</string>
+   </property>
+  </action>
+  <action name="actionby_Blood_Pressure">
+   <property name="text">
+    <string>Blood Pressure</string>
+   </property>
+  </action>
+  <action name="actionType_and_RhD">
+   <property name="text">
+    <string>Type and RhD</string>
+   </property>
+  </action>
+  <action name="actionRhD_and_Heart_Rate">
+   <property name="text">
+    <string>RhD and Heart Rate</string>
+   </property>
+  </action>
+  <action name="actionBest_Donors">
+   <property name="text">
+    <string>Best Donors</string>
+   </property>
+  </action>
+  <action name="actionBest_Recepients">
+   <property name="text">
+    <string>Best Recipients</string>
+   </property>
+  </action>
+  <action name="actionDonors_Recipients">
+   <property name="text">
+    <string>Donors and Recipients</string>
    </property>
   </action>
  </widget>

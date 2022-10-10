@@ -1,0 +1,8 @@
+[package]
+name = "ads7"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+eframe = "*"
+egui_extras = "*"

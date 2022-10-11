@@ -1,3 +1,5 @@
+use fake::{Faker, Fake};
+
 use std::rc::Rc;
 
 #[derive(Debug)]
@@ -35,6 +37,17 @@ impl<T> Stack<T> {
 
     pub fn iter(&self) -> Iter<'_, T> {
         Iter { next: self.head.as_deref() }
+    }
+}
+
+impl Stack<f32> {
+    pub fn new_random() -> Self {
+        let stack = Stack::new();
+        let stack = stack.push((f32::trunc(Faker.fake::<f32>() * 100.0)) / 100.0);
+        let stack = stack.push((f32::trunc(Faker.fake::<f32>() * 100.0)) / 100.0);
+        let stack = stack.push((f32::trunc(Faker.fake::<f32>() * 100.0)) / 100.0);
+        let stack = stack.push((f32::trunc(Faker.fake::<f32>() * 100.0)) / 100.0);
+        stack
     }
 }
 

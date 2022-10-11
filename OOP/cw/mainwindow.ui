@@ -190,6 +190,36 @@
     <column/>
     <column/>
    </widget>
+   <widget class="QTableWidget" name="tableHealthy">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>170</y>
+      <width>691</width>
+      <height>401</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOn</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="verticalScrollMode">
+     <enum>QAbstractItemView::ScrollPerPixel</enum>
+    </property>
+    <property name="horizontalScrollMode">
+     <enum>QAbstractItemView::ScrollPerPixel</enum>
+    </property>
+    <property name="columnCount">
+     <number>2</number>
+    </property>
+    <column/>
+    <column/>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -226,9 +256,13 @@
      <addaction name="actionRhD_and_Heart_Rate"/>
     </widget>
     <addaction name="menuSort"/>
-    <addaction name="actionBest_Donors"/>
-    <addaction name="actionBest_Recepients"/>
-    <addaction name="actionDonors_Recipients"/>
+    <addaction name="separator"/>
+    <addaction name="bestDonors"/>
+    <addaction name="bestRecepients"/>
+    <addaction name="donorsRecepients"/>
+    <addaction name="separator"/>
+    <addaction name="healthyPeople"/>
+    <addaction name="highPressureAndRate"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -264,19 +298,29 @@
     <string>RhD and Heart Rate</string>
    </property>
   </action>
-  <action name="actionBest_Donors">
+  <action name="bestDonors">
    <property name="text">
     <string>Best Donors</string>
    </property>
   </action>
-  <action name="actionBest_Recepients">
+  <action name="bestRecepients">
    <property name="text">
     <string>Best Recipients</string>
    </property>
   </action>
-  <action name="actionDonors_Recipients">
+  <action name="donorsRecepients">
    <property name="text">
     <string>Donors and Recipients</string>
+   </property>
+  </action>
+  <action name="healthyPeople">
+   <property name="text">
+    <string>Healthy People</string>
+   </property>
+  </action>
+  <action name="highPressureAndRate">
+   <property name="text">
+    <string>High Pressure and Rate </string>
    </property>
   </action>
  </widget>

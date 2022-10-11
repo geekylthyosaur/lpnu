@@ -19,12 +19,11 @@ private slots:
     void on_actionOpen_triggered();
     void on_actionSave_triggered();
     void on_addPersonBtn_clicked();
-
     void on_actionby_Blood_Pressure_triggered();
-
     void on_actionType_and_RhD_triggered();
-
     void on_actionRhD_and_Heart_Rate_triggered();
+    void on_healthyPeople_triggered();
+    void on_highPressureAndRate_triggered();
 
 private:
     Ui::MainWindow *ui;

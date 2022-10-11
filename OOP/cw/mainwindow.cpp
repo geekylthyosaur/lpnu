@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->tableHealthy->setVisible(false);
     ui->tableWidget->setColumnWidth( 0, 40 );
     ui->tableWidget->setColumnWidth( 1, 400 );
     ui->tableWidget->setColumnWidth( 2, 40 );
@@ -64,13 +65,11 @@ void MainWindow::on_addPersonBtn_clicked()
     app->updateTable();
 }
 
-
 void MainWindow::on_actionby_Blood_Pressure_triggered()
 {
     app->sort(0);
     app->updateTable();
 }
-
 
 void MainWindow::on_actionType_and_RhD_triggered()
 {
@@ -78,10 +77,20 @@ void MainWindow::on_actionType_and_RhD_triggered()
     app->updateTable();
 }
 
-
 void MainWindow::on_actionRhD_and_Heart_Rate_triggered()
 {
     app->sort(2);
     app->updateTable();
+}
+
+void MainWindow::on_healthyPeople_triggered()
+{
+    app->healthyPeople();
+}
+
+
+void MainWindow::on_highPressureAndRate_triggered()
+{
+    qDebug() << "ASDASD";
 }
 

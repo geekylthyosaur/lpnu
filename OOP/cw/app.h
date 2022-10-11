@@ -18,6 +18,7 @@ public:
     void addPerson();
     void removePerson();
     void updateTable();
+    void healthyPeople();
     void clearTable();
     void readFromFile(QString fileName);
     void writeToFile(QString fileName);

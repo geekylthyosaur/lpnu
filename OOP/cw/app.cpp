@@ -60,6 +60,45 @@ void App::updateTable()
     }
 }
 
+void App::healthyPeople() {
+    ui->tableHealthy->setVisible(true);
+    ui->tableHealthy->setColumnCount(2);
+    ui->tableHealthy->setRowCount(0);
+    ui->tableHealthy->setColumnWidth( 0, 360 );
+    ui->tableHealthy->setColumnWidth( 1, 360 );
+    QStringList labels;
+    labels << "Surname" << "Message";
+    ui->tableHealthy->setHorizontalHeaderLabels(labels);
+    for (int i = 0; i < list->len(); i++)
+    {
+        Person * p = this->list->get(i);
+        bool healthy = p->getBlood()->getPressureHigh() <= 140 &&
+                       p->getBlood()->getPressureLow() <= 100 &&
+                       p->getBlood()->getPressureHigh() >= 100 &&
+                       p->getBlood()->getPressureLow() >= 60;
+
+        if (healthy)
+            ui->tableHealthy->insertRow(i);
+        else continue;
+        for (int j = 0; j < 2; j++)
+        {
+            QTableWidgetItem * item = new QTableWidgetItem();
+            item->setTextAlignment(Qt::AlignCenter);
+            switch (j)
+            {
+            case 0:
+                item->setText(p->getSurname());
+                break;
+            case 1:
+                item->setText(QString::fromStdString("Healthy"));
+                break;
+            }
+            qDebug() << healthy;
+            ui->tableHealthy->setItem(i, j, item);
+        }
+    }
+}
+
 void App::clearTable()
 {
     ui->tableWidget->setColumnCount(7);

@@ -1,11 +1,19 @@
+#include "mainwindow.h"
+#include "./ui_mainwindow.h"
 #include <windows.h>
 #include <stdio.h>
 #include <iostream>
-
-#define MAX_SEM_COUNT 10
+#include "QDebug"
+#include "QLineEdit"
+#include "QTimer"
 
 struct PARAMETERS {
     int i;
+};
+
+struct threadStatus {
+    DWORD threadID;
+    int task;
 };
 
 HANDLE ghSemaphore;
@@ -13,81 +21,124 @@ DWORD WINAPI ThreadProc(LPVOID);
 
 int* array;
 int N;
+int maxSemCount;
 int threadCount = 0;
 LONG sum = 0;
+HANDLE* aThread;
+DWORD ThreadID;
+threadStatus* s;
 
-int main(void) {
-    HANDLE* aThread;
-    DWORD ThreadID;
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &MainWindow::abc);
+    timer->start(100);
+}
 
-    while (N < 1) {
-        std::cout << "Enter value of N (> 10000): ";
-        std::cin >> N;
-    }
-
-    while (threadCount < 1) {
-        std::cout << "Enter number of threads: ";
-        std::cin >> threadCount;
-    }
-
-    aThread = new HANDLE[threadCount];
-
-    // Generate random array
-    array = new int[N];
-    std::srand(static_cast<unsigned int>(std::time(nullptr)));
-    for (int i = 0; i < N; i++)
-        array[i] = rand();
-
-    // Create a semaphore with initial and max counts of MAX_SEM_COUNT
-
-    ghSemaphore = CreateSemaphore(
-        NULL,           // default security attributes
-        MAX_SEM_COUNT,  // initial count
-        MAX_SEM_COUNT,  // maximum count
-        NULL);          // unnamed semaphore
-
-    if (ghSemaphore == NULL) {
-        printf("CreateSemaphore error: %d\n", GetLastError());
-        return 1;
-    }
-
-    // Create worker threads
-
-    for (int i = 0; i < threadCount; i++) {
-        PARAMETERS* p = new PARAMETERS{ i };
-        aThread[i] = CreateThread(
-            NULL,       // default security attributes
-            0,          // default stack size
-            (LPTHREAD_START_ROUTINE)ThreadProc,
-            p,         // no thread function arguments
-            0,          // default creation flags
-            &ThreadID); // receive thread identifier
-
-        if (aThread[i] == NULL) {
-            printf("CreateThread error: %d\n", GetLastError());
-            return 1;
-        }
-    }
-
-    // Wait for all threads to terminate
-
-    WaitForMultipleObjects(threadCount, aThread, TRUE, INFINITE);
-
-    // Close thread and semaphore handles
-
+MainWindow::~MainWindow() {
     for (int i = 0; i < threadCount; i++)
         CloseHandle(aThread[i]);
 
     CloseHandle(ghSemaphore);
+    delete ui;
+}
 
-    std::cout << sum << std::endl;
+void MainWindow::on_pushButton_clicked() {
+    ui->pushButton->setDisabled(true);
+    N = ui->le_length->text().toInt();
+    threadCount = ui->le_threads->text().toInt();
+    s = new threadStatus[threadCount];
+    maxSemCount = ui->lineEdit->text().toInt();
+    aThread = new HANDLE[threadCount];
+    array = new int[N];
 
-    int a = 0;
-    for (int i = 0; i < N; i++)
-        a += array[i];
-    std::cout << a << std::endl;
+    ghSemaphore = CreateSemaphore(
+            NULL,
+            maxSemCount,
+            maxSemCount,
+            NULL);
 
-    return 0;
+    if (ghSemaphore == NULL) {
+        qDebug() << "CreateSemaphore error: " << GetLastError();
+        return;
+    }
+    QStringList l;
+    l << "IDLE" << "LOWEST" << "BELOW_NORMAL" << "NORMAL" << "ABOVE_NORMAL" << "HIGHEST";
+    ui->prio2->addItems(l);
+    QStringList list;
+    for (int i = 0; i < threadCount; i++) {
+        list << QString::number(i);
+
+        PARAMETERS* p = new PARAMETERS{ i };
+        s[i] = threadStatus { 0,0 };
+        aThread[i] = CreateThread(
+            NULL,
+            0,
+            (LPTHREAD_START_ROUTINE)ThreadProc,
+            p,
+            NULL,
+            &ThreadID);
+        if( aThread[i] == NULL ) {
+            qDebug() << "CreateThread error: " << GetLastError();
+            return;
+        }
+    }
+    ui->sus->addItems(list);
+    ui->res->addItems(list);
+    ui->kill->addItems(list);
+    ui->prio1->addItems(list);
+}
+
+void MainWindow::abc() {
+    ui->le_sum->setText(QString::number(sum));
+    ui->tableWidget->setColumnCount(3);
+    ui->tableWidget->setRowCount(0);
+
+    for (int i = 0; i < threadCount; i++) {
+        ui->tableWidget->insertRow(i);
+        for (int j = 0; j < 3; j++) {
+            QTableWidgetItem * item = new QTableWidgetItem();
+            item->setTextAlignment(Qt::AlignCenter);
+            switch (j) {
+            case 0:
+                item->setText(QString::number(s[i].threadID));
+                break;
+            case 1:
+                if (s[i].task == 0)
+                    item->setText(QString::fromStdString("Not Created"));
+                else if (s[i].task == 1)
+                    item->setText(QString::fromStdString("Running"));
+                else if (s[i].task == 3)
+                    item->setText(QString::fromStdString("Waiting"));
+                else if (s[i].task == 4)
+                    item->setText(QString::fromStdString("Done"));
+                else if (s[i].task == 5)
+                    item->setText(QString::fromStdString("Suspended"));
+                else if (s[i].task == 6)
+                    item->setText(QString::fromStdString("Killed"));
+                break;
+            case 2:
+                if (GetThreadPriority(aThread[i]) == THREAD_PRIORITY_IDLE)
+                    item->setText(QString::fromStdString("IDLE"));
+                else if (GetThreadPriority(aThread[i]) == THREAD_PRIORITY_LOWEST)
+                    item->setText(QString::fromStdString("LOWEST"));
+                else if (GetThreadPriority(aThread[i]) == THREAD_PRIORITY_BELOW_NORMAL)
+                    item->setText(QString::fromStdString("BELOW_NORMAL"));
+                else if (GetThreadPriority(aThread[i]) == THREAD_PRIORITY_NORMAL)
+                    item->setText(QString::fromStdString("NORMAL"));
+                else if (GetThreadPriority(aThread[i]) == THREAD_PRIORITY_ABOVE_NORMAL)
+                    item->setText(QString::fromStdString("ABOVE_NORMAL"));
+                else if (GetThreadPriority(aThread[i]) == THREAD_PRIORITY_HIGHEST)
+                    item->setText(QString::fromStdString("HIGHEST"));
+                break;
+            }
+
+            ui->tableWidget->setItem(i, j, item);
+        }
+    }
 }
 
 DWORD WINAPI ThreadProc(LPVOID lpParam) {
@@ -95,48 +146,74 @@ DWORD WINAPI ThreadProc(LPVOID lpParam) {
     int i = p->i;
     int start, end;
 
-    // lpParam not used in this example
-    UNREFERENCED_PARAMETER(lpParam);
-
     DWORD dwWaitResult;
     BOOL bContinue = TRUE;
 
-    while (bContinue) {
-        // Try to enter the semaphore gate.
+    s[i].threadID = GetCurrentThreadId();
 
+    while (bContinue) {
         dwWaitResult = WaitForSingleObject(
-            ghSemaphore,   // handle to semaphore
-            0L);           // zero-second time-out interval
+            ghSemaphore,
+            0L);
 
         switch (dwWaitResult) {
-            // The semaphore object was signaled.
         case WAIT_OBJECT_0:
-            // TODO: Perform task
-            printf("Thread %d: wait succeeded\n", GetCurrentThreadId());
             bContinue = FALSE;
 
-            // Simulate thread spending time on task
             start = (N / threadCount) * i;
             end = (N / threadCount) * (i + 1);
+
+            std::srand(static_cast<unsigned int>(std::time(nullptr)));
+            s[i].task = 1;
             for (int j = start; j < end; j++)
+                array[j] = rand();
+            for (int j = start; j < end; j++) {
                 InterlockedAdd(&sum, (LONG)array[j]);
+            }
+            s[i].task = 4;
 
-            // Release the semaphore when task is finished
-
-            if (!ReleaseSemaphore(
-                ghSemaphore,  // handle to semaphore
-                1,            // increase count by one
-                NULL))       // not interested in previous count
-            {
-                printf("ReleaseSemaphore error: %d\n", GetLastError());
+            if (!ReleaseSemaphore(ghSemaphore, 1, NULL)) {
+                qDebug() << "ReleaseSemaphore error: " << GetLastError();
             }
             break;
 
-            // The semaphore was nonsignaled, so a time-out occurred.
         case WAIT_TIMEOUT:
-            printf("Thread %d: wait timed out\n", GetCurrentThreadId());
+            s[i].task = 3;
             break;
         }
     }
     return TRUE;
 }
+
+void MainWindow::on_sus_activated(int index) {
+    SuspendThread(aThread[index]);
+    if (s[index].task != 6)
+        s[index].task = 5;
+}
+
+void MainWindow::on_res_activated(int index) {
+    ResumeThread(aThread[index]);
+    if (s[index].task != 6 || s[index].task != 4 || s[index].task != 3)
+        s[index].task = 1;
+}
+
+void MainWindow::on_kill_activated(int index) {
+    TerminateThread(aThread[index], 0);
+    s[index].task = 6;
+}
+
+void MainWindow::on_prio1_activated(int index) {
+    if (ui->prio2->currentIndex() == 0)
+        SetThreadPriority(aThread[index], THREAD_PRIORITY_IDLE);
+    else if (ui->prio2->currentIndex() == 1)
+        SetThreadPriority(aThread[index], THREAD_PRIORITY_LOWEST);
+    else if (ui->prio2->currentIndex() == 1)
+        SetThreadPriority(aThread[index], THREAD_PRIORITY_BELOW_NORMAL);
+    else if (ui->prio2->currentIndex() == 1)
+        SetThreadPriority(aThread[index], THREAD_PRIORITY_NORMAL);
+    else if (ui->prio2->currentIndex() == 1)
+        SetThreadPriority(aThread[index], THREAD_PRIORITY_ABOVE_NORMAL);
+    else if (ui->prio2->currentIndex() == 1)
+        SetThreadPriority(aThread[index], THREAD_PRIORITY_HIGHEST);
+}
+

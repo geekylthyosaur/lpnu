@@ -220,6 +220,123 @@
     <column/>
     <column/>
    </widget>
+   <widget class="QTableWidget" name="tableDonorsAndRecipients">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>170</y>
+      <width>691</width>
+      <height>401</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
+    </property>
+    <property name="textElideMode">
+     <enum>Qt::ElideRight</enum>
+    </property>
+    <property name="verticalScrollMode">
+     <enum>QAbstractItemView::ScrollPerPixel</enum>
+    </property>
+    <property name="horizontalScrollMode">
+     <enum>QAbstractItemView::ScrollPerPixel</enum>
+    </property>
+    <attribute name="horizontalHeaderDefaultSectionSize">
+     <number>83</number>
+    </attribute>
+    <attribute name="verticalHeaderVisible">
+     <bool>true</bool>
+    </attribute>
+    <attribute name="verticalHeaderDefaultSectionSize">
+     <number>47</number>
+    </attribute>
+    <row>
+     <property name="text">
+      <string>O-</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>O+</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>A-</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>A+</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>B-</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>B+</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>AB-</string>
+     </property>
+    </row>
+    <row>
+     <property name="text">
+      <string>AB+</string>
+     </property>
+    </row>
+    <column>
+     <property name="text">
+      <string>O-</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>O+</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>A-</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>A+</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>B-</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>B+</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>AB-</string>
+     </property>
+    </column>
+    <column>
+     <property name="text">
+      <string>AB+</string>
+     </property>
+    </column>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

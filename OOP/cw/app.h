@@ -19,9 +19,10 @@ public:
     void removePerson();
     void updateTable();
     void healthyPeople();
-    void highPressureAndRate();
+    void highPressureAndRate(int age);
     void bestDonors();
     void bestRecipients();
+    void donorsAndRecipients();
     void clearTable();
     void readFromFile(QString fileName);
     void writeToFile(QString fileName);

@@ -24,6 +24,7 @@ void App::updateTable()
 {
     ui->tableHealthy->setVisible(false);
     ui->tableWidget->setVisible(true);
+    ui->tableDonorsAndRecipients->setVisible(false);
     this->clearTable();
     for (int i = 0; i < list->len(); i++)
     {
@@ -66,7 +67,7 @@ void App::healthyPeople()
 {
     ui->tableHealthy->setVisible(true);
     ui->tableWidget->setVisible(false);
-    ui->tableHealthy->setVisible(true);
+    ui->tableDonorsAndRecipients->setVisible(false);
     ui->tableHealthy->setColumnCount(2);
     ui->tableHealthy->setRowCount(0);
     ui->tableHealthy->setColumnWidth( 0, 360 );
@@ -106,10 +107,11 @@ void App::healthyPeople()
     }
 }
 
-void App::highPressureAndRate()
+void App::highPressureAndRate(int age)
 {
     ui->tableHealthy->setVisible(false);
     ui->tableWidget->setVisible(true);
+    ui->tableDonorsAndRecipients->setVisible(false);
     this->clearTable();
     int r = 0;
     for (int i = 0; i < list->len(); i++)
@@ -117,7 +119,8 @@ void App::highPressureAndRate()
         Person * p = this->list->get(i);
         bool highPressureAndRate = p->getHeartRate() >= 100 &&
                 p->getBlood()->getPressureHigh() >= 140 &&
-                p->getBlood()->getPressureLow() >= 100;
+                p->getBlood()->getPressureLow() >= 100 &&
+                p->getAge() == age;
 
         if (highPressureAndRate)
             ui->tableWidget->insertRow(r);
@@ -161,6 +164,7 @@ void App::bestDonors()
 {
     ui->tableHealthy->setVisible(false);
     ui->tableWidget->setVisible(true);
+    ui->tableDonorsAndRecipients->setVisible(false);
     this->clearTable();
     int r = 0;
     for (int i = 0; i < list->len(); i++)
@@ -210,6 +214,7 @@ void App::bestRecipients()
 {
     ui->tableHealthy->setVisible(false);
     ui->tableWidget->setVisible(true);
+    ui->tableDonorsAndRecipients->setVisible(false);
     this->clearTable();
     int r = 0;
     for (int i = 0; i < list->len(); i++)
@@ -253,6 +258,13 @@ void App::bestRecipients()
         }
         r++;
     }
+}
+
+void App::donorsAndRecipients()
+{
+    ui->tableHealthy->setVisible(false);
+    ui->tableWidget->setVisible(false);
+    ui->tableDonorsAndRecipients->setVisible(true);
 }
 
 void App::clearTable()

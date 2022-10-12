@@ -4,6 +4,7 @@
 #include "list.h"
 #include "app.h"
 #include "QFileDialog"
+#include "QInputDialog"
 #include "QDebug"
 
 App* app;
@@ -14,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->tableHealthy->setVisible(false);
+    ui->tableDonorsAndRecipients->setVisible(false);
     ui->tableWidget->setColumnWidth( 0, 40 );
     ui->tableWidget->setColumnWidth( 1, 400 );
     ui->tableWidget->setColumnWidth( 2, 40 );
@@ -90,7 +92,8 @@ void MainWindow::on_healthyPeople_triggered()
 
 void MainWindow::on_highPressureAndRate_triggered()
 {
-    app->highPressureAndRate();
+    int age = QInputDialog::getInt(this, "Enter", "Enter Age:");
+    app->highPressureAndRate(age);
 }
 
 void MainWindow::on_actionDefault_triggered()
@@ -106,4 +109,14 @@ void MainWindow::on_bestDonors_triggered()
 void MainWindow::on_bestRecipients_triggered()
 {
     app->bestRecipients();
+}
+
+void MainWindow::on_donorsRecepients_triggered()
+{
+    app->donorsAndRecipients();
+}
+
+void MainWindow::on_tableDonorsAndRecipients_cellDoubleClicked(int row, int column)
+{
+
 }

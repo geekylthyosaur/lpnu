@@ -258,11 +258,13 @@
     <addaction name="menuSort"/>
     <addaction name="separator"/>
     <addaction name="bestDonors"/>
-    <addaction name="bestRecepients"/>
+    <addaction name="bestRecipients"/>
     <addaction name="donorsRecepients"/>
     <addaction name="separator"/>
     <addaction name="healthyPeople"/>
     <addaction name="highPressureAndRate"/>
+    <addaction name="separator"/>
+    <addaction name="actionDefault"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -303,7 +305,7 @@
     <string>Best Donors</string>
    </property>
   </action>
-  <action name="bestRecepients">
+  <action name="bestRecipients">
    <property name="text">
     <string>Best Recipients</string>
    </property>
@@ -321,6 +323,11 @@
   <action name="highPressureAndRate">
    <property name="text">
     <string>High Pressure and Rate </string>
+   </property>
+  </action>
+  <action name="actionDefault">
+   <property name="text">
+    <string>Default</string>
    </property>
   </action>
  </widget>

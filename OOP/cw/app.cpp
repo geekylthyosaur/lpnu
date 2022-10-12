@@ -22,6 +22,8 @@ void App::addPerson()
 
 void App::updateTable()
 {
+    ui->tableHealthy->setVisible(false);
+    ui->tableWidget->setVisible(true);
     this->clearTable();
     for (int i = 0; i < list->len(); i++)
     {
@@ -60,7 +62,10 @@ void App::updateTable()
     }
 }
 
-void App::healthyPeople() {
+void App::healthyPeople()
+{
+    ui->tableHealthy->setVisible(true);
+    ui->tableWidget->setVisible(false);
     ui->tableHealthy->setVisible(true);
     ui->tableHealthy->setColumnCount(2);
     ui->tableHealthy->setRowCount(0);
@@ -69,6 +74,7 @@ void App::healthyPeople() {
     QStringList labels;
     labels << "Surname" << "Message";
     ui->tableHealthy->setHorizontalHeaderLabels(labels);
+    int r = 0;
     for (int i = 0; i < list->len(); i++)
     {
         Person * p = this->list->get(i);
@@ -78,8 +84,9 @@ void App::healthyPeople() {
                        p->getBlood()->getPressureLow() >= 60;
 
         if (healthy)
-            ui->tableHealthy->insertRow(i);
-        else continue;
+            ui->tableHealthy->insertRow(r);
+        else
+            continue;
         for (int j = 0; j < 2; j++)
         {
             QTableWidgetItem * item = new QTableWidgetItem();
@@ -93,9 +100,158 @@ void App::healthyPeople() {
                 item->setText(QString::fromStdString("Healthy"));
                 break;
             }
-            qDebug() << healthy;
-            ui->tableHealthy->setItem(i, j, item);
+            ui->tableHealthy->setItem(r, j, item);
         }
+        r++;
+    }
+}
+
+void App::highPressureAndRate()
+{
+    ui->tableHealthy->setVisible(false);
+    ui->tableWidget->setVisible(true);
+    this->clearTable();
+    int r = 0;
+    for (int i = 0; i < list->len(); i++)
+    {
+        Person * p = this->list->get(i);
+        bool highPressureAndRate = p->getHeartRate() >= 100 &&
+                p->getBlood()->getPressureHigh() >= 140 &&
+                p->getBlood()->getPressureLow() >= 100;
+
+        if (highPressureAndRate)
+            ui->tableWidget->insertRow(r);
+        else
+            continue;
+        for (int j = 0; j < 7; j++)
+        {
+            QTableWidgetItem * item = new QTableWidgetItem();
+            item->setTextAlignment(Qt::AlignCenter);
+            switch (j)
+            {
+            case 0:
+                item->setText(QString::number(p->getN()));
+                break;
+            case 1:
+                item->setText(p->getSurname());
+                break;
+            case 2:
+                item->setText(QString::number(p->getAge()));
+                break;
+            case 3:
+                item->setText(p->getBlood()->getTypeStr());
+                break;
+            case 4:
+                item->setText(p->getBlood()->getRhDStr());
+                break;
+            case 5:
+                item->setText(p->getBlood()->getPressureStr());
+                break;
+            case 6:
+                item->setText(QString::number(p->getHeartRate()));
+                break;
+            }
+            ui->tableWidget->setItem(r, j, item);
+        }
+        r++;
+    }
+}
+
+void App::bestDonors()
+{
+    ui->tableHealthy->setVisible(false);
+    ui->tableWidget->setVisible(true);
+    this->clearTable();
+    int r = 0;
+    for (int i = 0; i < list->len(); i++)
+    {
+        Person * p = this->list->get(i);
+        bool bestDonor = p->getBlood()->getTypeStr() + p->getBlood()->getRhDStr() == p->getBlood()->BEST_DONOR;
+
+        if (bestDonor)
+            ui->tableWidget->insertRow(r);
+        else
+            continue;
+        for (int j = 0; j < 7; j++)
+        {
+            QTableWidgetItem * item = new QTableWidgetItem();
+            item->setTextAlignment(Qt::AlignCenter);
+            switch (j)
+            {
+            case 0:
+                item->setText(QString::number(p->getN()));
+                break;
+            case 1:
+                item->setText(p->getSurname());
+                break;
+            case 2:
+                item->setText(QString::number(p->getAge()));
+                break;
+            case 3:
+                item->setText(p->getBlood()->getTypeStr());
+                break;
+            case 4:
+                item->setText(p->getBlood()->getRhDStr());
+                break;
+            case 5:
+                item->setText(p->getBlood()->getPressureStr());
+                break;
+            case 6:
+                item->setText(QString::number(p->getHeartRate()));
+                break;
+            }
+            ui->tableWidget->setItem(r, j, item);
+        }
+        r++;
+    }
+}
+
+void App::bestRecipients()
+{
+    ui->tableHealthy->setVisible(false);
+    ui->tableWidget->setVisible(true);
+    this->clearTable();
+    int r = 0;
+    for (int i = 0; i < list->len(); i++)
+    {
+        Person * p = this->list->get(i);
+        bool bestRecipient = p->getBlood()->getTypeStr() + p->getBlood()->getRhDStr() == p->getBlood()->BEST_RECIPIENT;
+
+        if (bestRecipient)
+            ui->tableWidget->insertRow(r);
+        else
+            continue;
+        for (int j = 0; j < 7; j++)
+        {
+            QTableWidgetItem * item = new QTableWidgetItem();
+            item->setTextAlignment(Qt::AlignCenter);
+            switch (j)
+            {
+            case 0:
+                item->setText(QString::number(p->getN()));
+                break;
+            case 1:
+                item->setText(p->getSurname());
+                break;
+            case 2:
+                item->setText(QString::number(p->getAge()));
+                break;
+            case 3:
+                item->setText(p->getBlood()->getTypeStr());
+                break;
+            case 4:
+                item->setText(p->getBlood()->getRhDStr());
+                break;
+            case 5:
+                item->setText(p->getBlood()->getPressureStr());
+                break;
+            case 6:
+                item->setText(QString::number(p->getHeartRate()));
+                break;
+            }
+            ui->tableWidget->setItem(r, j, item);
+        }
+        r++;
     }
 }
 

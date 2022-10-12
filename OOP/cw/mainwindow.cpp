@@ -88,9 +88,22 @@ void MainWindow::on_healthyPeople_triggered()
     app->healthyPeople();
 }
 
-
 void MainWindow::on_highPressureAndRate_triggered()
 {
-    qDebug() << "ASDASD";
+    app->highPressureAndRate();
 }
 
+void MainWindow::on_actionDefault_triggered()
+{
+    app->updateTable();
+}
+
+void MainWindow::on_bestDonors_triggered()
+{
+    app->bestDonors();
+}
+
+void MainWindow::on_bestRecipients_triggered()
+{
+    app->bestRecipients();
+}

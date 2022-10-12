@@ -24,6 +24,9 @@ private slots:
     void on_actionRhD_and_Heart_Rate_triggered();
     void on_healthyPeople_triggered();
     void on_highPressureAndRate_triggered();
+    void on_actionDefault_triggered();
+    void on_bestDonors_triggered();
+    void on_bestRecipients_triggered();
 
 private:
     Ui::MainWindow *ui;

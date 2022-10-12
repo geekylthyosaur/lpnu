@@ -51,7 +51,7 @@ bool Person::compare(const Person& other, const int flag) const
         thisType = this->getBlood()->getType();
         otherType = other.getBlood()->getType();
         return thisRhD > otherRhD || thisType > otherType;
-    case 2:
+    case 2: //rhd + rate
         thisRhD = this->getBlood()->getRhD();
         otherRhD = other.getBlood()->getRhD();
         thisHeartRate = this->getHeartRate();

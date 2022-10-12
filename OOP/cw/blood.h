@@ -3,9 +3,6 @@
 
 #include "QString"
 
-const QString UNIVERSAL_DONOR = "O-";
-const QString UNIVERSAL_RECIPIENT = "AB+";
-
 class Blood
 {
 private:
@@ -15,6 +12,9 @@ private:
     int mType;
 
 public:
+    const QString BEST_DONOR = "O-";
+    const QString BEST_RECIPIENT = "AB+";
+
     Blood() = default;
     Blood(QString s);
     Blood(int pressureH, int pressureL, bool rhd, int type);

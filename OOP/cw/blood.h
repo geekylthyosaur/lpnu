@@ -12,8 +12,8 @@ private:
     int mType;
 
 public:
-    const QString BEST_DONOR = "O-";
-    const QString BEST_RECIPIENT = "AB+";
+    const QString BEST_DONOR = "O";
+    const QString BEST_RECIPIENT = "AB";
 
     Blood() = default;
     Blood(QString s);

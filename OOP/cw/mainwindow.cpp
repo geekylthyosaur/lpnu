@@ -116,7 +116,10 @@ void MainWindow::on_donorsRecepients_triggered()
     app->donorsAndRecipients();
 }
 
-void MainWindow::on_tableDonorsAndRecipients_cellDoubleClicked(int row, int column)
+void MainWindow::on_tableWidget_cellDoubleClicked(int row, int column)
 {
-
+    if (ui->tableWidget->columnCount() == 5) {
+        if (column == 3) app->showDonorsTo(row);
+        else if (column == 4) app->showRecipientsFrom(row);
+    }
 }

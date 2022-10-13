@@ -23,6 +23,8 @@ public:
     void bestDonors();
     void bestRecipients();
     void donorsAndRecipients();
+    void showDonorsTo(int i);
+    void showRecipientsFrom(int i);
     void clearTable();
     void readFromFile(QString fileName);
     void writeToFile(QString fileName);

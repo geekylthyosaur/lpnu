@@ -170,7 +170,7 @@ void App::bestDonors()
     for (int i = 0; i < list->len(); i++)
     {
         Person * p = this->list->get(i);
-        bool bestDonor = p->getBlood()->getTypeStr() + p->getBlood()->getRhDStr() == p->getBlood()->BEST_DONOR;
+        bool bestDonor = p->getBlood()->getTypeStr() == p->getBlood()->BEST_DONOR;
 
         if (bestDonor)
             ui->tableWidget->insertRow(r);
@@ -220,7 +220,7 @@ void App::bestRecipients()
     for (int i = 0; i < list->len(); i++)
     {
         Person * p = this->list->get(i);
-        bool bestRecipient = p->getBlood()->getTypeStr() + p->getBlood()->getRhDStr() == p->getBlood()->BEST_RECIPIENT;
+        bool bestRecipient = p->getBlood()->getTypeStr() == p->getBlood()->BEST_RECIPIENT;
 
         if (bestRecipient)
             ui->tableWidget->insertRow(r);
@@ -263,14 +263,162 @@ void App::bestRecipients()
 void App::donorsAndRecipients()
 {
     ui->tableHealthy->setVisible(false);
-    ui->tableWidget->setVisible(false);
-    ui->tableDonorsAndRecipients->setVisible(true);
+    ui->tableWidget->setVisible(true);
+    ui->tableDonorsAndRecipients->setVisible(false);
+    ui->tableWidget->setRowCount(0);
+    ui->tableWidget->setColumnCount(5);
+    QStringList labels;
+    labels << "N" << "Surname" << "Age" << "Donor to" << "Recipient from";
+    ui->tableWidget->setHorizontalHeaderLabels(labels);
+    ui->tableWidget->setColumnWidth( 0, 40 );
+    ui->tableWidget->setColumnWidth( 1, 400 );
+    ui->tableWidget->setColumnWidth( 2, 40 );
+    ui->tableWidget->setColumnWidth( 3, 100 );
+    ui->tableWidget->setColumnWidth( 4, 100 );
+
+    for (int i = 0; i < list->len(); i++)
+    {
+        ui->tableWidget->insertRow(i);
+        Person * p = this->list->get(i);
+        for (int j = 0; j < 5; j++)
+        {
+            QTableWidgetItem * item = new QTableWidgetItem();
+            item->setTextAlignment(Qt::AlignCenter);
+            switch (j)
+            {
+            case 0:
+                item->setText(QString::number(p->getN()));
+                break;
+            case 1:
+                item->setText(p->getSurname());
+                break;
+            case 2:
+                item->setText(QString::number(p->getAge()));
+                break;
+            case 3:
+                item->setText(QString::fromStdString("..."));
+                break;
+            case 4:
+                item->setText(QString::fromStdString("..."));
+                break;
+            }
+            ui->tableWidget->setItem(i, j, item);
+        }
+    }
+}
+
+void App::showDonorsTo(int i)
+{
+    this->clearTable();
+    int personBloodType = list->get(i)->getBlood()->getType();
+    int r = 0;
+    for (int i = 0; i < list->len(); i++)
+    {
+        Person * p = this->list->get(i);
+        bool donorTo = p->getBlood()->getType() >= personBloodType;
+        if (personBloodType == 2 && p->getBlood()->getType() == 3)
+            continue;
+        if (donorTo)
+            ui->tableWidget->insertRow(r);
+        else
+            continue;
+        for (int j = 0; j < 7; j++)
+        {
+            QTableWidgetItem * item = new QTableWidgetItem();
+            item->setTextAlignment(Qt::AlignCenter);
+            switch (j)
+            {
+            case 0:
+                item->setText(QString::number(p->getN()));
+                break;
+            case 1:
+                item->setText(p->getSurname());
+                break;
+            case 2:
+                item->setText(QString::number(p->getAge()));
+                break;
+            case 3:
+                item->setText(p->getBlood()->getTypeStr());
+                break;
+            case 4:
+                item->setText(p->getBlood()->getRhDStr());
+                break;
+            case 5:
+                item->setText(p->getBlood()->getPressureStr());
+                break;
+            case 6:
+                item->setText(QString::number(p->getHeartRate()));
+                break;
+            }
+            ui->tableWidget->setItem(r, j, item);
+        }
+        r++;
+    }
+}
+
+void App::showRecipientsFrom(int i)
+{
+    this->clearTable();
+    int personBloodType = list->get(i)->getBlood()->getType();
+    int r = 0;
+    for (int i = 0; i < list->len(); i++)
+    {
+        Person * p = this->list->get(i);
+        bool recipientFrom = p->getBlood()->getType() <= personBloodType;
+        if (personBloodType == 3 && p->getBlood()->getType() == 2)
+            continue;
+        if (recipientFrom)
+            ui->tableWidget->insertRow(r);
+        else
+            continue;
+        for (int j = 0; j < 7; j++)
+        {
+            QTableWidgetItem * item = new QTableWidgetItem();
+            item->setTextAlignment(Qt::AlignCenter);
+            switch (j)
+            {
+            case 0:
+                item->setText(QString::number(p->getN()));
+                break;
+            case 1:
+                item->setText(p->getSurname());
+                break;
+            case 2:
+                item->setText(QString::number(p->getAge()));
+                break;
+            case 3:
+                item->setText(p->getBlood()->getTypeStr());
+                break;
+            case 4:
+                item->setText(p->getBlood()->getRhDStr());
+                break;
+            case 5:
+                item->setText(p->getBlood()->getPressureStr());
+                break;
+            case 6:
+                item->setText(QString::number(p->getHeartRate()));
+                break;
+            }
+            ui->tableWidget->setItem(r, j, item);
+        }
+        r++;
+    }
 }
 
 void App::clearTable()
 {
     ui->tableWidget->setColumnCount(7);
     ui->tableWidget->setRowCount(0);
+    QStringList labels;
+    labels << "N" << "Surname" << "Age" << "Type" << "RhD" << "Pressure" << "Rate";
+    ui->tableWidget->setHorizontalHeaderLabels(labels);
+    ui->tableWidget->setColumnWidth( 0, 40 );
+    ui->tableWidget->setColumnWidth( 1, 400 );
+    ui->tableWidget->setColumnWidth( 2, 40 );
+    ui->tableWidget->setColumnWidth( 3, 40 );
+    ui->tableWidget->setColumnWidth( 4, 20 );
+    ui->tableWidget->setColumnWidth( 5, 80 );
+    ui->tableWidget->setColumnWidth( 6, 40 );
 }
 
 void App::readFromFile(QString fileName)

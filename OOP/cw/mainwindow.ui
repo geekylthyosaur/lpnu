@@ -247,6 +247,12 @@
     <property name="horizontalScrollMode">
      <enum>QAbstractItemView::ScrollPerPixel</enum>
     </property>
+    <property name="rowCount">
+     <number>0</number>
+    </property>
+    <property name="columnCount">
+     <number>7</number>
+    </property>
     <attribute name="horizontalHeaderDefaultSectionSize">
      <number>83</number>
     </attribute>
@@ -256,86 +262,13 @@
     <attribute name="verticalHeaderDefaultSectionSize">
      <number>47</number>
     </attribute>
-    <row>
-     <property name="text">
-      <string>O-</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>O+</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>A-</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>A+</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>B-</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>B+</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>AB-</string>
-     </property>
-    </row>
-    <row>
-     <property name="text">
-      <string>AB+</string>
-     </property>
-    </row>
-    <column>
-     <property name="text">
-      <string>O-</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>O+</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>A-</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>A+</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>B-</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>B+</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>AB-</string>
-     </property>
-    </column>
-    <column>
-     <property name="text">
-      <string>AB+</string>
-     </property>
-    </column>
+    <column/>
+    <column/>
+    <column/>
+    <column/>
+    <column/>
+    <column/>
+    <column/>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

@@ -9,6 +9,22 @@ App::App(Ui::MainWindow* ui)
 
 void App::addPerson()
 {
+    bool ok;
+    if (ui->nLE->text().toInt(&ok) == 0)
+        if (!ok)
+            throw 1;
+    if (ui->ageLE->text().toInt(&ok) == 0)
+        if (!ok)
+            throw 3;
+    if (ui->bloodtypeLE->text() != "O" && ui->bloodtypeLE->text() != "A" && ui->bloodtypeLE->text() != "B" && ui->bloodtypeLE->text() != "AB")
+        throw 4;
+    if (!ui->bloodpressureLE->text().contains("/"))
+        throw 5;
+    if (ui->rhdLE->text() != "+" && ui->rhdLE->text() != "-")
+        throw 6;
+    if (ui->heartrateLE->text().toInt(&ok) == 0)
+        if (!ok)
+            throw 7;
     QString s = ui->nLE->text() + "," +
             ui->surnameLE->text() + "," +
             ui->ageLE->text() + "," +
@@ -430,6 +446,8 @@ void App::readFromFile(QString fileName)
 
 void App::writeToFile(QString fileName)
 {
+    if (this->list->len() == 0)
+        throw 1;
     QFile file(fileName);
     file << this->list;
 }

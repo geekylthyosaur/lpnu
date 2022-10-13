@@ -6,6 +6,7 @@
 #include "QFileDialog"
 #include "QInputDialog"
 #include "QDebug"
+#include "QMessageBox"
 
 App* app;
 
@@ -46,8 +47,20 @@ void MainWindow::on_actionOpen_triggered()
         tr("Open File"), "/home/dmytro/", tr("Data file (*.csv)"));
     if (!fileName.isEmpty())
     {
-        app->readFromFile(fileName);
-        app->updateTable();
+        try
+        {
+            app->readFromFile(fileName);
+            app->updateTable();
+        }
+        catch (int err)
+        {
+            QMessageBox msgBox;
+            msgBox.setIcon(QMessageBox::Critical);
+            msgBox.setWindowTitle("Error");
+            if (err == 1) msgBox.setText("This file is corrupted!");
+            msgBox.exec();
+            return;
+        }
     }
 }
 
@@ -57,14 +70,44 @@ void MainWindow::on_actionSave_triggered()
         tr("Save File"), "/home/dmytro/", tr("Data file (*.csv)"));
     if (!fileName.isEmpty())
     {
-        app->writeToFile(fileName);
+        try
+        {
+            app->writeToFile(fileName);
+        }
+        catch (int err)
+        {
+            QMessageBox msgBox;
+            msgBox.setIcon(QMessageBox::Warning);
+            msgBox.setWindowTitle("Warning");
+            if (err == 1) msgBox.setText("Nothing to save!");
+            msgBox.exec();
+            return;
+        }
     }
 }
 
 void MainWindow::on_addPersonBtn_clicked()
 {
-    app->addPerson();
-    app->updateTable();
+    try
+    {
+        app->addPerson();
+        app->updateTable();
+    }
+    catch (int err)
+    {
+        QMessageBox msgBox;
+        msgBox.setIcon(QMessageBox::Critical);
+        msgBox.setWindowTitle("Error");
+        if (err == 1) msgBox.setText("N field has invalid value!");
+        else if (err == 2) msgBox.setText("Surname field has invalid value!");
+        else if (err == 3) msgBox.setText("Age field has invalid value!");
+        else if (err == 4) msgBox.setText("Blood Type field has invalid value!");
+        else if (err == 5) msgBox.setText("Blood Pressure field has invalid value!");
+        else if (err == 6) msgBox.setText("RhD field has invalid value!");
+        else if (err == 7) msgBox.setText("Heart Rate field has invalid value!");
+        msgBox.exec();
+        return;
+    }
 }
 
 void MainWindow::on_actionby_Blood_Pressure_triggered()

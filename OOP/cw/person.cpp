@@ -12,7 +12,9 @@ Person::Person(int n, QString surname, int age, Blood* blood, int heartRate)
 
 Person::Person(QString person)
 {
-    auto tokens = person.split(",");
+    QStringList tokens = person.split(",");
+    if (tokens.length() != 5)
+        throw 1;
     this->mN = tokens[0].toInt();
     this->mSurname = tokens[1];
     this->mAge = tokens[2].toInt();

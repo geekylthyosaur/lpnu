@@ -16,7 +16,6 @@ void resume(int pid);
 void kill(int pid);
 void renice(int pid);
 
-time_t time_begin;
 int main(void) {
     int* pids;
     int pid;
@@ -24,7 +23,7 @@ int main(void) {
     char op;
 
     while (N < 1) {
-        cout << "Enter value of N (> 1000): ";
+        cout << "Enter N: ";
         cin >> N;
     }
 
@@ -34,7 +33,7 @@ int main(void) {
     }
 
     pids = new int[PC];
-    cout << "Generating random array " << N << "x" << N << " ... ";
+    cout << "Generating random array " << N << "x" << N << " ... " << endl;
 
     int** array = new int* [N];
     for (int i = 0; i < N; i++) array[i] = new int[N];
@@ -47,9 +46,8 @@ int main(void) {
             array[i][j] = rand();
         }
     }
-    cout << "Done!" << endl;
 
-    cout << "Writing array to file ... ";
+    cout << "Writing array to file ... " << endl;
 
     ofstream file;
     file.open("array.txt");
@@ -66,10 +64,6 @@ int main(void) {
     }
     file.close();
 
-    cout << "Done!" << endl;
-
-    time_begin = clock();
-
     for (int i = 0; i < PC; i++) {
         pid = fork();
         switch(pid) {
@@ -78,13 +72,13 @@ int main(void) {
                 break;
             case 0:
                 printf("Started child process (pid: %d)\n", getpid());
-                char s1[10];
-                char s2[10];
-                char s3[10];
-                sprintf(s1, "%d", N);
-                sprintf(s2, "%d",(N/PC)*i);
-                sprintf(s3, "%d", (N/PC)*(i+1));
-                execl("/bin/footclient", "--", "./process", s1, s2, s3, NULL);
+                char n[10];
+                char start[10];
+                char end[10];
+                sprintf(n, "%d", N);
+                sprintf(start, "%d",(N/PC)*i);
+                sprintf(end, "%d", (N/PC)*(i+1));
+                execl("/bin/footclient", "--", "./process", n, start, end, NULL);
                 return 0;
             default: 
                 usleep(100000);
@@ -100,10 +94,10 @@ int main(void) {
 
     int i;
     while (true) {
-        cout << "Suspend [s], Resume [r], Exit [e], Kill [k], Times [t], Priority [p]: ";
+        cout << "Suspend [s], Resume [r], Exit [e], Kill [k], Time [t], Priority [p]: ";
         cin >> op;
         if (op == 'e') break;
-        cout << "Process index: ";
+        cout << "Index of process: ";
         cin >> i;
         if (op == 's') suspend(pids[i]);
         if (op == 'r') resume(pids[i]);
@@ -134,7 +128,6 @@ void resume(int pid) {
 }
 
 void suspend(int pid) {
-    cout << pid << endl;
     kill(pid, SIGSTOP);
 }
 

@@ -29,6 +29,8 @@ private slots:
     void on_bestRecipients_triggered();
     void on_donorsRecepients_triggered();
     void on_tableWidget_cellDoubleClicked(int row, int column);
+    void on_actionClose_triggered();
+    void on_actionRhD_triggered();
 
 private:
     Ui::MainWindow *ui;

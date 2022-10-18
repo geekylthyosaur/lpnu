@@ -26,9 +26,11 @@ public:
     void showDonorsTo(int i);
     void showRecipientsFrom(int i);
     void clearTable();
+    void clearList();
     void readFromFile(QString fileName);
     void writeToFile(QString fileName);
     void sort(int columnIndex);
+
 };
 
 #endif // APP_H

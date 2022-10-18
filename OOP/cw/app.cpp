@@ -442,6 +442,7 @@ void App::readFromFile(QString fileName)
     QFile file(fileName);
     this->list->clear();
     file >> this->list;
+    ui->actionClose->setEnabled(true);
 }
 
 void App::writeToFile(QString fileName)
@@ -450,9 +451,16 @@ void App::writeToFile(QString fileName)
         throw 1;
     QFile file(fileName);
     file << this->list;
+    ui->actionClose->setEnabled(true);
 }
 
 void App::sort(int columnIndex)
 {
     this->list->quickSort(columnIndex, 0, this->list->len() - 1);
+}
+
+void App::clearList()
+{
+    this->list->clear();
+    ui->actionClose->setEnabled(false);
 }

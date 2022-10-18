@@ -9,6 +9,7 @@
 #include "QMessageBox"
 
 App* app;
+bool fileChanged = false;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -24,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tableWidget->setColumnWidth( 4, 20 );
     ui->tableWidget->setColumnWidth( 5, 80 );
     ui->tableWidget->setColumnWidth( 6, 40 );
+    ui->actionClose->setEnabled(false);
     QStringList labels;
     labels << "N" << "Surname" << "Age" << "Type" << "RhD" << "Pressure" << "Rate";
     ui->tableWidget->setHorizontalHeaderLabels(labels);
@@ -73,6 +75,7 @@ void MainWindow::on_actionSave_triggered()
         try
         {
             app->writeToFile(fileName);
+            fileChanged = false;
         }
         catch (int err)
         {
@@ -92,6 +95,7 @@ void MainWindow::on_addPersonBtn_clicked()
     {
         app->addPerson();
         app->updateTable();
+        fileChanged = true;
     }
     catch (int err)
     {
@@ -122,8 +126,17 @@ void MainWindow::on_actionType_and_RhD_triggered()
     app->updateTable();
 }
 
+void MainWindow::on_actionRhD_triggered()
+{
+    app->sort(3);
+    app->updateTable();
+}
+
 void MainWindow::on_actionRhD_and_Heart_Rate_triggered()
 {
+    app->sort(2);
+    app->sort(2);
+    app->sort(2);
     app->sort(2);
     app->updateTable();
 }
@@ -136,7 +149,8 @@ void MainWindow::on_healthyPeople_triggered()
 void MainWindow::on_highPressureAndRate_triggered()
 {
     int age = QInputDialog::getInt(this, "Enter", "Enter Age:");
-    app->highPressureAndRate(age);
+    if (age)
+        app->highPressureAndRate(age);
 }
 
 void MainWindow::on_actionDefault_triggered()
@@ -164,5 +178,32 @@ void MainWindow::on_tableWidget_cellDoubleClicked(int row, int column)
     if (ui->tableWidget->columnCount() == 5) {
         if (column == 3) app->showDonorsTo(row);
         else if (column == 4) app->showRecipientsFrom(row);
+    }
+}
+
+void MainWindow::on_actionClose_triggered()
+{
+    if (!fileChanged)
+    {
+        app->clearTable();
+        app->clearList();
+        return;
+    }
+    QMessageBox msgBox;
+    msgBox.setText("The file has been modified.");
+    msgBox.setInformativeText("Exit without saving?");
+    msgBox.setStandardButtons(QMessageBox::Discard | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Save);
+    int ret = msgBox.exec();
+
+    switch (ret) {
+      case QMessageBox::Discard:
+            app->clearTable();
+            app->clearList();
+          break;
+      case QMessageBox::Cancel:
+          break;
+      default:
+          break;
     }
 }

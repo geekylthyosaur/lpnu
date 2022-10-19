@@ -10,6 +10,8 @@
 \usepackage{etoolbox}
 \usepackage{flafter}
 \usepackage{listings}
+\usepackage{graphicx}
+\usepackage{float}
 \usepackage[center]{titlesec}
 \titlelabel{\thetitle.\quad}
 \usepackage{array}
@@ -18,7 +20,7 @@
 \pagestyle{fancy}
 \fancyfoot[R]{\thepage}
 \lstset{breaklines=true,}
-
+\graphicspath{ {./pictures} }
 \begin{document}
 \begin{titlepage}
 	\begin{center}
@@ -29,7 +31,7 @@
 		\textbf{КУРСОВА РОБОТА}\\
 		\textbf{з дисципліни <<Об’єктно-орієнтоване програмування>>}\\
 		\textbf{На тему:}\\
-		<<>>
+		<<Медична база пацієнтів>>
 		\vspace*{40pt}
 		
 		\begin{flushright}
@@ -64,7 +66,7 @@
 	на курсову роботу з дисципліни «Об’єктно-орієнтоване програмування»\\
 	студента групи ПЗ-22 Коваленка Дмитра
 	\bigbreak
-	\textbf{Тема: <<>>}
+	\textbf{Тема: <<Медична база пацієнтів>>}
 \end{center}
 Створити таблицю у візуальному середовищі
 
@@ -139,48 +141,69 @@
 \section{Покроковий алгоритм розв‘язку задачі}
 \subsection{Задача сортування}
 \begin{list}{}{Алгоритм A.}
-	\item [A1] 
-	\item [A2] 
+	\item [A1] Виклик функції сортування користувачем.
+	\item [A2] Сортування списку за заданим стовпцем.
+	\item [A3] Виведення посортованого списку на екран.
+	\item [A4] Кінець.
 \end{list}
 
 \subsection{Задача групування}
-\begin{list}{}{Алгоритм A.}
-	\item [A1] 
-	\item [A2] 
+\begin{list}{}{Алгоритм B.}
+	\item [B1] Вибір користувачем стовпця, за яким необхідно згрупувати список.
+	\item [B2] Сортування списку за заданим стовпцем.
+	\item [B3] Виведення згрупованого списку на екран.
+	\item [B4] Кінець.
 \end{list}
 
 \subsection{Згрупувати людей та відсортувати кожну групу}
-\begin{list}{}{Алгоритм A.}
-	\item [A1] 
-	\item [A2] 
+\begin{list}{}{Алгоритм C.}
+	\item [C1] Виклик функції сортування користувачем.
+	\item [C2] Сортування списку за двома умовами одночасно.
+	\item [C3] Виведення посортованого списку на екран.
+	\item [C4] Кінець.
 \end{list}
 
 \subsection{Задача визначити групи людей зі списку за умовою}
-\begin{list}{}{Алгоритм A.}
-	\item [A1] 
-	\item [A2] 
+\begin{list}{}{Алгоритм D.}
+	\item [D1] Вибір користувачем групи яку необхідно визначити.
+	\item [D2] Виведення на екран людей, дані яких задовільняють умову.
+	\item [D3] Кінець.
 \end{list}
 
 \subsection{Задача визначети людей за вказаними даними}
-\begin{list}{}{Алгоритм A.}
-	\item [A1] 
-	\item [A2] 
+\begin{list}{}{Алгоритм E.}
+	\item [E1] Ввід користувачем необхідних даних.
+	\item [E2] Виведення на екран пацієнтів, дані яких задовільняють умову.
+	\item [E3] Кінець.
 \end{list}
 
 \subsection{Задача виведення повідомлення}
-\begin{list}{}{Алгоритм A.}
-	\item [A1] 
-	\item [A2] 
+\begin{list}{}{Алгоритм F.}
+	\item [F1] Визначення пацієнтів, дані яких задовільняють умову.
+	\item [F2] Виведення на екран повідомлення для кожного пацієнта. 
+	\item [F3] Кінець.
 \end{list}
 
 \section{Діаграми}
 \subsection{UML діаграма класів}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.3]{1}
+	\caption{UML діаграма класів}
+\end{figure}
+
 \subsection{Діаграма прецедентів}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.4]{2}
+	\caption{Діаграма прецедентів}
+\end{figure}
+
 \subsection{Діаграма послідовності виконання}
+
+
 \section{Код розробленої програми}
 \begin{small}
-	
-
 \textbf{файл \textit{app.h}}
 \begin{lstlisting}[language=c++]
 #ifndef APP_H

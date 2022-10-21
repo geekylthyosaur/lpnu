@@ -139,15 +139,6 @@
 	\end{figure}
 
 	\subsection*{Код програми 2}
-	
-	\textcolor{red}{
-	\begin{LARGE}
-		\textbf{DO NOT COPY}
-	\end{LARGE}
-	\begin{small}
-		\textit{(pls)}
-	\end{small}	
-}
 	\begin{lstlisting}[language={[x86masm]Assembler}]
 .586P 
 .MODEL FLAT, STDCALL 
@@ -157,15 +148,15 @@ tmp      DD 0
 col      DD 7
 row      DD 8
 arr      DD  10, 64,-94, 77, 99, 18, 52
-		DD -23,-77,-45, 65, 77, 66,-24
-		DD -81,-78,-82,-39,-90,-78, 24
-		DD -18,-64,-74,-28,-16,-40, 91
-		DD  56,-19, 86, 34,-83,-99,-31
-		DD -70,-58, 13, 98, 90, 46,-77
-		DD  97, 85,-10, 57, 88, 99,-26
-		DD -11, 69, 95, 42,-51, 37,-51
-res      DD 224 DUP(?)  ; not initialized 4*7*8 bytes
-sclr    DD 0
+		 DD -23,-77,-45, 65, 77, 66,-24
+		 DD -81,-78,-82,-39,-90,-78, 24
+		 DD -18,-64,-74,-28,-16,-40, 91
+		 DD  56,-19, 86, 34,-83,-99,-31
+	 	 DD -70,-58, 13, 98, 90, 46,-77
+	 	 DD  97, 85,-10, 57, 88, 99,-26
+		 DD -11, 69, 95, 42,-51, 37,-51
+res      DD 224 DUP(?)
+sclr     DD 0
 num      DD 0
 sum      DD 0
 _DATA ENDS 
@@ -178,14 +169,14 @@ T1:
 	lea EDX, res
 	mov EBX, 0
 
-L1:          ; EAX = 0..row
+L1: 
 	mov EAX, 0
 
-L2:          ; EBX = 0..col
-	lea ECX, arr  ; ECX = &arr
-	lea EDX, res  ; EDX = &res
+L2:     
+	lea ECX, arr 
+	lea EDX, res 
 	
-	mov tmp, EAX  ; arr += 4*(EAX*col+EBX)
+	mov tmp, EAX 
 	push EAX
 	push EDX
 	push ECX
@@ -201,7 +192,7 @@ L2:          ; EBX = 0..col
 	pop EDX
 	pop EAX
 	
-	mov tmp, EAX  ; res += 4*(EBX*row+EAX)
+	mov tmp, EAX
 	push EAX
 	push ECX
 	push EDX
@@ -217,31 +208,31 @@ L2:          ; EBX = 0..col
 	pop ECX
 	pop EAX
 	
-	push EAX    ; *EDX = *ECX
+	push EAX 
 	mov EAX, [ECX]
 	mov [EDX], EAX
 	pop EAX
 	
-	inc EAX      ; EAX += 1; if (EAX < row) goto L2;
+	inc EAX  
 	cmp EAX, row
 	jl L2
 	
-	inc EBX      ; EBX += 1; if (EBX < col) goto L1;
+	inc EBX   
 	cmp EBX, col
 	jl L1
 
 T2:
-	lea EDX, arr  ; row 3
+	lea EDX, arr 
 	add EDX, 56
 	mov EBX, EDX
 	
-	lea EDX, arr  ; row 5
+	lea EDX, arr 
 	add EDX, 112
 	mov ECX, EDX
 	mov EDX, 0
 
-L3:          ; EDX = 0..col
-	mov EAX, [EBX]  ; sclr += (*EBX)*(*ECX)
+L3:    
+	mov EAX, [EBX] 
 	push EDX
 	mov EDX, [ECX]
 	imul EDX
@@ -251,22 +242,22 @@ L3:          ; EDX = 0..col
 	add EBX, 4
 	add ECX, 4
 	
-	inc EDX      ; EDX += 1; if (EDX < col) goto L1;
+	inc EDX   
 	cmp EDX, col
 	jl L3
 
-T3:          ; a <= -29 or a >= 83
-	lea EAX, arr  ; EAX = arr[3]
+T3:     
+	lea EAX, arr  
 	add EAX, 8
 	mov EDX, 0
 
 L4:
-	cmp EDX, row  ; if (EDX >= row) goto T4;
+	cmp EDX, row 
 	jge T4
 	
 	inc EDX
 	
-	mov EBX, [EAX]  ; if (EBX <= -29 || EBX >= 83) goto COUNT;
+	mov EBX, [EAX] 
 	cmp EBX, -29
 	jle COUNT
 	cmp EBX, 83 
@@ -280,17 +271,17 @@ COUNT:
 	jmp L4
 
 T4:
-	lea EAX, arr  ; EAX = arr[3]
+	lea EAX, arr  
 	add EAX, 8
 	mov EDX, 0
 
 L5:
-	cmp EDX, row  ; if (EDX >= row) goto DONE;
+	cmp EDX, row  
 	jge DONE
 	
 	inc EDX
 	
-	mov EBX, [EAX]  ; if (EBX <= -29 || EBX >= 83) goto SUMUP;
+	mov EBX, [EAX]  
 	cmp EBX, -29
 	jle SUMUP
 	cmp EBX, 83 

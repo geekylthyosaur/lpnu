@@ -109,6 +109,8 @@ void MainWindow::on_addPersonBtn_clicked()
         else if (err == 5) msgBox.setText("Blood Pressure field has invalid value!");
         else if (err == 6) msgBox.setText("RhD field has invalid value!");
         else if (err == 7) msgBox.setText("Heart Rate field has invalid value!");
+        else if (err == 8) msgBox.setText("Age has value outside of range 0-120!");
+        else if (err == 9) msgBox.setText("Heart rate has value outside of range 0-300!");
         msgBox.exec();
         return;
     }
@@ -206,4 +208,51 @@ void MainWindow::on_actionClose_triggered()
       default:
           break;
     }
+}
+
+void MainWindow::on_bSortByBloodPressure_clicked()
+{
+    app->sort(0);
+    app->updateTable();
+}
+
+void MainWindow::on_bSortByRhD_clicked()
+{
+    app->sort(1);
+    app->updateTable();
+}
+
+void MainWindow::on_bSortByBloodType_clicked()
+{
+    app->sort(3);
+    app->updateTable();
+}
+
+void MainWindow::on_bShowBestRecipients_clicked()
+{
+    app->bestRecipients();
+}
+
+void MainWindow::on_bShowBestDonors_clicked()
+{
+    app->bestDonors();
+}
+
+void MainWindow::on_bShowDonorsAndRecipients_clicked()
+{
+    app->donorsAndRecipients();
+}
+
+void MainWindow::on_bShowDefault_clicked()
+{
+    app->updateTable();
+}
+
+void MainWindow::on_bSortByRhDAndRate_clicked()
+{
+    app->sort(2);
+    app->sort(2);
+    app->sort(2);
+    app->sort(2);
+    app->updateTable();
 }

@@ -13,9 +13,12 @@ void App::addPerson()
     if (ui->nLE->text().toInt(&ok) == 0)
         if (!ok)
             throw 1;
-    if (ui->ageLE->text().toInt(&ok) == 0)
+    if (ui->ageLE->text().toInt(&ok) == 0) {
         if (!ok)
             throw 3;
+    }
+    if (ui->ageLE->text().toInt() < 0 || ui->ageLE->text().toInt() > 120)
+        throw 8;
     if (ui->bloodtypeLE->text() != "O" && ui->bloodtypeLE->text() != "A" && ui->bloodtypeLE->text() != "B" && ui->bloodtypeLE->text() != "AB")
         throw 4;
     if (!ui->bloodpressureLE->text().contains("/"))
@@ -25,6 +28,9 @@ void App::addPerson()
     if (ui->heartrateLE->text().toInt(&ok) == 0)
         if (!ok)
             throw 7;
+    if (ui->heartrateLE->text().toInt() < 0 || ui->heartrateLE->text().toInt() > 300)
+        throw 9;
+
     QString s = ui->nLE->text() + "," +
             ui->surnameLE->text() + "," +
             ui->ageLE->text() + "," +

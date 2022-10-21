@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>710</width>
     <height>600</height>
    </rect>
   </property>
@@ -18,13 +18,13 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>800</width>
+    <width>710</width>
     <height>600</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>800</width>
+    <width>710</width>
     <height>600</height>
    </size>
   </property>
@@ -37,8 +37,8 @@
      <rect>
       <x>10</x>
       <y>10</y>
-      <width>251</width>
-      <height>151</height>
+      <width>371</width>
+      <height>121</height>
      </rect>
     </property>
     <property name="title">
@@ -60,8 +60,8 @@
     <widget class="QLineEdit" name="surnameLE">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>60</y>
+       <x>130</x>
+       <y>30</y>
        <width>113</width>
        <height>25</height>
       </rect>
@@ -73,8 +73,8 @@
     <widget class="QLineEdit" name="ageLE">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>90</y>
+       <x>250</x>
+       <y>30</y>
        <width>113</width>
        <height>25</height>
       </rect>
@@ -86,8 +86,8 @@
     <widget class="QLineEdit" name="bloodtypeLE">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>30</y>
+       <x>10</x>
+       <y>60</y>
        <width>113</width>
        <height>25</height>
       </rect>
@@ -125,8 +125,8 @@
     <widget class="QLineEdit" name="heartrateLE">
      <property name="geometry">
       <rect>
-       <x>130</x>
-       <y>120</y>
+       <x>250</x>
+       <y>60</y>
        <width>113</width>
        <height>25</height>
       </rect>
@@ -139,7 +139,7 @@
      <property name="geometry">
       <rect>
        <x>30</x>
-       <y>120</y>
+       <y>90</y>
        <width>71</width>
        <height>25</height>
       </rect>
@@ -270,13 +270,143 @@
     <column/>
     <column/>
    </widget>
+   <widget class="QGroupBox" name="groupBox_2">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>10</y>
+      <width>131</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Sort By</string>
+    </property>
+    <widget class="QPushButton" name="bSortByBloodPressure">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>111</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Blood Pressure</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="bSortByRhD">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>111</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>RhD</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="bSortByBloodType">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>111</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Blood Type</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_3">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>10</y>
+      <width>171</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Show</string>
+    </property>
+    <widget class="QPushButton" name="bShowBestRecipients">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>30</y>
+       <width>151</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Best Recipients</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="bShowBestDonors">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>151</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Best Donors</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="bShowDonorsAndRecipients">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>90</y>
+       <width>151</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Donors and Recipients</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="bShowDefault">
+    <property name="geometry">
+     <rect>
+      <x>539</x>
+      <y>140</y>
+      <width>151</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Default</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bSortByRhDAndRate">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>140</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>RhD and Rate</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>800</width>
+     <width>710</width>
      <height>20</height>
     </rect>
    </property>

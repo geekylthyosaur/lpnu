@@ -21,6 +21,8 @@
 \fancyfoot[R]{\thepage}
 \lstset{breaklines=true,}
 \graphicspath{ {./pictures} }
+\counterwithin{figure}{section}
+
 \begin{document}
 \begin{titlepage}
 	\begin{center}
@@ -79,7 +81,7 @@
 \begin{enumerate}
 	\item Швидким алгоритмом відсортувати записи за показником артеріального
 	тиску.
-	\item Згрупувати людей за однаковими групами крові та однаковими резус-
+	\item Згрупувати людей за однаковими групами крові та однаковими резус
 	факторами.
 	\item Згрупувати людей за однаковими резус-факторами та відсортувати кожну
 	групу за показником Пульсу.
@@ -200,7 +202,11 @@
 \end{figure}
 
 \subsection{Діаграма послідовності виконання}
-
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.5]{3}
+	\caption{Діаграма послідовності виконання}
+\end{figure}
 
 \section{Код розробленої програми}
 \begin{small}
@@ -1348,18 +1354,178 @@ void operator << (QTextStream &output, const Person* p)
 \end{small}
 
 \section{Протокол роботи програми}
-\subsection{Пункт 1}
-\subsection{Пункт 2}
-\subsection{Пункт 3}
-\subsection{Пункт 4}
-\subsection{Пункт 5}
+\subsection{Сортування записів за показником артеріального тиску}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{4}
+	\caption{Сортування записів за показником артеріального тиску}
+\end{figure}
+
+\subsection{Згрупувати людей за однаковими групами крові та однаковими резус факторами}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{5}
+	\caption{Згрупувати людей за однаковими групами крові}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{6}
+	\caption{Згрупувати людей за однаковими резус факторами}
+\end{figure}
+
+\subsection{Згрупувати людей за однаковими резус факторами та відсортувати кожну групу за показником пульсу}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{7}
+	\caption{Згрупувати людей за однаковими резус факторами та відсортувати кожну групу за показником пульсу}
+\end{figure}
+
+\subsection{Визначити людей, які є універсальними донорами, а які є універсальними реципієнтами та сформувати загальну таблицю донорів та реципієнтів}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{8}
+	\caption{Визначити людей, які є універсальними донорами}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{9}
+	\caption{Визначити людей, які є універсальними реципієнтами}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{10}
+	\caption{Сформувати загальну таблицю донорів та реципієнтів}
+\end{figure}
+
+\subsection{Для вказаного показника вік  визначити пацієнтів з підвищеними показниками артеріального тиску та пульсу}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{11}
+	\caption{Для вказаного показника вік  визначити пацієнтів з підвищеними показниками артеріального тиску та пульсу}
+\end{figure}
+
+\subsection{Всім пацієнтам з нормальним артеріальним тиском вивести повідомлення}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{12}
+	\caption{Всім пацієнтам з нормальним артеріальним тиском вивести повідомлення}
+\end{figure}
+
 \section{Інструкція користувача та системні вимоги}
-\subsection{Інструкція користувача}
+\subsection{Компоненти}
+Програму розроблено на мовi програмування C++ у середовищi розробки QtCreator i може експлуатуватися пiд управлiнням сiмейства операцiйних систем GNU/Linux. Пiд час проектування пiдсистем вiдбувалося поєднання об’єктно-орiєнтованого пiдходу до програмування з процедурно орiєнтованим.
+
+\subsection{Встановлення}
+Програма не потребує встановлення, достатньо надати виконуваному файлу програми права на виконання та запустити його.
+\subsection{Базові функції}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.6]{13}
+	\caption{Вигляд програми}
+\end{figure}
+
+\begin{enumerate}
+	\item Діалог меню для роботи з файлами.
+	\item Діалог меню для додаткових опцій сортування та перегляду.
+	\item Кнопка для додавання нового користувача.
+	\item Кнопка для групування за резус-фактором та сортування за пульсом.
+	\item Кнопка для сортування за групою крові.
+	\item Кнопка для сортування за артеріальним тиском.
+	\item Кнопка для сортування за резус-фактором.
+	\item Кнопка для перегляду таблиці універсальних реципієнтів.
+	\item Кнопка для перегляду таблиці універсальних донорів.
+	\item Кнопка для перегляду загальної таблиці донорів та реципієнтів.
+	\item Кнопка для повернення таблиці до початкового стану.
+\end{enumerate}
+
 \subsection{Системні вимоги}
+Для коректної роботи програми необхiдна користувацька машина з процесором не менше 1 GHz, оперативною пам’яттю не менше 512 Mb. Для експлуатацiї пакету пiд управлiнням сiмейства операцiйних систем GNU/Linux необхiдно встановити збiрку класiв Qt Framework 6.0.
+
 \section{Опис виняткових ситуацій}
+\subsection{Неправильні дані у полі для вводу під час додавання нового пацієнта}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=1]{14}
+	\caption{Неправильні дані для поля N}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=1]{15}
+	\caption{Неправильні дані для поля Age}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=1]{16}
+	\caption{Неправильні дані для поля Blood Type}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=1]{17}
+	\caption{Неправильні дані для поля Blood Pressure}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=1]{18}
+	\caption{Неправильні дані для поля RhD}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=1]{19}
+	\caption{Неправильні дані для поля Heart Rate}
+\end{figure}
+
+\subsection{Спроба відкрити файл з неправильними даними}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=1]{21}
+	\caption{Спроба відкрити файл з неправильними даними}
+\end{figure}
+
+\subsection{Обмежений діапазон даних для вводу}
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=1]{20}
+	\caption{Обмежений діапазон даних для поля Age}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=1]{22}
+	\caption{Обмежений діапазон даних для поля Heart Rate}
+\end{figure}
+
 \section{Структура файлу вхідних даних}
+Програма використовує класичний формат даних \textit{*.csv} (\textit{comma separated values}), тобто запис даних, де колонки розділяються комами, і кожен рядок знаходиться на новому рядку. 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.7]{23}
+	\caption{Приклад файлу даних для програми}
+\end{figure}
+
 \section*{Висновки}
 \addcontentsline{toc}{section}{Висновки}
+Під час виконання курсової роботи я, закріпив теоретичні знання та практичні навички, набуті при вивченні дисципліни «Об'єктно-орієнтоване програмування».
+
+У ході виконання курсової роботи я навчився самостійно працювати з технічною літературою, документацією, сучасними засобами розробки додатків засобами об'єктно орієнтованого програмування.
+
+Я самостійно побудував програму <<Медична база пацієнтів>> у середовищі розробки QtCreator за допомогою фреймворку для десктопних додатків Qt 6.0 на мові C++ в об'єктно орієнтованому стилі.
+
 \section*{Список використаної літератури}
 \addcontentsline{toc}{section}{Список використаної літератури}
+\begin{enumerate}
+	\item \textit{https://vns.lpnu.ua/course/view.php?id=711} - курс Об'єктно Орієнтованого Програмування у віртуальному навчальному середовищі НУ <<ЛП>>.
+	\item \textit{https://doc.qt.io/qt.html} - документація до фреймворку для десктопних додатків Qt 6.0.
+	\item Кравець П.О. Обєктно-орієнтоване програмування. - Навчальний посібник. Львів: Видавництво Львівської політехніки, 2012. 624 с.
+	\item Lee Zhi Eng, Qt5 C++ GUI Programming Cookbook - Second Edition, 2019
+\end{enumerate}
+
 \end{document}

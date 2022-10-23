@@ -1,7 +1,10 @@
 #include "task.h"
+#include <unistd.h>
 #include "QDebug"
 
 using namespace std;
+
+int numCpus = sysconf(_SC_NPROCESSORS_ONLN);
 
 void* thread_task(void* args) {
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, 0);
@@ -50,7 +53,7 @@ Task::Task(int threadCount, int threadIndex, int arrLen, int* sum, int* arr, sem
         return;
     }
     this->threadIndex = threadIndex;
-    this->setAffinity(this->threadIndex);
+    this->setAffinity(this->threadIndex % numCpus);
 }
 
 void Task::detach() {
@@ -83,14 +86,18 @@ void Task::setAffinity(int cpu) {
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
     CPU_SET(cpu, &cpuset);
-    pthread_attr_setaffinity_np(&this->attr, sizeof(cpuset), &cpuset);
+    if (pthread_setaffinity_np(this->thread, sizeof(cpuset), &cpuset)) {
+        qDebug() << "pthread_setaffinity_np() error";
+    }
 }
 
 int Task::getAffinity() {
     cpu_set_t cpuset;
     CPU_ZERO(&cpuset);
-    pthread_attr_getaffinity_np(&this->attr, sizeof(cpuset), &cpuset);
-    for (int i = 0; i < sizeof(cpuset); i++) {
+    if (pthread_getaffinity_np(this->thread, sizeof(cpuset), &cpuset)) {
+        qDebug() << "pthread_attr_getaffinity_np() error";
+    }
+    for (int i = 0; i < numCpus; i++) {
         if (CPU_ISSET(i, &cpuset)) return i;
     }
     return -1;

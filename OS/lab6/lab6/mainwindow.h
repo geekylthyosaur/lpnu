@@ -21,11 +21,13 @@ private slots:
 
     void on_bCheck_clicked();
 
-    void on_bSetAffinity_clicked();
+    void on_bSetPriority_clicked();
 
     void on_bDetach_clicked();
 
     void on_bCancel_clicked();
+
+    void on_bSetAffinity_clicked();
 
 private:
     Ui::MainWindow *ui;

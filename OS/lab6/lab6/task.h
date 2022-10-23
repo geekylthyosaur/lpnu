@@ -18,15 +18,19 @@ class Task
 {
 private:
     pthread_t thread;
+    pthread_attr_t attr;
     int core;
     int threadIndex;
     Status status;
 public:
     Task() = default;
     Task(int threadCount, int threadIndex, int arrLen, int* sum, int* arr, sem_t* sem, pthread_spinlock_t* spin);
+    void setPriority(int n);
     void setAffinity(int core);
-    void setCore(int core);
+    void detach();
+    void cancel();
 
+    int getPriority();
     int getAffinity();
     pthread_t* getHandle() { return &this->thread; }
     int getThreadIndex() { return this->threadIndex; }

@@ -34,7 +34,7 @@ MainWindow::~MainWindow() {
     sem_destroy(&sem);
     pthread_spin_destroy(&spin);
     for (int i = 0; i < threadCount; i++) {
-        pthread_cancel(*tasks[i]->getHandle());
+        tasks[i]->cancel();
     }
     delete ui;
 }
@@ -45,16 +45,15 @@ void MainWindow::on_bStart_clicked() {
     arrLen = ui->leArrLen->text().toInt();
     int semCount = ui->leSemCount->text().toInt();
 
-    ui->tableWidget->setColumnCount(3);
-    ui->tableWidget->setRowCount(0);
+    ui->tableWidget->setColumnCount(4);
+    ui->tableWidget->setRowCount(threadCount);
 
     QStringList labels;
-    labels << "Index" << "Status" << "Piority";
+    labels << "Index" << "Status" << "Piority" << "Affinity";
     ui->tableWidget->setHorizontalHeaderLabels(labels);
 
     for (int i = 0; i < threadCount; i++) {
-        ui->tableWidget->insertRow(i);
-        for (int j = 0; j < 3; j++) {
+        for (int j = 0; j < 4; j++) {
             QTableWidgetItem * item = new QTableWidgetItem();
             item->setTextAlignment(Qt::AlignCenter);
             item->setText(QString());
@@ -81,12 +80,8 @@ void MainWindow::on_bStart_clicked() {
 void MainWindow::update() {
     ui->leSum->setText(QString::number(sum));
 
-    QStringList labels;
-    labels << "Index" << "Status" << "Affinity";
-    ui->tableWidget->setHorizontalHeaderLabels(labels);
-
     for (int i = 0; i < threadCount; i++) {
-        for (int j = 0; j < 3; j++) {
+        for (int j = 0; j < 4; j++) {
             QTableWidgetItem * item = ui->tableWidget->item(i, j);
             item->setTextAlignment(Qt::AlignCenter);
             switch (j) {
@@ -101,6 +96,9 @@ void MainWindow::update() {
                 if (tasks[i]->getStatus() == Waiting) item->setText(QString::fromStdString("Waiting"));
                 break;
             case 2:
+                item->setText(QString::number(tasks[i]->getPriority()));
+                break;
+            case 3:
                 item->setText(QString::number(tasks[i]->getAffinity()));
                 break;
             }
@@ -116,19 +114,22 @@ void MainWindow::on_bCheck_clicked() {
     ui->leCorrectSum->setText(QString::number(s));
 }
 
-void MainWindow::on_bSetAffinity_clicked() {
+void MainWindow::on_bSetPriority_clicked() {
     int index = ui->tableWidget->selectedItems()[0]->row();
-    tasks[index]->setAffinity(ui->leCore->text().toInt());
+    tasks[index]->setPriority(ui->lePriority->text().toInt());
 }
 
 void MainWindow::on_bDetach_clicked() {
     int index = ui->tableWidget->selectedItems()[0]->row();
-    pthread_detach(*tasks[index]->getHandle());
-    tasks[index]->setStatus(Detached);
+    tasks[index]->detach();
 }
 
 void MainWindow::on_bCancel_clicked() {
     int index = ui->tableWidget->selectedItems()[0]->row();
-    pthread_cancel(*tasks[index]->getHandle());
-    tasks[index]->setStatus(Canceled);
+    tasks[index]->cancel();
+}
+
+void MainWindow::on_bSetAffinity_clicked() {
+    int index = ui->tableWidget->selectedItems()[0]->row();
+    tasks[index]->setAffinity(ui->leAffinity->text().toInt());
 }

@@ -4,6 +4,9 @@
 using namespace std;
 
 void* thread_task(void* args) {
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, 0);
+    pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, 0);
+
     ThreadArgs* targs = (ThreadArgs*)args;
     int start = targs->start;
     int end = targs->end;
@@ -37,18 +40,58 @@ void* thread_task(void* args) {
 }
 
 Task::Task(int threadCount, int threadIndex, int arrLen, int* sum, int* arr, sem_t* sem, pthread_spinlock_t* spin) {
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    this->attr = attr;
+    pthread_attr_setschedpolicy(&this->attr, SCHED_FIFO);
     ThreadArgs* args = new ThreadArgs(threadCount, threadIndex, arrLen, sum, arr, sem, spin, this);
-    if (pthread_create(&this->thread, NULL, &thread_task, args)) {
+    if (pthread_create(&this->thread, &attr, &thread_task, args)) {
         qDebug() << "pthread_create error!";
         return;
     }
     this->threadIndex = threadIndex;
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, 0);
+    this->setAffinity(this->threadIndex);
 }
 
-void Task::setAffinity(int core) {
+void Task::detach() {
+    pthread_detach(this->thread);
+    if (this->status != Done) this->status = Detached;
+}
 
+void Task::cancel() {
+    pthread_cancel(this->thread);
+    if (this->status != Done) this->status = Canceled;
+}
+
+void Task::setPriority(int n) {
+    int policy;
+    struct sched_param param;
+
+    pthread_getschedparam(this->thread, &policy, &param);
+    param.sched_priority = n;
+    pthread_setschedparam(this->thread, policy, &param);
+}
+
+int Task::getPriority() {
+    int policy;
+    struct sched_param param;
+    pthread_getschedparam(this->thread, &policy, &param);
+    return param.sched_priority;
+}
+
+void Task::setAffinity(int cpu) {
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset);
+    CPU_SET(cpu, &cpuset);
+    pthread_attr_setaffinity_np(&this->attr, sizeof(cpuset), &cpuset);
 }
 
 int Task::getAffinity() {
+    cpu_set_t cpuset;
+    CPU_ZERO(&cpuset);
+    pthread_attr_getaffinity_np(&this->attr, sizeof(cpuset), &cpuset);
+    for (int i = 0; i < sizeof(cpuset); i++) {
+        if (CPU_ISSET(i, &cpuset)) return i;
+    }
+    return -1;
 }

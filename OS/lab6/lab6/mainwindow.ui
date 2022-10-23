@@ -155,9 +155,9 @@
    <widget class="QTableWidget" name="tableWidget">
     <property name="geometry">
      <rect>
-      <x>465</x>
+      <x>365</x>
       <y>10</y>
-      <width>331</width>
+      <width>431</width>
       <height>381</height>
      </rect>
     </property>
@@ -174,37 +174,37 @@
      <bool>false</bool>
     </attribute>
    </widget>
-   <widget class="QLineEdit" name="leCore">
+   <widget class="QLineEdit" name="lePriority">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>20</y>
+      <x>240</x>
+      <y>10</y>
       <width>113</width>
       <height>23</height>
      </rect>
     </property>
     <property name="placeholderText">
-     <string>Core</string>
+     <string>Priority</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="bSetAffinity">
+   <widget class="QPushButton" name="bSetPriority">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>20</y>
+      <x>150</x>
+      <y>10</y>
       <width>80</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>Set Affinity</string>
+     <string>Set Priority</string>
     </property>
    </widget>
    <widget class="QPushButton" name="bDetach">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>60</y>
+      <x>270</x>
+      <y>80</y>
       <width>80</width>
       <height>23</height>
      </rect>
@@ -216,14 +216,40 @@
    <widget class="QPushButton" name="bCancel">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>90</y>
+      <x>270</x>
+      <y>110</y>
       <width>80</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
      <string>Cancel</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bSetAffinity">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>40</y>
+      <width>80</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set Affinity</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="leAffinity">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>40</y>
+      <width>113</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="placeholderText">
+     <string>Affinity</string>
     </property>
    </widget>
   </widget>

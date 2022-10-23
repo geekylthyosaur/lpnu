@@ -15,7 +15,7 @@
 	bottom=20mm
 }
 \lstset{
-	language=c,
+	language=c++,
 	tabsize=4,
 	keepspaces,
 	showstringspaces=false,
@@ -27,13 +27,13 @@
 \newcommand\lecturer{старший викладач кафедри ПЗ\\Грицай О.Д.}
 \newcommand\teacher{старший викладач кафедри ПЗ\\Грицай О.Д.}
 \newcommand\mygroup{ПЗ-22}
-\newcommand\lab{5}
-\newcommand\theme{Багатопоточність в операційній сисемі WINDOWS. Створення,
+\newcommand\lab{6}
+\newcommand\theme{Багатопоточність в операційній системі Linux. Створення,
 	керування та синхронізація потоків}
-\newcommand\purpose{Ознайомитися з багатопоточністю в ОС Windows. Навчитись
-	реалізовувати розпаралелення алгоритмів за допомогою багатопоточності в ОС
-	Windows з використанням функцій WinAPI. Навчитись використовувати різні
-	механізми синхронізації потоків}
+\newcommand\purpose{Навчитися створювати потоки та керувати ними в операційній
+	системі Linux. Ознайомитися з методами синхронізації потоків в операційній
+	системі Linux. Навчитися реалізовувати багатопоточний алгоритм розв’язку
+	задачі з використанням синхронізації в операційній системі Linux}
 
 \begin{document}
 \begin{normalsize}
@@ -90,240 +90,127 @@
 	\begin{enumerate}
 		\item Реалізувати заданий алгоритм в окремому потоці
 		\item Виконати розпаралелення заданого алгоритму на 2, 4, 8, 16 потоків
-		\item Реалізувати можливість зупинку роботи і відновлення, зміни пріоритету
-		певного потоку
-		\item Реалізувати можливість завершення потоку
-		\item Застосувати різні механізми синхронізації потоків. (Згідно запропонованих
-		варіантів)
-		\item Зобразити залежність час виконання – кількість потоків (для випадку без
-		синхронізації і зі синхронізацією кожного виду).
-		\item Результати виконання роботи відобразити у звіті
+		\item Реалізувати можливість зміни/встановлення пріоритету потоку (для
+		планування потоків) або встановлення відповідності виконання на ядрі
+		\item Реалізувати можливість зробити потік від’єднаним
+		\item Реалізувати можливість відміни потоку
+		\item Реалізувати синхронізацію потоків за допомогою вказаних методів
+		(згідно варіанту)
+		\item Порівняти час виконання задачі відповідно до кількості потоків і методу
+		синхронізації (чи без синхронізації).
+		\item Результати виконання роботи оформити у звіт
 	\end{enumerate}
 	\begin{center}
-		Семафор, Інтерлок-функції
+		2. Обчислити суму елементів заданого масиву (кількість елементів >10000,
+		елементи рандомні) (Синхронізація: семафор, спінблокувавння)
 	\end{center}
 
 	\section*{Хід роботи}	
 	\begin{lstlisting}
-#include "mainwindow.h"
-#include "./ui_mainwindow.h"
-#include <windows.h>
-#include <stdio.h>
-#include <iostream>
+#include "task.h"
+#include <unistd.h>
 #include "QDebug"
-#include "QLineEdit"
-#include "QTimer"
 
-struct PARAMETERS {
-	int i;
-};
+using namespace std;
 
-struct threadStatus {
-	DWORD threadID;
-	int task;
-};
+int numCpus = sysconf(_SC_NPROCESSORS_ONLN);
 
-HANDLE ghSemaphore;
-DWORD WINAPI ThreadProc(LPVOID);
-
-int* array;
-int N;
-int maxSemCount;
-int threadCount = 0;
-LONG sum = 0;
-HANDLE* aThread;
-DWORD ThreadID;
-threadStatus* s;
-
-MainWindow::MainWindow(QWidget *parent)
-: QMainWindow(parent)
-, ui(new Ui::MainWindow)
-{
-	ui->setupUi(this);
-	QTimer *timer = new QTimer(this);
-	connect(timer, &QTimer::timeout, this, &MainWindow::abc);
-	timer->start(100);
+void* thread_task(void* args) {
+	pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, 0);
+	pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, 0);
+	
+	ThreadArgs* targs = (ThreadArgs*)args;
+	int start = targs->start;
+	int end = targs->end;
+	int* sum = targs->sum;
+	int* arr = targs->arr;
+	sem_t* sem = targs->sem;
+	pthread_spinlock_t* spin = targs->spin;
+	Task* task = (Task*)targs->task;
+	
+	task->setStatus(Running);
+	int value;
+	sem_getvalue(sem, &value);
+	if (value == 0) {
+		task->setStatus(Waiting);
+	}
+	sem_wait(sem);
+	task->setStatus(Running);
+	std::srand(static_cast<unsigned int>(std::time(nullptr)));
+	for (int i = start; i < end; i++) {
+		arr[i] = rand() % 5;
+	}
+	
+	for (int i = start; i < end; i++) {
+		pthread_spin_lock(spin);
+		*sum += arr[i];
+		pthread_spin_unlock(spin);
+	}
+	sem_post(sem);
+	task->setStatus(Done);
+	pthread_exit(NULL);
 }
 
-MainWindow::~MainWindow() {
-	for (int i = 0; i < threadCount; i++)
-	CloseHandle(aThread[i]);
-	
-	CloseHandle(ghSemaphore);
-	delete ui;
-}
-
-void MainWindow::on_pushButton_clicked() {
-	ui->pushButton->setDisabled(true);
-	N = ui->le_length->text().toInt();
-	threadCount = ui->le_threads->text().toInt();
-	s = new threadStatus[threadCount];
-	maxSemCount = ui->lineEdit->text().toInt();
-	aThread = new HANDLE[threadCount];
-	array = new int[N];
-	
-	ghSemaphore = CreateSemaphore(
-	NULL,
-	maxSemCount,
-	maxSemCount,
-	NULL);
-	
-	if (ghSemaphore == NULL) {
-		qDebug() << "CreateSemaphore error: " << GetLastError();
+Task::Task(int threadCount, int threadIndex, int arrLen, int* sum, int* arr, sem_t* sem, pthread_spinlock_t* spin) {
+	pthread_attr_t attr;
+	pthread_attr_init(&attr);
+	this->attr = attr;
+	pthread_attr_setschedpolicy(&this->attr, SCHED_FIFO);
+	ThreadArgs* args = new ThreadArgs(threadCount, threadIndex, arrLen, sum, arr, sem, spin, this);
+	if (pthread_create(&this->thread, &attr, &thread_task, args)) {
+		qDebug() << "pthread_create error!";
 		return;
 	}
-	QStringList l;
-	l << "IDLE" << "LOWEST" << "BELOW_NORMAL" << "NORMAL" << "ABOVE_NORMAL" << "HIGHEST";
-	ui->prio2->addItems(l);
-	QStringList list;
-	for (int i = 0; i < threadCount; i++) {
-		list << QString::number(i);
-		
-		PARAMETERS* p = new PARAMETERS{ i };
-		s[i] = threadStatus { 0,0 };
-		aThread[i] = CreateThread(
-		NULL,
-		0,
-		(LPTHREAD_START_ROUTINE)ThreadProc,
-		p,
-		NULL,
-		&ThreadID);
-		if( aThread[i] == NULL ) {
-			qDebug() << "CreateThread error: " << GetLastError();
-			return;
-		}
-	}
-	ui->sus->addItems(list);
-	ui->res->addItems(list);
-	ui->kill->addItems(list);
-	ui->prio1->addItems(list);
+	this->threadIndex = threadIndex;
+	this->setAffinity(this->threadIndex % numCpus);
 }
 
-void MainWindow::abc() {
-	ui->le_sum->setText(QString::number(sum));
-	ui->tableWidget->setColumnCount(3);
-	ui->tableWidget->setRowCount(0);
+void Task::detach() {
+	pthread_detach(this->thread);
+	if (this->status != Done) this->status = Detached;
+}
+
+void Task::cancel() {
+	pthread_cancel(this->thread);
+	if (this->status != Done) this->status = Canceled;
+}
+
+void Task::setPriority(int n) {
+	int policy;
+	struct sched_param param;
 	
-	for (int i = 0; i < threadCount; i++) {
-		ui->tableWidget->insertRow(i);
-		for (int j = 0; j < 3; j++) {
-			QTableWidgetItem * item = new QTableWidgetItem();
-			item->setTextAlignment(Qt::AlignCenter);
-			switch (j) {
-				case 0:
-				item->setText(QString::number(s[i].threadID));
-				break;
-				case 1:
-				if (s[i].task == 0)
-				item->setText(QString::fromStdString("Not Created"));
-				else if (s[i].task == 1)
-				item->setText(QString::fromStdString("Running"));
-				else if (s[i].task == 3)
-				item->setText(QString::fromStdString("Waiting"));
-				else if (s[i].task == 4)
-				item->setText(QString::fromStdString("Done"));
-				else if (s[i].task == 5)
-				item->setText(QString::fromStdString("Suspended"));
-				else if (s[i].task == 6)
-				item->setText(QString::fromStdString("Killed"));
-				break;
-				case 2:
-				if (GetThreadPriority(aThread[i]) == THREAD_PRIORITY_IDLE)
-				item->setText(QString::fromStdString("IDLE"));
-				else if (GetThreadPriority(aThread[i]) == THREAD_PRIORITY_LOWEST)
-				item->setText(QString::fromStdString("LOWEST"));
-				else if (GetThreadPriority(aThread[i]) == THREAD_PRIORITY_BELOW_NORMAL)
-				item->setText(QString::fromStdString("BELOW_NORMAL"));
-				else if (GetThreadPriority(aThread[i]) == THREAD_PRIORITY_NORMAL)
-				item->setText(QString::fromStdString("NORMAL"));
-				else if (GetThreadPriority(aThread[i]) == THREAD_PRIORITY_ABOVE_NORMAL)
-				item->setText(QString::fromStdString("ABOVE_NORMAL"));
-				else if (GetThreadPriority(aThread[i]) == THREAD_PRIORITY_HIGHEST)
-				item->setText(QString::fromStdString("HIGHEST"));
-				break;
-			}
-			
-			ui->tableWidget->setItem(i, j, item);
-		}
+	pthread_getschedparam(this->thread, &policy, &param);
+	param.sched_priority = n;
+	pthread_setschedparam(this->thread, policy, &param);
+}
+
+int Task::getPriority() {
+	int policy;
+	struct sched_param param;
+	pthread_getschedparam(this->thread, &policy, &param);
+	return param.sched_priority;
+}
+
+void Task::setAffinity(int cpu) {
+	cpu_set_t cpuset;
+	CPU_ZERO(&cpuset);
+	CPU_SET(cpu, &cpuset);
+	if (pthread_setaffinity_np(this->thread, sizeof(cpuset), &cpuset)) {
+		qDebug() << "pthread_setaffinity_np() error";
 	}
 }
 
-DWORD WINAPI ThreadProc(LPVOID lpParam) {
-	PARAMETERS* p = (PARAMETERS*)lpParam;
-	int i = p->i;
-	int start, end;
-	
-	DWORD dwWaitResult;
-	BOOL bContinue = TRUE;
-	
-	s[i].threadID = GetCurrentThreadId();
-	
-	while (bContinue) {
-		dwWaitResult = WaitForSingleObject(
-		ghSemaphore,
-		0L);
-		
-		switch (dwWaitResult) {
-			case WAIT_OBJECT_0:
-			bContinue = FALSE;
-			
-			start = (N / threadCount) * i;
-			end = (N / threadCount) * (i + 1);
-			
-			std::srand(static_cast<unsigned int>(std::time(nullptr)));
-			s[i].task = 1;
-			for (int j = start; j < end; j++)
-			array[j] = rand();
-			for (int j = start; j < end; j++) {
-				InterlockedAdd(&sum, (LONG)array[j]);
-			}
-			s[i].task = 4;
-			
-			if (!ReleaseSemaphore(ghSemaphore, 1, NULL)) {
-				qDebug() << "ReleaseSemaphore error: " << GetLastError();
-			}
-			break;
-			
-			case WAIT_TIMEOUT:
-			s[i].task = 3;
-			break;
-		}
+int Task::getAffinity() {
+	cpu_set_t cpuset;
+	CPU_ZERO(&cpuset);
+	if (pthread_getaffinity_np(this->thread, sizeof(cpuset), &cpuset)) {
+		qDebug() << "pthread_attr_getaffinity_np() error";
 	}
-	return TRUE;
+	for (int i = 0; i < numCpus; i++) {
+		if (CPU_ISSET(i, &cpuset)) return i;
+	}
+	return -1;
 }
-
-void MainWindow::on_sus_activated(int index) {
-	SuspendThread(aThread[index]);
-	if (s[index].task != 6)
-	s[index].task = 5;
-}
-
-void MainWindow::on_res_activated(int index) {
-	ResumeThread(aThread[index]);
-	if (s[index].task != 6 || s[index].task != 4 || s[index].task != 3)
-	s[index].task = 1;
-}
-
-void MainWindow::on_kill_activated(int index) {
-	TerminateThread(aThread[index], 0);
-	s[index].task = 6;
-}
-
-void MainWindow::on_prio1_activated(int index) {
-	if (ui->prio2->currentIndex() == 0)
-	SetThreadPriority(aThread[index], THREAD_PRIORITY_IDLE);
-	else if (ui->prio2->currentIndex() == 1)
-	SetThreadPriority(aThread[index], THREAD_PRIORITY_LOWEST);
-	else if (ui->prio2->currentIndex() == 1)
-	SetThreadPriority(aThread[index], THREAD_PRIORITY_BELOW_NORMAL);
-	else if (ui->prio2->currentIndex() == 1)
-	SetThreadPriority(aThread[index], THREAD_PRIORITY_NORMAL);
-	else if (ui->prio2->currentIndex() == 1)
-	SetThreadPriority(aThread[index], THREAD_PRIORITY_ABOVE_NORMAL);
-	else if (ui->prio2->currentIndex() == 1)
-	SetThreadPriority(aThread[index], THREAD_PRIORITY_HIGHEST);
-}
-
 
 	\end{lstlisting}
 	
@@ -334,10 +221,8 @@ void MainWindow::on_prio1_activated(int index) {
 	\end{figure}
 	
 	\section*{Висновок}
-	Під час виконання лабораторної роботи я ознайомився з багатопоточністю в ОС Windows. Навчивсь
-	реалізовувати розпаралелення алгоритмів за допомогою багатопоточності в ОС
-	Windows з використанням функцій WinAPI. Навчивсь використовувати різні
-	механізми синхронізації потоків
+	Під час виконання лабораторної роботи я навчився створювати потоки та керувати ними в операційній системі Linux. Ознайомився з методами синхронізації потоків в операційній системі Linux. Навчився реалізовувати багатопоточний алгоритм розв’язку
+	задачі з використанням синхронізації в операційній системі Linux
 	
 	 
 \end{normalsize}

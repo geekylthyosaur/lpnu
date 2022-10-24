@@ -27,7 +27,6 @@ int List::partition(int columnIndex, int start, int end)
 
     for (int j = start; j < end; j++) {
         if (this->mVec[pivotIndex].compare(this->mVec[j], columnIndex)) {
-        //if (this->mVec[j] < this->mVec[pivotIndex]) {
           i++;
           this->mVec.swapItemsAt(i, j);
         }

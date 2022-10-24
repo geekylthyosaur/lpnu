@@ -8,7 +8,7 @@ App::App(Ui::MainWindow* ui)
 }
 
 void App::addPerson()
-{
+{   // Add person to list
     bool ok;
     if (ui->nLE->text().toInt(&ok) == 0)
         if (!ok)
@@ -30,6 +30,8 @@ void App::addPerson()
             throw 7;
     if (ui->heartrateLE->text().toInt() < 0 || ui->heartrateLE->text().toInt() > 300)
         throw 9;
+    if (ui->surnameLE->text().length() == 0)
+        throw 10;
 
     QString s = ui->nLE->text() + "," +
             ui->surnameLE->text() + "," +
@@ -43,7 +45,7 @@ void App::addPerson()
 }
 
 void App::updateTable()
-{
+{   // Update table
     ui->tableHealthy->setVisible(false);
     ui->tableWidget->setVisible(true);
     ui->tableDonorsAndRecipients->setVisible(false);
@@ -86,7 +88,7 @@ void App::updateTable()
 }
 
 void App::healthyPeople()
-{
+{   // Show healthy people in table
     ui->tableHealthy->setVisible(true);
     ui->tableWidget->setVisible(false);
     ui->tableDonorsAndRecipients->setVisible(false);
@@ -130,7 +132,7 @@ void App::healthyPeople()
 }
 
 void App::highPressureAndRate(int age)
-{
+{   // Show people with high pressure and rate
     ui->tableHealthy->setVisible(false);
     ui->tableWidget->setVisible(true);
     ui->tableDonorsAndRecipients->setVisible(false);
@@ -183,7 +185,7 @@ void App::highPressureAndRate(int age)
 }
 
 void App::bestDonors()
-{
+{   // Show best donors
     ui->tableHealthy->setVisible(false);
     ui->tableWidget->setVisible(true);
     ui->tableDonorsAndRecipients->setVisible(false);
@@ -233,7 +235,7 @@ void App::bestDonors()
 }
 
 void App::bestRecipients()
-{
+{   // Show best recipients
     ui->tableHealthy->setVisible(false);
     ui->tableWidget->setVisible(true);
     ui->tableDonorsAndRecipients->setVisible(false);
@@ -283,7 +285,7 @@ void App::bestRecipients()
 }
 
 void App::donorsAndRecipients()
-{
+{   // Show donors and recipients
     ui->tableHealthy->setVisible(false);
     ui->tableWidget->setVisible(true);
     ui->tableDonorsAndRecipients->setVisible(false);
@@ -330,7 +332,7 @@ void App::donorsAndRecipients()
 }
 
 void App::showDonorsTo(int i)
-{
+{   // Show donors to selected person
     this->clearTable();
     int personBloodType = list->get(i)->getBlood()->getType();
     int r = 0;
@@ -379,7 +381,7 @@ void App::showDonorsTo(int i)
 }
 
 void App::showRecipientsFrom(int i)
-{
+{   // Show recipients for selected person
     this->clearTable();
     int personBloodType = list->get(i)->getBlood()->getType();
     int r = 0;
@@ -428,7 +430,7 @@ void App::showRecipientsFrom(int i)
 }
 
 void App::clearTable()
-{
+{   // Clear table
     ui->tableWidget->setColumnCount(7);
     ui->tableWidget->setRowCount(0);
     QStringList labels;
@@ -444,7 +446,7 @@ void App::clearTable()
 }
 
 void App::readFromFile(QString fileName)
-{
+{   // Read list from file
     QFile file(fileName);
     this->list->clear();
     file >> this->list;
@@ -452,7 +454,7 @@ void App::readFromFile(QString fileName)
 }
 
 void App::writeToFile(QString fileName)
-{
+{   // Write list from file
     if (this->list->len() == 0)
         throw 1;
     QFile file(fileName);
@@ -461,12 +463,12 @@ void App::writeToFile(QString fileName)
 }
 
 void App::sort(int columnIndex)
-{
+{   // Sort list
     this->list->quickSort(columnIndex, 0, this->list->len() - 1);
 }
 
 void App::clearList()
-{
+{   // Clear list
     this->list->clear();
     ui->actionClose->setEnabled(false);
 }

@@ -30,22 +30,14 @@ private slots:
     void on_donorsRecepients_triggered();
     void on_tableWidget_cellDoubleClicked(int row, int column);
     void on_actionClose_triggered();
-    void on_actionRhD_triggered();   
+    void on_actionType_triggered();
     void on_bSortByBloodPressure_clicked();
-
     void on_bSortByRhD_clicked();
-
     void on_bSortByBloodType_clicked();
-
     void on_bShowBestRecipients_clicked();
-
     void on_bShowBestDonors_clicked();
-
     void on_bShowDonorsAndRecipients_clicked();
-
-
     void on_bShowDefault_clicked();
-
     void on_bSortByRhDAndRate_clicked();
 
 private:

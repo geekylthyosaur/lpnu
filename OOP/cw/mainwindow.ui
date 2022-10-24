@@ -428,7 +428,7 @@
      </property>
      <addaction name="actionby_Blood_Pressure"/>
      <addaction name="actionType_and_RhD"/>
-     <addaction name="actionRhD"/>
+     <addaction name="actionType"/>
      <addaction name="separator"/>
      <addaction name="actionRhD_and_Heart_Rate"/>
     </widget>
@@ -511,7 +511,7 @@
     <string>Close</string>
    </property>
   </action>
-  <action name="actionRhD">
+  <action name="actionType">
    <property name="text">
     <string>Type</string>
    </property>

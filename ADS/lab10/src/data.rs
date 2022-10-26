@@ -1,10 +1,10 @@
-use fake::{faker::lorem::en::*, Dummy, Fake};
+use fake::{faker::lorem::en::*, Fake, Dummy};
 
-#[derive(Debug, Clone, PartialEq, Ord, Eq, Dummy)]
+#[derive(Debug, Clone, PartialEq, Eq, Ord, Dummy)]
 pub struct Book {
     #[dummy(faker = "Word()")]
     name: String, 
-    #[dummy(faker = "20..10000")]
+    #[dummy(faker = "20..100")]
     price: usize,
 }
 
@@ -23,23 +23,38 @@ impl Arr {
 
     pub fn search(&self, price: usize) -> (Option<String>, usize) {
         let mut left_i = 0;
-        let mut right_i = self.len - 1;
+        let mut right_i = if let Some(res) = self.len.checked_sub(1) { res } else { return (None, 0) };
         let mut cmp_counter = 0;
 
         while left_i <= right_i {
             cmp_counter += 1;
             let mid = (left_i + right_i) / 2;
-            if self.arr[mid].price < price {
-                cmp_counter += 1;
-                left_i = mid + 1;
-            } else if self.arr[mid].price > price {
-                cmp_counter += 1;
-                right_i = mid - 1;
-            } else {
-                return (Some(self.arr[mid].name.clone()), cmp_counter);
+            print!("Left: {: <3} Mid: {: <3} Right: {: <3}\t", left_i, mid, right_i);
+            match self.arr[mid].price {
+                v if v < price => {
+                    cmp_counter += 1;
+                    println!("{} < {}", v, price);
+                    left_i = mid + 1;
+                },
+                v if v > price => {
+                    cmp_counter += 2;
+                    println!("{} > {}", v, price);
+                    right_i = if let Some(res) = mid.checked_sub(1) { res } else { break; };
+                },
+                v => {
+                    cmp_counter += 2;
+                    println!("{} == {}", v, price);
+                    return (Some(self.arr[mid].name.clone()), cmp_counter);
+                }
             }
         }
         (None, cmp_counter)
+    }
+
+    pub fn print(&self) {
+        for i in &self.arr {
+            println!("{: <20} {}", i.name, i.price);
+        }
     }
 }
 

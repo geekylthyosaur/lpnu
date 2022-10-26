@@ -19,6 +19,7 @@
 	tabsize=4,
 	keepspaces,
 	showstringspaces=false,
+	breaklines,
 }
 \graphicspath{ {./pictures} }
 \setlength{\parindent}{4em}
@@ -27,9 +28,9 @@
 \newcommand\lecturer{доцент кафедри ПЗ\\Коротєєва Т.О.}
 \newcommand\teacher{асистент кафедри ПЗ\\Франко А.В.}
 \newcommand\mygroup{ПЗ-22}
-\newcommand\lab{9}
-\newcommand\theme{НЕЛІНІЙНІ СТРУКТУРИ ДАНИХ: ЧЕРВОНО-ЧОРНІ ДЕРЕВА }
-\newcommand\purpose{ознайомитися з червоно-чорними деревами та отримати навички програмування алгоритмів, що їх обробляють. }
+\newcommand\lab{10}
+\newcommand\theme{Бінарний пошук в упорядкованому масиві}
+\newcommand\purpose{Навчитися застосовувати алгоритм бінарного пошуку при розв’язуванні задач та перевірити його ефективність на різних масивах даних. Експериментально визначити складність алгоритму}
 
 \begin{document}
 	\begin{normalsize}
@@ -87,171 +88,112 @@
 	Розробити програму, яка:
 		\begin{center}
 			\begin{enumerate}
-				\item читає з клавіатури ключі N, M (цілі, дійсні або символи залежно від варіанту завдання);
-				\item програма зберігає першу послідовність до червоно-чорного дерева;
-				\item кожного разу, коли до дерева додається новий елемент, потрібно вивести статистику (згідно з варіантом завдання);
-				\item після побудови дерева для кожного елемента другої послідовності М потрібно вивести результати наступних операцій над деревом: 
-				\item 1. Чи є елемент у дереві та його колір?
-				
-				2. Нащадок (нащадки) та його (їх) колір.
-				
-				3. Батько та його колір. 
+				\item Програма повинна забезпечувати автоматичну генерацію масиву цілих чисел (кількість елементів масиву вказується користувачем) та виведення його на екран;
+				\item Визначте кількість порівнянь та порівняйте ефективність на декількох масивах різної розмірності заповнивши табл. 1;
+				\item Представте покрокове виконання алгоритму пошуку;
+				\item Побудуйте графік залежності кількості порівнянь від кількості елементів масиву у Excel. Побудуйте у тій же системі координат графіки функцій y=n та $y=log2(n)$. Дослідивши графіки, зробіть оцінку кількості $С(n)$ порівнянь алгоритму бінарного пошуку. 
+				\item  З переліку завдань виконайте індивідуальне завдання запропоноване викладачем.
 			\end{enumerate}
-		Варіант 2: N, M – дійсні; мінімальний елемент та його колір; батько та його колір. 
+		Варіант 2: В масиві A[і], де і =20,21,…,n. зберігається інформація про вартість кожної з A[і] книг. Визначити назву книжки ввівши її ціну.
 		\end{center}
 		
 		\section*{Теоретичні відомості}
-		Дерева як засіб реалізації словників ефективні, якщо їх висота мала, але мала висота не гарантується, і в гіршому випадку дерева не більш ефективні, ніж списки. Червоно-чорні дерева – це один з типів збалансованих дерев пошуку, в яких передбачені операції балансування гарантують, що висота дерева не перевищить O(log N).
+		Бінарний, або двійковий пошук – алгоритм пошуку елементу у відсортованому масиві. Це класичний алгоритм, ще відомий як метод дихотомії (ділення навпіл).
 		
-		Червоно-чорне дерево (red-black tree) – це двійкове дерево пошуку, вершини якого розділені на червоні (red) і чорні (black). Таким чином, кожна вершина зберігає один додатковий біт – її колір.
+		Якщо елементи масиву впорядковані, задача пошуку суттєво спрощується. Згадайте, наприклад, як Ви шукаєте слово у словнику. Стандартний метод пошуку в упорядкованому масиві – це метод поділу відрізка навпіл, причому відрізком є відрізок індексів 1..n. Дійсно, нехай масив A впорядкований за зростанням і m (k < m < l) – деякий індекс. Нехай Buffer = A[m]. Тоді якщо Buffer > b, далі елемент необхідно шукати на відрізку k..m-1, а якщо Buffer < b – на відрізку m+1..l.
 		
-		При цьому повинні виконуватися певні вимоги, які гарантують, що глибина будь-яких двох листків дерева відрізняється не більше, ніж у два рази, тому дерево можна назвати збалансованим (balanced).
+		Для того, щоб збалансувати кількість обчислень в тому і іншому випадку, індекс m необхідно обирати так, щоб довжина відрізків k..m, m..l була (приблизно) рівною. Описану стратегію пошуку називають бінарним пошуком.
 		
-		Кожна вершина червоно-чорного дерева має поля color (колір), key (ключ), left (лівий нащадок), right (правий нащадок) і p (предок). Якщо у вершини відсутній нащадок або предок, відповідне поле містить значення nil. Для зручності ми будемо вважати, що значення nil, які зберігаються в полях left і right, є посиланнями на додаткові (фіктивні) листки дерева. При такому заповненні дерева кожна вершина, що містить ключ, має двох нащадків.
-		
-		Двійкове дерево пошуку називається червоно-чорним деревом, якщо воно має такі властивості (будемо називати їх RB-властивостями, red-black properties): 
+		b – елемент, місце якого необхідно знайти. Крок бінарного пошуку полягає у порівнянні шуканого елемента з середнім елементом Buffer = A[m] в діапазоні пошуку [k..l]. Алгоритм закінчує роботу при Buffer = b (тоді m – шуканий індекс). Якщо Buffer > b, пошук продовжується ліворуч від m, а якщо Buffer < b – праворуч від m. При l < k пошук закінчується, і елемент не знайдено.
 		
 		\section*{Хід роботи}
 		\begin{lstlisting}[language=C]
-mod rbtree;
+use fake::{faker::lorem::en::*, Fake, Dummy};
 
-use rbtree::RBTree;
-
-use eframe::egui::{
-	self,
-	text_edit::TextEdit,
-};
-use egui_extras::{Size, TableBuilder};
-
-fn main() {
-	let options = eframe::NativeOptions::default();
-	eframe::run_native(
-	"Stack",
-	options,
-	Box::new(|_cc| Box::new(App::default())),
-	);
+#[derive(Debug, Clone, PartialEq, Eq, Ord, Dummy)]
+pub struct Book {
+	#[dummy(faker = "Word()")]
+	name: String, 
+	#[dummy(faker = "20..100")]
+	price: usize,
 }
 
-struct App {
-	n: String,
-	m: String,
-	min: Option<usize>,
-	v_to_find: String,
-	found_key: Option<usize>,
-	ntree: RBTree<usize, f32>,
-	mtree: RBTree<usize, f32>,
+#[derive(Debug)]
+pub struct Arr {
+	arr: Vec<Book>,
+	len: usize,
 }
 
-impl Default for App {
-	fn default() -> Self {
-		Self {
-			n: String::new(),
-			m: String::new(),
-			min: None,
-			v_to_find: String::new(),
-			found_key: None,
-			ntree: RBTree::new(),
-			mtree: RBTree::new(),
+impl Arr {
+	pub fn new(len: usize) -> Self {
+		let mut arr = fake::vec![Book; len];
+		arr.sort();
+		Self { arr, len }
+	}
+	
+	pub fn search(&self, price: usize) -> (Option<String>, usize) {
+		let mut left_i = 0;
+		let mut right_i = if let Some(res) = self.len.checked_sub(1) { res } else { return (None, 0) };
+		let mut cmp_counter = 0;
+		
+		while left_i <= right_i {
+			let mid = (left_i + right_i) / 2;
+			print!("Left: {: <3} Mid: {: <3} Right: {: <3}\t", left_i, mid, right_i);
+			match self.arr[mid].price {
+				v if v < price => {
+					cmp_counter += 1;
+					println!("{} < {}", v, price);
+					left_i = mid + 1;
+				},
+				v if v > price => {
+					cmp_counter += 1;
+					println!("{} > {}", v, price);
+					right_i = if let Some(res) = mid.checked_sub(1) { res } else { break; };
+				},
+				v => {
+					println!("{} == {}", v, price);
+					return (Some(self.arr[mid].name.clone()), cmp_counter);
+				}
+			}
+		}
+		(None, cmp_counter)
+	}
+	
+	pub fn print(&self) {
+		for i in &self.arr {
+			println!("{: <20} {}", i.name, i.price);
 		}
 	}
 }
 
-impl eframe::App for App {
-	fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-		egui::CentralPanel::default().show(ctx, |ui| {
-			ui.heading("Red Black Tree");
-			ui.horizontal(|ui| {
-				if ui.button("Add").clicked() {
-					if let Ok(v) = self.n.parse::<f32>() {
-						if let Some(l) = self.ntree.get_last() {
-							self.ntree.insert(l.0 + 1, v);
-						} else {
-							self.ntree.insert(0, v);
-						}
-					}
-					let mut min = f32::MAX;
-					for (&k, &v) in self.ntree.iter() {
-						if v < min {
-							min = v;
-							self.min = Some(k);
-						}
-					}
-				}
-				ui.add(TextEdit::singleline(&mut self.n)
-				.hint_text("N")
-				.desired_width(100.0)
-				);
-			});
-			ui.horizontal(|ui| {
-				if let Some(min) = self.min {
-					ui.label(format!("Min: {}", self.ntree.get(&min).unwrap()));
-					ui.label(format!("Min Color: {:?}", self.ntree.color(min)));
-					if let Some(parent) = self.ntree.parent(min) {
-						ui.label(format!("Min Parent: {}", self.ntree.get(&parent).unwrap()));
-						ui.label(format!("Min Parent Color: {:?}", self.ntree.color(parent)));
-					}
-				}
-			});
-			ui.horizontal(|ui| {
-				if ui.button("Add").clicked() {
-					if let Ok(v) = self.m.parse::<f32>() {
-						if let Some(l) = self.mtree.get_last() {
-							self.mtree.insert(l.0 + 1, v);
-						} else {
-							self.mtree.insert(0, v);
-						}
-					}
-				}
-				ui.add(TextEdit::singleline(&mut self.m)
-				.hint_text("M")
-				.desired_width(100.0)
-				);
-			});
-			ui.horizontal(|ui| {
-				if ui.button("Find").clicked() {
-					if let Ok(v_to_find) = self.v_to_find.parse::<f32>() {
-						for (&k, &v) in self.mtree.iter() {
-							if v == v_to_find {
-								self.found_key = Some(k);
-								break;
-							}
-						}
-					}
-				}
-				ui.add(TextEdit::singleline(&mut self.v_to_find)
-				.hint_text("Find")
-				.desired_width(100.0)
-				);
-				ui.label(format!("Found: {}", self.found_key.is_some()));
-			});
-			if let Some(found) = self.found_key {
-				if let Some(left) = self.mtree.left(found) {
-					ui.horizontal(|ui| {
-						ui.label(format!("Left: {}", self.mtree.get(&left).unwrap()));
-						ui.label(format!("Color: {:?}", self.mtree.color(left)));
-					});
-				}
-				if let Some(right) = self.mtree.right(found) {
-					ui.horizontal(|ui| {
-						ui.label(format!("Right: {}", self.mtree.get(&right).unwrap()));
-						ui.label(format!("Color: {:?}", self.mtree.color(right)));
-					});
-				}
-				if let Some(parent) = self.mtree.parent(found) {
-					ui.horizontal(|ui| {
-						ui.label(format!("Parent: {}", self.mtree.get(&parent).unwrap()));
-						ui.label(format!("Color: {:?}", self.mtree.color(parent)));
-					});
-				}
-			}
-		});
+impl PartialOrd for Book {
+	fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+		self.price.partial_cmp(&other.price)
 	}
 }
 
 		\end{lstlisting}
 		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.7]{1}
+			\caption{Вигляд програми}
+		\end{figure}
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[scale=0.7]{2}
+			\caption{Покроковий вивід}
+		\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.7]{3}
+		\caption{Діаграма}
+	\end{figure}
+		
 		\section*{Висновоки}
-		Під час виконання лабораторної роботи я ознайомився з червоно-чорними деревами та отримав навички програмування алгоритмів, що їх обробляють. 
+		Під час виконання лабораторної роботи я навчився застосовувати алгоритм бінарного пошуку при розв’язуванні задач та перевірити його ефективність на різних масивах даних. Експериментально визначив складність алгоритму. 
 		
 	\end{normalsize}
 \end{document}

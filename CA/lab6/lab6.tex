@@ -91,6 +91,12 @@
 		\end{figure}
 		
 		\section*{Хід роботи}
+		Вираз у зворотньому польському записі:
+		\begin{gather}
+			\text{TOP:} \hspace{5pt}5.5\text{ D }/\text{ C A }* abs + 53\text{ C }* 6.4 + sqrt -\nonumber\\
+			\text{BOT:} \hspace{83pt}7.8\text{ C }4.4 / -  17\text{ D }* +\nonumber\\
+			\text{RES:} \hspace{130pt}\text{TOP BOT} /\nonumber
+		\end{gather}
 		\subsection*{Код програми (Асемблер)}
 		\begin{lstlisting}[language={[x86masm]Assembler}]
 			.686 
@@ -120,9 +126,11 @@
 			fld  C1    ; 5.5/D
 			fdiv D
 			
-			fabs    ; |C+A|
-			fld B
+			fld B	    ; |C*A|
 			fmul A
+			fabs
+			
+			faddp 
 			
 			fld  C2    ; sqrt(53*C+6.4)
 			fmul B
@@ -130,7 +138,6 @@
 			fsqrt 
 			
 			fsubp 
-			faddp 
 			fst TOP
 			
 			fld  C4    ; 7.8

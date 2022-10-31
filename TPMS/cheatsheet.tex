@@ -1,0 +1,78 @@
+\documentclass{article}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{indentfirst}
+\usepackage{caption}
+\usepackage{amsmath}
+\geometry{
+	a4paper,
+	left=20mm,
+	right=20mm,
+	top=20mm,
+	bottom=20mm
+}
+\lstset{
+	extendedchars=\true,
+	tabsize=4,
+	language=python,
+	showstringspaces=false,
+	showtabs=false,
+	frame=lrtb,
+	columns=fixed,
+	keepspaces,
+	breaklines=true
+}
+\graphicspath{ {pictures} }
+\setlength{\parindent}{4em}
+
+\begin{document}
+\begin{Large}
+\section*{Комбінації, перестановки, розміщення}
+\begin{list}{-}{}
+	\item Комбінації $C_n^k=\frac{n!}{k!(n-k)!}$ - \textit{Порядок не важливий}
+	\item Комбінації з повтореннями $\overline{C_n^k}=C_{n+k-1}^k$
+	\item Розміщення $A_n^k=k!C_n^k=\frac{n!}{(n-k)!}$ - \textit{Порядок важливий}
+	\item Розміщення з повтореннями $\overline{A_n^k}=n^k$
+	\item Перестановки $P_n=n!$
+	\item Перестановки з повтореннями $\overline{P_n}=\frac{n!}{n_1!n_2!...n_k!}$
+\end{list}
+
+\section*{Математичне сподівання}
+$M(x)=np)$
+\section*{Дисперсія}
+$D(x)=npq$
+
+\section*{Функція розподілу}
+\begin{enumerate}
+	\item Неспадна функція
+	\item Значення лежить в межах [0;1]
+	\item Неперервна зліва
+	\item \{0 .. 1
+\end{enumerate}
+
+\section*{Щільність розподілу}
+\begin{enumerate}
+	\item $> 0$
+	\item $\int_{-\infty}^{+\infty}f(x)dx = 1$
+\end{enumerate}
+
+\section*{Розподіли}
+\subsection*{Дискретні розподіли}
+Дано $n$ - кількість випробувань
+\begin{list}{-}{}
+	\item Пуассона ($p$ $\downarrow\downarrow$ $n$ $\uparrow\uparrow$, $np < 10$)
+	\item Геометричний (до першого успіху)
+	\item Біномний - незалежні спроби
+\end{list}
+\subsection*{Неперервні розподіли}
+\begin{list}{-}{}
+	\item Рівномірний - $\text{щільність розподілу} = const$
+	\item Показниковий - $\lambda$
+	\item Нормальний - $\sigma$ $a$
+\end{list}
+\end{Large}
+\end{document}

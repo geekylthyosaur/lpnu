@@ -17,6 +17,7 @@ pub trait Haystack {
                 }
             }
         }
+        println!("D(P,i) = {:?}", arr);
         arr
     }
 
@@ -74,16 +75,21 @@ impl<H: AsRef<[u8]>> Haystack for H {
 
         while haystack_c < haystack_len {
             if haystack[haystack_c] == needle[needle_c] {
+                println!("Shift: 1 {}", std::str::from_utf8(&haystack[haystack_c.checked_sub(needle_len).unwrap_or(0)..haystack_c]).unwrap());
                 haystack_c += 1;
                 needle_c += 1;
             }
+            //println!("{}", std::str::from_utf8(&haystack[haystack_c.checked_sub(1).unwrap_or(0)..usize::min(haystack_c+8, haystack.len())]).unwrap());
             if needle_c == needle_len {
+                println!("Found '{}': ..{}..", std::str::from_utf8(needle).unwrap(), std::str::from_utf8(&haystack[(haystack_c - needle_len).checked_sub(3).unwrap_or(0)..usize::min(haystack_c+3, haystack.len())]).unwrap());
                 return Some(haystack_c - needle_len);
             } else {
                 if haystack_c < haystack_len && haystack[haystack_c] != needle[needle_c] {
                     if needle_c != 0 {
+                        println!("Shift: {} {}", pattern_table[needle_c - 1], std::str::from_utf8(&haystack[haystack_c.checked_sub(needle_len).unwrap_or(0)..haystack_c]).unwrap());
                         needle_c = pattern_table[needle_c - 1];
                     } else {
+                        println!("Shift: 1 {}", std::str::from_utf8(&haystack[haystack_c.checked_sub(needle_len).unwrap_or(0)..haystack_c]).unwrap());
                         haystack_c += 1;
                     }
                 }

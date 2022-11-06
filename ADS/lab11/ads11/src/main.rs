@@ -1,24 +1,17 @@
-mod data; 
+mod data;
 mod search;
 
-use eframe::egui::{
-    self,
-    text_edit::TextEdit,
-};
+use eframe::egui::{self, text_edit::TextEdit};
 
 use data::Data;
 use search::Haystack;
 
 fn main() {
     let options = eframe::NativeOptions::default();
-    eframe::run_native(
-        "Stack",
-        options,
-        Box::new(|_cc| Box::new(App::default())),
-    );
+    eframe::run_native("Stack", options, Box::new(|_cc| Box::new(App::default())));
 }
 
-struct App { 
+struct App {
     data: Data,
     shortest: Option<String>,
     found_index: Option<usize>,
@@ -56,23 +49,29 @@ impl eframe::App for App {
                 if ui.button("Restart").clicked() {
                     print!("{}[2J", 27 as char);
                     self.data = Data::new();
-                    self.shortest = Some(self.data.text1.iter().fold(self.data.text1[0].clone(), |acc, item| {
-                        if item.len() < acc.len() {
-                            item.clone()
-                        } else {
-                            acc
-                        }
-                    }));
+                    self.shortest = Some(self.data.text1.iter().fold(
+                        self.data.text1[0].clone(),
+                        |acc, item| {
+                            if item.len() < acc.len() {
+                                item.clone()
+                            } else {
+                                acc
+                            }
+                        },
+                    ));
                 }
                 if self.shortest.is_none() {
                     print!("{}[2J", 27 as char);
-                    self.shortest = Some(self.data.text1.iter().fold(self.data.text1[0].clone(), |acc, item| {
-                        if item.len() < acc.len() {
-                            item.clone()
-                        } else {
-                            acc
-                        }
-                    }));
+                    self.shortest = Some(self.data.text1.iter().fold(
+                        self.data.text1[0].clone(),
+                        |acc, item| {
+                            if item.len() < acc.len() {
+                                item.clone()
+                            } else {
+                                acc
+                            }
+                        },
+                    ));
                 }
                 if let Some(shortest) = &self.shortest {
                     ui.label(format!("Shortest word in first test: {}", shortest));
@@ -92,13 +91,17 @@ impl eframe::App for App {
                 ui.horizontal(|ui| {
                     if ui.button("Search in second text").clicked() {
                         print!("{}[2J", 27 as char);
-                        self.found_index = self.data.text2.first_indexof_needle(&self.str_to_search);
+                        self.found_index =
+                            self.data.text2.first_indexof_needle(&self.str_to_search);
                     }
                 });
+                if ui.button("Fill").clicked() {
+                    self.str_to_search = "abcabc".to_string();
+                    self.data.text2 = "abcabdabcabc".to_string();
+                }
                 ui.label(format!("Found index: {:?}", self.found_index));
             }
             ui.add(TextEdit::multiline(&mut self.data.text2));
         });
     }
 }
-

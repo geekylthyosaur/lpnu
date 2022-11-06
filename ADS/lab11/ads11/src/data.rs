@@ -2,7 +2,7 @@ use fake::{faker::lorem::en::*, Fake};
 
 #[derive(Default)]
 pub struct Data {
-    pub text1: Vec<String>, 
+    pub text1: Vec<String>,
     pub text2: String,
 }
 
@@ -14,4 +14,3 @@ impl Data {
         }
     }
 }
-

@@ -1,4 +1,3 @@
 #pragma once
-namespace sum {
-	int sumUp(int* arr, int len);
-}
+
+int libSumUp(int* arr, int len);

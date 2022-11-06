@@ -1,1 +1,1 @@
-int soSumUp(int* arr, int len);
+extern "C" int soSumUp(int* arr, int len);

@@ -131,8 +131,12 @@ fn boyer_moore_search(
         println!("Comparisons: {}", comparisons);
 
         if i < text.len() - pattern.len() {
-            if shift > 0 {
-                println!("Shift: {}", shift);
+            if skip_bc > 0 {
+                println!("Bad character shift: {}", skip_bc);
+            }
+
+            if skip_gs > 0 {
+                println!("Good suffix shift: {}", skip_gs);
             }
 
             print!("Press Enter to continue ...\r");
@@ -242,8 +246,8 @@ impl eframe::App for App {
                     }
                 });
                 if ui.button("Fill").clicked() {
-                    self.str_to_search = "abcabc".to_string();
-                    self.data = "abdabcdbcabcdbcd".to_string();
+                    self.str_to_search = "abc".to_string();
+                    self.data = "abddbcdbcabcdbcd".to_string();
                 }
                 ui.label(format!("Found index: {:?}", self.found_index));
             }

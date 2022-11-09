@@ -26,7 +26,7 @@ int main() {
     DLLSUMUP dllSumUp;
     BOOL fFreeResult, fRunTimeLinkSuccess = FALSE;
 
-    hinstLib = LoadLibrary(TEXT("dllSum.dll"));
+    hinstLib = LoadLibrary(TEXT("notDllSum.dll"));
 
     if (hinstLib != NULL) {
         dllSumUp = (DLLSUMUP)GetProcAddress(hinstLib, "dllSumUp");

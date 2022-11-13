@@ -97,7 +97,7 @@ fn boyer_moore_search(
         let mut mismatched = false;
         let mut mismatch_index = 0;
         let mut skip_bc = 0;
-        let mut skip_gs = 0;
+        let mut _skip_gs = 0;
         alignments += 1;
 
         for j in (0..pattern.len()).rev() {
@@ -105,8 +105,8 @@ fn boyer_moore_search(
 
             if pattern[j] != text[i + j] {
                 skip_bc = bm.bad_char_rule(j, text[i + j] as char)?;
-                skip_gs = bm.good_suffix_rule(j)?;
-                shift = *[shift, skip_bc, skip_gs].iter().max().unwrap();
+                _skip_gs = bm.good_suffix_rule(j)?;
+                shift = *[shift, skip_bc].iter().max().unwrap();
                 mismatched = true;
                 mismatch_index = j;
                 break;
@@ -115,8 +115,7 @@ fn boyer_moore_search(
 
         if !mismatched {
             occurrences.push(i);
-            skip_gs = bm.match_skip();
-            shift = *[shift, skip_gs].iter().max().unwrap();
+            _skip_gs = bm.match_skip();
         }
         if !skip {
         visualize(
@@ -133,10 +132,6 @@ fn boyer_moore_search(
         if i < text.len() - pattern.len() {
             if skip_bc > 0 {
                 println!("Bad character shift: {}", skip_bc);
-            }
-
-            if skip_gs > 0 {
-                println!("Good suffix shift: {}", skip_gs);
             }
 
             print!("Press Enter to continue ...\r");
@@ -166,7 +161,6 @@ fn run(text: &str, pattern: &str, skip: bool) -> Result<()> {
 
     const ALPHABET: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ";
 
-    // Time (in seconds) to sleep between character comparisons during visualization
     const SLEEP_TIME: f32 = 0.25;
 
     let bm = BoyerMoore::new(pattern, ALPHABET)
@@ -247,7 +241,7 @@ impl eframe::App for App {
                 });
                 if ui.button("Fill").clicked() {
                     self.str_to_search = "abc".to_string();
-                    self.data = "abddbcdbcabcdbcd".to_string();
+                    self.data = "abddbcdbcabcdabc".to_string();
                 }
                 ui.label(format!("Found index: {:?}", self.found_index));
             }

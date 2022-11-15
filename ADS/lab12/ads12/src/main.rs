@@ -10,9 +10,6 @@ use anyhow::{Context, Result};
 use log::error;
 use termcolor::{Color, ColorChoice, ColorSpec, StandardStream, WriteColor};
 
-use boyer_moore::BoyerMoore;
-
-/// Prints text and pattern with appropriate colors.
 fn visualize(
     mut stdout: &mut StandardStream,
     text: &str,
@@ -75,10 +72,17 @@ fn visualize(
     Ok(())
 }
 
-/// Searches for all occurrences of `pattern` in `text`.
+fn find_stop_char(c: char, s: String, i: usize) -> usize {
+    let p = s.rfind(c);
+
+    if let Some(p) = p {
+        if i > p { return i - p }
+        else { return 1 }
+    } else { return s.len() }
+}
+
 fn boyer_moore_search(
     pattern: &str,
-    bm: BoyerMoore,
     text: &str,
     sleep_time: f32,
     stdout: &mut StandardStream,
@@ -96,17 +100,13 @@ fn boyer_moore_search(
         let mut shift = 1;
         let mut mismatched = false;
         let mut mismatch_index = 0;
-        let mut skip_bc = 0;
-        let mut _skip_gs = 0;
         alignments += 1;
 
         for j in (0..pattern.len()).rev() {
             comparisons += 1;
 
             if pattern[j] != text[i + j] {
-                skip_bc = bm.bad_char_rule(j, text[i + j] as char)?;
-                _skip_gs = bm.good_suffix_rule(j)?;
-                shift = *[shift, skip_bc].iter().max().unwrap();
+                shift = find_stop_char(text[i + j] as char, std::str::from_utf8(pattern).unwrap().to_string(), j);
                 mismatched = true;
                 mismatch_index = j;
                 break;
@@ -115,7 +115,6 @@ fn boyer_moore_search(
 
         if !mismatched {
             occurrences.push(i);
-            _skip_gs = bm.match_skip();
         }
         if !skip {
         visualize(
@@ -127,11 +126,9 @@ fn boyer_moore_search(
             !mismatched,
             sleep_time,
         )?;
-        println!("Comparisons: {}", comparisons);
-
         if i < text.len() - pattern.len() {
-            if skip_bc > 0 {
-                println!("Bad character shift: {}", skip_bc);
+            if shift > 0 {
+                println!("Shift: {}", shift);
             }
 
             print!("Press Enter to continue ...\r");
@@ -159,15 +156,11 @@ fn boyer_moore_search(
 fn run(text: &str, pattern: &str, skip: bool) -> Result<()> {
     let mut stdout = StandardStream::stdout(ColorChoice::Auto);
 
-    const ALPHABET: &str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ";
-
     const SLEEP_TIME: f32 = 0.25;
 
-    let bm = BoyerMoore::new(pattern, ALPHABET)
-        .with_context(|| "Failed to initialize Boyer-Moore object")?;
     println!();
 
-    match boyer_moore_search(pattern, bm, text, SLEEP_TIME, &mut stdout, skip) {
+    match boyer_moore_search(pattern, text, SLEEP_TIME, &mut stdout, skip) {
         Ok((occurrences, _, _)) => println!(
             "Occurrences: {:#?}",
             occurrences,
@@ -240,8 +233,8 @@ impl eframe::App for App {
                     }
                 });
                 if ui.button("Fill").clicked() {
-                    self.str_to_search = "abc".to_string();
-                    self.data = "abddbcdbcabcdabc".to_string();
+                    self.str_to_search = "aabc".to_string();
+                    self.data = "abddbcdbcaabcdcabcaabcaa".to_string();
                 }
                 ui.label(format!("Found index: {:?}", self.found_index));
             }

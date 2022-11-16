@@ -88,64 +88,54 @@
 		\section*{Індивідуальне завдання}
 		\begin{figure}[H]
 			\centering
-			\includegraphics[scale=0.7]{v2}
+			\includegraphics[scale=0.7]{2}
 		\end{figure}
 		
 		\section*{Хід роботи}
 		\subsection*{Код програми}
 		\begin{lstlisting}
-#include "main.h"
-#include "stm32f4xx_rcc.h"
+#include "stm32f4xx.h"
 #include "stm32f4xx_gpio.h"
 
 static __IO uint32_t uwTimingDelay;
 RCC_ClocksTypeDef RCC_Clocks;
-static void Delay(__IO uint32_t nTime);
-static GPIO_InitTypeDef gpio_a;
-static GPIO_InitTypeDef gpio_b;
 
-int main(void)
-{
-	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOA, ENABLE);
+static void Delay(__IO uint32_t nTime);
+static GPIO_InitTypeDef gpio_d;
+static GPIO_InitTypeDef gpio_e;
+
+int main(void) {
+	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOE, ENABLE);
 	
-	GPIO_StructInit(&gpio_a);
-	gpio_a.GPIO_Pin = GPIO_Pin_0;
-	gpio_a.GPIO_Mode = GPIO_Mode_IN;   
-	GPIO_Init(GPIOA, &gpio_a); 
+	GPIO_StructInit(&gpio_d);
+	gpio_d.GPIO_Pin = GPIO_Pin_0;
+	gpio_d.GPIO_Mode = GPIO_Mode_IN;   
+	GPIO_Init(GPIOD, &gpio_d); 
 	
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOB, ENABLE); 
-	GPIO_StructInit(&gpio_b);
-	gpio_b.GPIO_Pin = GPIO_Pin_2;
-	gpio_b.GPIO_Mode = GPIO_Mode_OUT;   
-	GPIO_Init(GPIOB, &gpio_b);  
-	while (1) 
-	{
-		if(GPIO_ReadInputDataBit(GPIOA,GPIO_Pin_0) == 0) 
-		{
-			GPIO_SetBits(GPIOB,GPIO_Pin_2);
-		}
+	GPIO_StructInit(&gpio_e);
+	gpio_e.GPIO_Pin = GPIO_Pin_0;
+	gpio_e.GPIO_Mode = GPIO_Mode_OUT;   
+	GPIO_Init(GPIOE, &gpio_e);  
+	while (1) {
+		if(GPIO_ReadInputDataBit(GPIOD,GPIO_Pin_0) == 0) 
+		GPIO_SetBits(GPIOE,GPIO_Pin_0);
 		else
-		{
-			GPIO_ResetBits(GPIOB,GPIO_Pin_2);
-		}
+		GPIO_ResetBits(GPIOE,GPIO_Pin_0);
 	}
-	
 }
 
-void Delay(__IO uint32_t nTime)
-{ 
+void Delay(__IO uint32_t nTime) { 
 	uwTimingDelay = nTime;
 	
 	while(uwTimingDelay != 0);
 }
 
-void TimingDelay_Decrement(void)
-{
-	if (uwTimingDelay != 0x00)
-	{ 
-		uwTimingDelay--;
-	}
+void TimingDelay_Decrement(void) {
+	if (uwTimingDelay != 0x00) 
+	uwTimingDelay--;
 }
+
 		\end{lstlisting}
 
 \begin{figure}[H]

@@ -11,11 +11,15 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    request.cpp \
+    response.cpp \
     server.cpp \
     worker.cpp
 
 HEADERS += \
     mainwindow.h \
+    request.h \
+    response.h \
     server.h \
     worker.h
 

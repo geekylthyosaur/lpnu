@@ -7,10 +7,8 @@
 #include "unistd.h"
 #include "iostream"
 
-struct Request {
-    QVector<QString> paths;
-    QVector<QString> extensions;
-};
+#include <request.h>
+#include <response.h>
 
 class Worker {
 private:
@@ -18,6 +16,7 @@ private:
 public:
     Worker();
     QQueue<Request>* requests;
+    QQueue<Response>* responses;
 
     static void* task(void*);
 };

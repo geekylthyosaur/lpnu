@@ -12,7 +12,7 @@ Server::Server() {
     paths->append(QString::fromStdString("/home/*/*"));
     paths->append(QString::fromStdString("/home/*/*"));
 
-    extensions->append(QString::fromStdString(".pdf"));
+    extensions->append(QString::fromStdString(".jpg"));
     extensions->append(QString::fromStdString(".png"));
 
     Request* r = new Request(receiver_id, paths, extensions);

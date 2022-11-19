@@ -44,10 +44,9 @@ void* Worker::task(void* p) {
             for (QString extension : *request.extensions)
                 cmd += " -name \"*" + extension + "\" -o";
             cmd += " -name \"\" ')'";
-            cmd += " -printf \"%f,%t\n\"";
+            cmd += " -printf \"%f,%Td-%Tm-%TY %TH:%TM:%.2TS\n\"";
 
             qDebug() << cmd;
-
             FILE* fp = popen(cmd.toStdString().c_str(), "r");
             char buf[1024];
             QString response;
@@ -56,8 +55,8 @@ void* Worker::task(void* p) {
 
             qDebug() << response;
 
-            requests->dequeue();
             responses->enqueue(Response(request.receiver_id, response));
+            requests->dequeue();
         }
         sleep(5);
     }

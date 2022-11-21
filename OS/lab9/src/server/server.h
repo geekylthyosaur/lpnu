@@ -8,6 +8,8 @@ private:
     Worker * worker;
 public:
     Server();
+    void request(QString request_str);
+    Response* response();
 };
 
 #endif // SERVER_H

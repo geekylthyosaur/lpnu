@@ -1,13 +1,13 @@
 #include "worker.h"
 
 struct WorkerParams {
-    QQueue<Request>* requests;
-    QQueue<Response>* responses;
+    QQueue<Request*>* requests;
+    QQueue<Response*>* responses;
 };
 
 Worker::Worker() {
-    this->requests = new QQueue<Request>();
-    this->responses = new QQueue<Response>();
+    this->requests = new QQueue<Request*>();
+    this->responses = new QQueue<Response*>();
     WorkerParams* params = new WorkerParams {
         this->requests,
         this->responses,
@@ -29,19 +29,19 @@ void* Worker::task(void* p) {
      */
 
     WorkerParams* params = (WorkerParams*)p;
-    QQueue<Request>* requests = params->requests;
-    QQueue<Response>* responses = params->responses;
+    QQueue<Request*>* requests = params->requests;
+    QQueue<Response*>* responses = params->responses;
     while (1) {
         while (!requests->isEmpty()) {
-            Request request = requests->head();
+            Request* request = requests->head();
             QString cmd = "du -shc ";
-            for (QString path : *request.paths)
+            for (QString path : *request->paths)
                 cmd += path + " ";
             cmd += "| grep total | cut -f 1; find ";
-            for (QString path : *request.paths)
+            for (QString path : *request->paths)
                 cmd += path + " ";
             cmd += "-mindepth 1 -maxdepth 1 '('";
-            for (QString extension : *request.extensions)
+            for (QString extension : *request->extensions)
                 cmd += " -name \"*" + extension + "\" -o";
             cmd += " -name \"\" ')'";
             cmd += " -printf \"%f,%Td-%Tm-%TY %TH:%TM:%.2TS\n\"";
@@ -55,7 +55,8 @@ void* Worker::task(void* p) {
 
             qDebug() << response;
 
-            responses->enqueue(Response(request.receiver_id, response));
+            if (!response.isEmpty())
+                responses->enqueue(new Response(request->receiver_id, response));
             requests->dequeue();
         }
         sleep(5);

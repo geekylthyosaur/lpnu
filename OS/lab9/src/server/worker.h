@@ -15,8 +15,8 @@ private:
     pthread_t thread;
 public:
     Worker();
-    QQueue<Request>* requests;
-    QQueue<Response>* responses;
+    QQueue<Request*>* requests;
+    QQueue<Response*>* responses;
 
     static void* task(void*);
 };

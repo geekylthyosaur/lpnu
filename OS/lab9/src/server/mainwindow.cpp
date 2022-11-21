@@ -7,12 +7,19 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    Server * server = new Server();
 }
 
-MainWindow::~MainWindow()
-{
+MainWindow::~MainWindow() {
     delete ui;
 }
 
+void MainWindow::on_pushButton_clicked() {
+    Server * server = new Server();
+
+    /*
+     * TODO
+     *
+     * server.request(QString request) - add request to queue
+     * Response* response = server.response() = get latest response from queue
+     */
+}

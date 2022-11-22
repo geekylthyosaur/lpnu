@@ -12,6 +12,9 @@ public:
     int receiver_id;
     QVector<QString>* paths;
     QVector<QString>* extensions;
+
+private:
+    char separator = '@';
 };
 
 #endif // REQUEST_H

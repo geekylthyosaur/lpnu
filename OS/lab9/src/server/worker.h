@@ -19,6 +19,10 @@ public:
     QQueue<Response*>* responses;
 
     static void* task(void*);
+
+private:
+    static char iseparator;
+    static char separator;
 };
 
 #endif // WORKER_H

@@ -12,6 +12,7 @@ Worker::Worker() {
         this->requests,
         this->responses,
     };
+
     if (pthread_create(&this->thread, NULL, &task, (void*)params)) {
         qDebug() << "pthread_create error!";
         return;
@@ -33,8 +34,9 @@ void* Worker::task(void* p) {
     QQueue<Response*>* responses = params->responses;
     while (1) {
         while (!requests->isEmpty()) {
+            //qDebug() << requests;
             Request* request = requests->head();
-            QString cmd = "du -shc ";
+            QString cmd = "(du -shc ";
             for (QString path : *request->paths)
                 cmd += path + " ";
             cmd += "| grep total | cut -f 1; find ";
@@ -44,16 +46,19 @@ void* Worker::task(void* p) {
             for (QString extension : *request->extensions)
                 cmd += " -name \"*" + extension + "\" -o";
             cmd += " -name \"\" ')'";
-            cmd += " -printf \"%f,%Td-%Tm-%TY %TH:%TM:%.2TS\n\"";
+            cmd += " -printf \"%f,%Td-%Tm-%TY %TH:%TM:%.2TS";
+            cmd += iseparator;
+            cmd += "\") | tr '\n' ";
+            cmd += separator;
 
-            qDebug() << cmd;
+            //qDebug() << cmd;
             FILE* fp = popen(cmd.toStdString().c_str(), "r");
             char buf[1024];
             QString response;
             while (fgets(buf, 1024, fp))
                 response += QString::fromStdString(buf);
 
-            qDebug() << response;
+            //qDebug() << response;
 
             if (!response.isEmpty())
                 responses->enqueue(new Response(request->receiver_id, response));

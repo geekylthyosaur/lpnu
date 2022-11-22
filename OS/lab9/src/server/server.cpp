@@ -11,5 +11,9 @@ void Server::request(QString request_str) {
 }
 
 Response* Server::response() {
-    return this->worker->responses->dequeue();
+    if (this->worker->responses->isEmpty()) {
+        return NULL;
+    } else {
+        return this->worker->responses->dequeue();
+    }
 }

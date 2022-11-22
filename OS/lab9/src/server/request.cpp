@@ -4,7 +4,7 @@ Request::Request(QString request) {
     QVector<QString>* paths = new QVector<QString>();
     QVector<QString>* extensions = new QVector<QString>();
 
-    auto rows = request.split("\n");
+    auto rows = request.split(separator);
     int receiver_id = rows[0].toInt();
 
     auto paths_tokens = rows[1].split(",");
@@ -16,7 +16,9 @@ Request::Request(QString request) {
     for (QString extension : extensions_tokens)
         extensions->append(extension);
 
-    Request(receiver_id, paths, extensions);
+    this->receiver_id = receiver_id;
+    this->paths = paths;
+    this->extensions = extensions;
 }
 
 Request::Request(int receiver_id, QVector<QString> *paths, QVector<QString>* extensions) {

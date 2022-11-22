@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>744</width>
-    <height>694</height>
+    <width>740</width>
+    <height>667</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>740</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>740</width>
+    <height>800</height>
+   </size>
   </property>
   <property name="font">
    <font>
@@ -81,9 +93,6 @@
        <weight>50</weight>
        <bold>false</bold>
       </font>
-     </property>
-     <property name="textAlignment">
-      <set>AlignCenter</set>
      </property>
      <property name="background">
       <color>
@@ -310,16 +319,6 @@ QPushButton:pressed{background-color: rgb(243, 219, 205);}
     </property>
    </widget>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>744</width>
-     <height>22</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QStatusBar" name="statusbar">
    <property name="font">
     <font>
@@ -332,6 +331,16 @@ QPushButton:pressed{background-color: rgb(243, 219, 205);}
    <property name="styleSheet">
     <string notr="true">color: rgb(248, 238, 224);
 </string>
+   </property>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>740</width>
+     <height>20</height>
+    </rect>
    </property>
   </widget>
  </widget>

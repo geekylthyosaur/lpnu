@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Rent a Car</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+  <body>
+    <div class="container">
+      <h1>Rent a Car</h1>
+      <form id="rental-form">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="surname">Surname:</label>
+        <input type="text" id="surname" name="surname" required>
+
+        <label for="car-model">Choose car model</label>
+        <select id="car-model" required>
+          <option value="model1">Model 1</option>
+          <option value="model2">Model 2</option>
+          <option value="model3">Model 3</option>
+          <option value="model4">Model 4</option>
+        </select>
+
+        <label for="town">Choose a town:</label>
+        <input type="text" id="town" name="town" list="towns" required>
+        <datalist id="towns">
+          <option value="Town1">
+          <option value="Town2">
+          <option value="Town3">
+          <option value="Town4">
+          <option value="Town5">
+          <option value="Town6">
+          <option value="Town7">
+          <option value="Town8">
+          <option value="Town9">
+        </datalist>
+
+        <label for="start-date">Start Date:</label>
+        <input type="date" id="start-date" name="start-date" required>
+
+        <label for="end-date">End Date:</label>
+        <input type="date" id="end-date" name="end-date" required>
+
+        <label for="license">Do you have a driver's license?</label>
+        <input type="checkbox" id="license" name="license">
+
+        <div id="driver-info">
+          <label for="driver">Rent a driver?</label>
+          <input type="checkbox" id="driver" name="driver" checked>
+        </div>
+
+        <div class="buttons">
+          <button type="submit">Rent Car</button>
+          <button type="button" onclick="cancel()">Cancel</button>
+        </div>
+      </form>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>
+

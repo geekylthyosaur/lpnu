@@ -3,6 +3,12 @@
 
 <head>
   <title>Student Table</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="description" content="My PWA">
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta name="theme-color" content="#4285f4" />
   <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -11,7 +17,7 @@
 <body>
   <header>
     <div class="logo">
-      <a href="#"><img src="./images/icons/Icon-48.png" alt="Logo" style="filter: invert(0.82); margin-bottom: -10px; margin-top: -10px"></a>
+      <a href="#"><img src="./images/icon-48x48.png" alt="Logo" style="filter: invert(0.82); margin-bottom: -10px; margin-top: -10px"></a>
     </div>
 
 
@@ -78,45 +84,46 @@
 
   <div id="add-modal-wrapper" class="add-modal-wrapper">
     <div class="add-modal">
-      <div style="display: grid; grid-template-columns: 1fr 1fr;">
-        <h2 style="grid-column: 1;">Add student</h2>
-        <button id="add-modal-close" class="add-modal-close fa fa-close btn" style="grid-column: 2; height: 30px;"></button>
-      </div>
-      <hr>
-      <div class="add-modal-form">
-        <div class="form-group">
-          <label for="id">First Name:</label>
-          <input type="text" id="id" name="id" hidden/>
+      <form id="add-form" action="">
+        <div style="display: grid; grid-template-columns: 1fr 1fr;">
+          <h2 style="grid-column: 1;">Add student</h2>
+          <button id="add-modal-close" class="add-modal-close fa fa-close btn" style="grid-column: 2; height: 30px;"></button>
         </div>
-        <div class="form-group">
-          <label for="group">Group:</label>
-          <select id="group" name="group">
-            <option value="group1">Group 1</option>
-            <option value="group2">Group 2</option>
-            <option value="group3">Group 3</option>
-          </select>
+        <hr>
+        <div class="add-modal-form">
+          <div class="form-group">
+            <input type="text" id="add-form-field-id" name="id" hidden/>
+          </div>
+          <div class="form-group">
+            <label for="add-form-field-group">Group:</label>
+            <select id="add-form-field-group" name="group">
+              <option value="group1" selected>Group 1</option>
+              <option value="group2">Group 2</option>
+              <option value="group3">Group 3</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="add-form-field-firstName">First Name:</label>
+            <input type="text" id="add-form-field-firstName" name="firstName"/>
+          </div>
+          <div class="form-group">
+            <label for="add-form-field-lastName">Last Name:</label>
+            <input type="text" id="add-form-field-lastName" name="lastName"/>
+          </div>
+          <div class="form-group">
+            <label for="add-form-field-gender">Gender:</label>
+            <select id="add-form-field-gender" name="gender">
+              <option value="male" selected>Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="add-form-field-birthday">Birthday:</label>
+            <input type="date" id="add-form-field-birthday" name="birthday"/>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="firstName">First Name:</label>
-          <input type="text" id="firstName" name="firstName"/>
-        </div>
-        <div class="form-group">
-          <label for="lastName">Last Name:</label>
-          <input type="text" id="lastName" name="lastName"/>
-        </div>
-        <div class="form-group">
-          <label for="gender">Gender:</label>
-          <select id="gender" name="gender">
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="birthday">Birthday:</label>
-          <input type="date" id="birthday" name="birthday"/>
-        </div>
-      </div>
+      </form>
       <hr />
       <button id="add-modal-create" class="add-modal-create btn">Create</button>
     </div>

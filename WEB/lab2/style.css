@@ -196,11 +196,12 @@ a {
 
 .add-modal, .warning-modal {
     background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
     border: 1px solid #888;
-    width: 60%;
-    max-width: 600px;
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    position: relative;
+    top: 20%;
 }
 
 .add-modal-close, .add-modal-create, .warning-modal-close {

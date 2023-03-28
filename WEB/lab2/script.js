@@ -44,78 +44,78 @@ const modalCreateBtn = document.getElementById("add-modal-create");
 const addForm = document.getElementById("add-form");
 
 addButton.addEventListener("click", () => {
+  const a = document.getElementById("add-form-title");
+  const b = document.getElementById("add-modal-create");
+  a.innerHTML = "Add Student";
+  b.innerHTML = "Add";
   addModal.style.display = "block";
-  addStudent();
 })
 
 modalCloseBtn.addEventListener('click', () => {
   addModal.style.display = "none";
 });
 
-function addStudent() {
+function addStudent(button) {
   const fieldId = document.getElementById("add-form-field-id");
   const fieldGroup = document.getElementById("add-form-field-group");
   const fieldFirstName = document.getElementById("add-form-field-firstName");
   const fieldLastName = document.getElementById("add-form-field-lastName");
   const fieldGender = document.getElementById("add-form-field-gender");
   const fieldBirthday = document.getElementById("add-form-field-birthday");
-  const id = fieldId.value;
   const name = fieldFirstName.value + " " + fieldLastName.value;
   const group = fieldGroup.options[fieldGroup.selectedIndex].textContent;
   const gender = fieldGender.options[fieldGender.selectedIndex].textContent;
   const birthday = fieldBirthday.value;
-  modalCreateBtn.addEventListener('click', () => {
-    addModal.style.display = "none";
-    addForm.reset();
+  addModal.style.display = "none";
 
-    const table = document.getElementById("table");
-    const newRow = table.insertRow();
-    const checkboxCell = newRow.insertCell();
-    const checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.className = "check";
-    checkboxCell.appendChild(checkbox);
+  const table = document.getElementById("table");
+  const newRow = table.insertRow();
+  const checkboxCell = newRow.insertCell();
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.className = "check";
+  checkboxCell.appendChild(checkbox);
 
-    const groupCell = newRow.insertCell();
-    groupCell.textContent = group;
+  const groupCell = newRow.insertCell();
+  groupCell.textContent = group;
 
-    const nameCell = newRow.insertCell();
-    nameCell.innerHTML = name;
+  const nameCell = newRow.insertCell();
+  nameCell.innerHTML = name;
 
-    const genderCell = newRow.insertCell();
-    genderCell.textContent = gender;
+  const genderCell = newRow.insertCell();
+  genderCell.textContent = gender;
 
-    const dobCell = newRow.insertCell();
-    dobCell.innerHTML = birthday;
+  const dobCell = newRow.insertCell();
+  dobCell.innerHTML = birthday;
 
-    const statusCell = newRow.insertCell();
-    const statusDiv = document.createElement("div");
-    statusDiv.className = "status-active";
-    statusCell.appendChild(statusDiv);
+  const statusCell = newRow.insertCell();
+  const statusDiv = document.createElement("div");
+  statusDiv.className = "status-active";
+  statusCell.appendChild(statusDiv);
 
-    const actionCell = newRow.insertCell();
-    const editButton = document.createElement("button");
-    editButton.className = "edit-row btn fa fa-edit";
-    editButton.onclick = function () {
-      editRow(this);
-    };
-    actionCell.appendChild(editButton);
+  const actionCell = newRow.insertCell();
+  const editButton = document.createElement("button");
+  editButton.className = "edit-row btn fa fa-edit";
+  editButton.onclick = function () {
+    editRow(this);
+  };
+  actionCell.appendChild(editButton);
 
-    const deleteButton = document.createElement("button");
-    deleteButton.className = "delete-row btn fa fa-remove";
-    deleteButton.onclick = function () {
-      deleteRow(this);
-    };
-    actionCell.appendChild(deleteButton);
-  });
+  const deleteButton = document.createElement("button");
+  deleteButton.className = "delete-row btn fa fa-remove";
+  deleteButton.onclick = function () {
+    deleteRow(this);
+  };
+  actionCell.appendChild(deleteButton);
   const json = {
-    "id": id,
+    "id": fieldId.value,
     "group": group,
     "name": name,
     "gender": gender,
     "birthday": birthday,
   };
-  return JSON.stringify(json);
+  addForm.reset();
+  console.log(JSON.stringify(json));
 }
 
 window.onclick = function (event) {
@@ -128,10 +128,20 @@ window.onclick = function (event) {
 
 // Edit row of table
 function editRow(button) {
-  alert("Edit button clicked!");
+  const a = document.getElementById("add-form-title");
+  const b = document.getElementById("add-modal-create");
+  a.innerHTML = "Edit Student";
+  b.innerHTML = "Edit";
+  addModal.style.display = "block";
+  const row = button.closest("tr");
+  row.parentNode.removeChild(row);
+  // TODO: fill with data from table
 }
 
 
+modalCreateBtn.addEventListener('click', () => {
+  addStudent();
+});
 
 // Profile && notification headers
 const profileHeaderTrigger = document.getElementById("profile-header-trigger");

@@ -224,3 +224,7 @@ a {
     width: 100%;
     margin-bottom: 10px;
 }
+
+.invalid {
+  border: 2px solid red;
+}

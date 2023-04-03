@@ -55,7 +55,45 @@ addBtn.addEventListener("click", () => {
 
 addModalCloseBtn.addEventListener('click', () => {
   addModal.style.display = "none";
+  const invalids = document.querySelectorAll(".invalid");
+  invalids.forEach((invalid) => {
+    invalid.classList.remove("invalid");
+  });
+  addForm.reset();
 });
+
+function validateStudent(student) {
+  valid = true;
+
+  const fieldGroup = document.getElementById("add-form-field-group");
+  const fieldFirstName = document.getElementById("add-form-field-firstName");
+  const fieldLastName = document.getElementById("add-form-field-lastName");
+  const fieldGender = document.getElementById("add-form-field-gender");
+  const fieldBirthday = document.getElementById("add-form-field-birthday");
+
+  if (student.name.split(" ")[0] === "") {
+    fieldFirstName.classList.add("invalid");
+    valid = false;
+  } else {
+    fieldFirstName.classList.remove("invalid");
+  }
+
+  if (student.name.split(" ")[1] === "") {
+    fieldLastName.classList.add("invalid");
+    valid = false;
+  } else {
+    fieldLastName.classList.remove("invalid");
+  }
+
+  const birthday = new Date(student.birthday);
+  if (isNaN(birthday.getTime()) || birthday > new Date()) {
+    fieldBirthday.classList.add("invalid");
+    valid = false;
+  } else {
+    fieldBirthday.classList.remove("invalid");
+  }
+  return valid;
+}
 
 function addStudent() {
   const fieldId = document.getElementById("add-form-field-id");
@@ -70,7 +108,6 @@ function addStudent() {
   const group = fieldGroup.options[fieldGroup.selectedIndex].textContent;
   const gender = fieldGender.options[fieldGender.selectedIndex].textContent;
   const birthday = fieldBirthday.value;
-  addModal.style.display = "none";
 
   const student = {
     "id": id,
@@ -80,6 +117,12 @@ function addStudent() {
     "birthday": birthday,
     "status": 1,
   };
+
+  if (!validateStudent(student)) {
+    return;
+  }
+
+  addModal.style.display = "none";
 
   students.push(student);
 
@@ -102,7 +145,6 @@ function editStudent(studentId) {
   const group = fieldGroup.options[fieldGroup.selectedIndex].textContent;
   const gender = fieldGender.options[fieldGender.selectedIndex].textContent;
   const birthday = fieldBirthday.value;
-  addModal.style.display = "none";
 
   const student = {
     "id": id,
@@ -113,13 +155,18 @@ function editStudent(studentId) {
     "status": 1,
   };
 
+  if (!validateStudent(student)) {
+    return;
+  }
+
+  addModal.style.display = "none";
+
   students[i] = student;
 
   clearTable();
   drawTable();
   addForm.reset();
   console.log(JSON.stringify(student));
-  warningModal.style.display = "none";
   studentIdToEdit = 0;
 }
 
@@ -128,8 +175,6 @@ window.onclick = function (event) {
     addModal.style.display = "none";
   }
 };
-
-
 
 addModalOkBtn.addEventListener('click', () => {
   const e = document.getElementById("add-form-title");

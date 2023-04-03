@@ -24,7 +24,6 @@ form.addEventListener("submit", function(event) {
 function validateForm() {
   let valid = true;
 
-  // Check required fields
   const requiredFields = ["name", "surname"];
 
   for (let i = 0; i < requiredFields.length; i++) {

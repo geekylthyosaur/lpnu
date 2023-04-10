@@ -122,14 +122,36 @@ function addStudent() {
     return;
   }
 
-  addModal.style.display = "none";
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', 'server.php', true);
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      const errorContainer = document.getElementById('error-container');
+      while (errorContainer.firstChild) {
+        errorContainer.removeChild(errorContainer.firstChild);
+      }
+      addModal.style.display = "none";
 
-  students.push(student);
+      students.push(student);
 
-  clearTable();
-  drawTable();
-  addForm.reset();
-  console.log(JSON.stringify(student));
+      clearTable();
+      drawTable();
+      addForm.reset();
+    } else {
+      const response = JSON.parse(xhr.responseText);
+      if (response.errors) {
+        const errorContainer = document.getElementById('error-container');
+        errorContainer.innerHTML = '';
+        response.errors.forEach(function (error) {
+          const errorMessage = document.createElement('p');
+          errorMessage.textContent = error;
+          errorContainer.appendChild(errorMessage);
+        });
+      }
+    }
+  };
+  xhr.send(JSON.stringify(student));
 }
 
 function editStudent(studentId) {
@@ -159,14 +181,36 @@ function editStudent(studentId) {
     return;
   }
 
-  addModal.style.display = "none";
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', 'server.php', true);
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      const errorContainer = document.getElementById('error-container');
+      while (errorContainer.firstChild) {
+        errorContainer.removeChild(errorContainer.firstChild);
+      }
+      addModal.style.display = "none";
 
-  students[i] = student;
+      students[i] = student;
 
-  clearTable();
-  drawTable();
-  addForm.reset();
-  console.log(JSON.stringify(student));
+      clearTable();
+      drawTable();
+      addForm.reset();
+    } else {
+      const response = JSON.parse(xhr.responseText);
+      if (response.errors) {
+        const errorContainer = document.getElementById('error-container');
+        errorContainer.innerHTML = '';
+        response.errors.forEach(function (error) {
+          const errorMessage = document.createElement('p');
+          errorMessage.textContent = error;
+          errorContainer.appendChild(errorMessage);
+        });
+      }
+    }
+  };
+  xhr.send(JSON.stringify(student));
   studentIdToEdit = 0;
 }
 

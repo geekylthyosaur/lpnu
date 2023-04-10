@@ -8,6 +8,12 @@ header {
     margin: -10px;
 }
 
+#error-container {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
 .logo a {
     color: #fff;
 }

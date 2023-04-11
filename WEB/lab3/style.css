@@ -8,6 +8,24 @@ header {
     margin: -10px;
 }
 
+.login {
+  color: white;
+}
+
+.login-form {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  background-color: rgb(255, 255, 255);
+}
+
+#error-msg {
+  color: red;
+}
+
 #error-container {
   color: red;
   font-size: 14px;

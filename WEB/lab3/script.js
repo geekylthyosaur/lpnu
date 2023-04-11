@@ -1,9 +1,63 @@
+let isLoggedIn = 0;
+let loggedInUser = "";
 let students = []
 let globalStudentId = 1;
 let studentIdToDelete = 0;
 let studentIdToEdit = 0;
 // Checkboxes
 const checkAll = document.getElementById("check-all");
+
+const loginButton = document.getElementById("login-button");
+loginButton.addEventListener("click", () => {
+  const loginForm = document.getElementById("login-form");
+  loginForm.style.display = "block";
+});
+
+const loginForm = document.getElementById("login-form");
+const errorMsg = document.getElementById('error-msg');
+loginForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', 'login.php', true);
+  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      loginForm.style.display = "none";
+      loggedInUser = username;
+      isLoggedIn = 1;
+      const user = document.getElementById("user");
+      const login = document.getElementById("login");
+      user.style.display = "flex";
+      login.style.display = "none";
+      userName.innerHTML = loggedInUser;
+    } else {
+      errorMsg.textContent = xhr.responseText;
+      const user = document.getElementById("user");
+      const login = document.getElementById("login");
+      user.style.display = "none";
+      login.style.display = "block";
+    };
+  };
+  xhr.send(`username=${username}&password=${password}`);
+});
+
+const userName = document.getElementById("user-name");
+
+if (isLoggedIn === 1) {
+  const user = document.getElementById("user");
+  const login = document.getElementById("login");
+  user.style.display = "flex";
+  login.style.display = "none";
+  userName.innerHTML = loggedInUser;
+} else {
+  const user = document.getElementById("user");
+  const login = document.getElementById("login");
+  user.style.display = "none";
+  login.style.display = "block";
+}
 
 checkAll.addEventListener("click", () => {
   const checkboxes = document.querySelectorAll(".check");
@@ -54,6 +108,10 @@ addBtn.addEventListener("click", () => {
 })
 
 addModalCloseBtn.addEventListener('click', () => {
+      const errorContainer = document.getElementById('error-container');
+      while (errorContainer.firstChild) {
+        errorContainer.removeChild(errorContainer.firstChild);
+      }
   addModal.style.display = "none";
   const invalids = document.querySelectorAll(".invalid");
   invalids.forEach((invalid) => {

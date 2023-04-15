@@ -37,10 +37,9 @@
 \newcommand\teacher{викладач кафедри ПЗ \\ Микуляк А.В.}
 \newcommand\mygroup{ПЗ-22}
 \newcommand\lab{2}
-\newcommand\theme{Класи, інтерфейси і структури у
-	мові програмування С\#}
-\newcommand\purpose{Ознайомлення з основами класів, структур, та інших базових
-	елементів мови програмування С\#}
+\newcommand\theme{Linq, List and Dictionary}
+\newcommand\purpose{Навчитися працювати з масивами та структурами List, Dictionary.
+	Засвоїти технологію LINQ}
 
 \begin{document}
 \begin{normalsize}
@@ -94,17 +93,107 @@
 	\end{description}
 
 	\section*{Завдання}
+	Для демонстрації роботи розробити Unit-тести для моделі ПЗ відповідно до
+	варіанту проекту. Unit-тести повинні створювати списки, словники або інші структури
+	об’єктів, та робити із ними різні операції використовуючи LINQ запити.
+	
+	Як альтернатива Unit-тестам можна використати консольне застосування (для
+	максимальної кількості балів таких запитів повинно бути більше).
 	\begin{enumerate}
-		\item 
-
+		\item Селекція частини інформації (метод Select)
+		\item Вибірка певної інформації (Where)
+		\item Операції як з списком List, так і з словником Dictionary
+		\item Власні методи розширювання
+		\item Використання анонімних класів та ініціалізаторів
+		\item Сортування за певним критерієм використовуючи шаблон IComparer
+		\item Конвертування списків в масив
+		\item Сортування масиву/списку за ім’ям чи за кількістю елементів
 	\end{enumerate}
 
+Тести повинні працювати виключно з моделлю об’єктів. Модель об'єктів повинна
+включати в себе різні типи даних (чисельні, стрічкові, логічні, множинні і т.д.), для
+кожного типу даних повинен бути мінімум 1 тест.
+
 	\section*{Хід виконання}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{11}
+		\caption{Модель об'єктів}
+	\end{figure}
 
-	\section*{Результати}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{22}
+		\caption{Тестова модель об'єктів}
+	\end{figure}
 
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{1}
+		\caption{Селекція частини інформації (метод Select)}
+	\end{figure}
 
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{2}
+		\caption{Вибірка певної інформації (Where)}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{31}
+		\caption{Операції з списком List}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{32}
+		\caption{Операції з словником Dictionary}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{4}
+		\caption{Власні методи розширювання}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{42}
+		\caption{Реалізація власних методів розширення}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{5}
+		\caption{Використання анонімних класів та ініціалізаторів}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{6}
+		\caption{Сортування за певним критерієм використовуючи шаблон IComparer}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{62}
+		\caption{Реалізація інтерфейсу IComparer}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{7}
+		\caption{Конвертування списків в масив}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{8}
+		\caption{Сортування масиву/списку за ім’ям чи за кількістю елементів}
+	\end{figure}
+	
 	\section*{Висновки}
-	    
+	   Під час виконання лабораторної роботи я навчився працювати з масивами та структурами List, Dictionary.
+	   Засвоїв технологію LINQ.
 \end{normalsize}
 \end{document}

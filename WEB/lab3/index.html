@@ -40,7 +40,7 @@
       <div id="profile-header" class="profile-header">
         <a href="#" class="profile-button">Profile</a>
         <br>
-        <a href="#" class="logout-button">Log Out</a>
+        <a href="#" id="logout-button" class="logout-button">Log Out</a>
       </div>
 
       <div id="notification-header" class="notification-header">
@@ -56,20 +56,22 @@
     </div>
   </header>
 
-  <div id="login-form" class="login-form" style="display: none;">
-    <h1>Login Form</h1>
-    <form action="login.php" method="post">
-      <div class="form-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" required>
-      </div>
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
-      </div>
-      <button type="submit">Log In</button>
-    </form>
-    <p id="error-msg"></p>
+  <div id="login-form-wrapper" style="display: none;">
+    <div id="login-form" class="login-form">
+      <h1>Login Form</h1>
+      <form action="login.php" method="post">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Log In</button>
+      </form>
+      <p id="error-msg"></p>
+    </div>
   </div>
 
 

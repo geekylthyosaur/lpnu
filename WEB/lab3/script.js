@@ -9,11 +9,11 @@ const checkAll = document.getElementById("check-all");
 
 const loginButton = document.getElementById("login-button");
 loginButton.addEventListener("click", () => {
-  const loginForm = document.getElementById("login-form");
+  const loginForm = document.getElementById("login-form-wrapper");
   loginForm.style.display = "block";
 });
 
-const loginForm = document.getElementById("login-form");
+const loginForm = document.getElementById("login-form-wrapper");
 const errorMsg = document.getElementById('error-msg');
 loginForm.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -66,6 +66,25 @@ checkAll.addEventListener("click", () => {
   });
 });
 
+
+const logoutButton = document.getElementById("logout-button");
+
+logoutButton.addEventListener('click', () => {
+  isLoggedIn = 0;
+  loggedInUser = "";
+  if (isLoggedIn === 1) {
+    const user = document.getElementById("user");
+    const login = document.getElementById("login");
+    user.style.display = "flex";
+    login.style.display = "none";
+    userName.innerHTML = loggedInUser;
+  } else {
+    const user = document.getElementById("user");
+    const login = document.getElementById("login");
+    user.style.display = "none";
+    login.style.display = "block";
+  }
+});
 
 
 // Delete row of table && warning modal

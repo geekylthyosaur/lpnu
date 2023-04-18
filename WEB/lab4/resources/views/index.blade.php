@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Student Table</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="description" content="My PWA">
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta name="theme-color" content="#4285f4" />
+  <link rel="manifest" href="/manifest.json">
+  <link href="{{ URL::asset('css/style.css') }}" type="text/css" rel="stylesheet">  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <a href="#"><img src="./images/icon-48x48.png" alt="Logo" style="filter: invert(0.82); margin-bottom: -10px; margin-top: -10px"></a>
+    </div>
+
+    <div id="login" class="login">
+      <a id="login-button" class="login" href="#">Login</a>
+    </div>
+
+    <div id="user" class="user">
+      <div id="notification-header-trigger">
+        <div class="user-notification">
+          <i class="fa fa-bell-o"></i>
+          <span class="badge"></span>
+        </div>
+      </div>
+
+      <div id="profile-header-trigger">
+        <a id="user-name" href="#" class="user-name">John Doe</a>
+        <a href="#" class="user-img fa fa-user-circle-o"></a>
+      </div>
+
+      <div id="profile-header" class="profile-header">
+        <a href="#" class="profile-button">Profile</a>
+        <br>
+        <a href="#" id="logout-button" class="logout-button">Log Out</a>
+      </div>
+
+      <div id="notification-header" class="notification-header">
+        <span class="fa fa-user-circle-o">
+          <a href="#">Admin</a>
+        </span>
+        <div class="notification-msg"></div>
+        <span class="fa fa-user-circle-o">
+          <a href="#">Joe Biden</a>
+        </span>
+        <div class="notification-msg"></div>
+      </div>
+    </div>
+  </header>
+
+  <div id="login-form-wrapper" style="display: none;">
+    <div id="login-form" class="login-form">
+      <h1>Login Form</h1>
+      <form action="login.php" method="post">
+  <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Log In</button>
+      </form>
+      <p id="error-msg"></p>
+    </div>
+  </div>
+
+
+  <div class="container">
+    <nav class="menu">
+      <ul>
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#"><b>Students</b></a></li>
+        <li><a href="#">Tasks</a></li>
+      </ul>
+    </nav>
+
+
+    <div class="content">
+      <h1>Students</h1>
+      <button id="add-row" class="add-row btn fa fa-plus-square-o"></button>
+      <table id="table">
+        <tr>
+          <th><input type="checkbox" id="check-all"></th>
+          <th>Group</th>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Birthday</th>
+          <th>Status</th>
+          <th>Options</th>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+
+  <div id="add-modal-wrapper" class="add-modal-wrapper">
+    <div class="add-modal">
+        <div style="display: grid; grid-template-columns: 1fr 1fr;">
+          <h2 id="add-form-title" style="grid-column: 1;"></h2>
+          <button type="button" id="add-modal-close" class="add-modal-close fa fa-close btn" style="grid-column: 2; height: 30px;"></button>
+        </div>
+        <hr>
+      <form id="add-form" action="">
+  <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        <div class="add-modal-form">
+          <div id="error-container"></div>
+          <div class="form-group">
+            <input type="text" id="add-form-field-id" name="id" hidden/>
+          </div>
+          <div class="form-group">
+            <label for="add-form-field-group">Group:</label>
+            <select id="add-form-field-group" name="group" required>
+              <option value="group1" selected>Group 1</option>
+              <option value="group2">Group 2</option>
+              <option value="group3">Group 3</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="add-form-field-firstName">First Name:</label>
+            <input type="text" id="add-form-field-firstName" name="firstName" required/>
+          </div>
+          <div class="form-group">
+            <label for="add-form-field-lastName">Last Name:</label>
+            <input type="text" id="add-form-field-lastName" name="lastName" required/>
+          </div>
+          <div class="form-group">
+            <label for="add-form-field-gender">Gender:</label>
+            <select id="add-form-field-gender" name="gender" required>
+              <option value="male" selected>Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="add-form-field-birthday">Birthday:</label>
+            <input type="date" id="add-form-field-birthday" name="birthday" required/>
+          </div>
+        </div>
+      </form>
+      <hr />
+      <button id="add-modal-create" class="add-modal-create btn"></button>
+    </div>
+  </div>
+
+
+  <div id="warning-modal-wrapper" class="warning-modal-wrapper">
+    <div class="warning-modal">
+      <div style="display: grid; grid-template-columns: 1fr 1fr;">
+        <h2 style="grid-column: 1;">Warning</h2>
+        <button id="warning-modal-close" class="warning-modal-close fa fa-close btn" style="grid-column: 2; height: 30px;"></button>
+      </div>
+      <hr>
+      Are you sure you want to delete this student?
+      <hr/>
+      <button id="warning-modal-delete" class="warning-modal-delete btn">Delete</button>
+      <button id="warning-modal-cancel" class="warning-modal-cancel btn">Cancel</button>
+    </div>
+  </div>
+  <script src="{{ URL::asset('js/script.js') }}"></script>
+</body>
+</html>
+

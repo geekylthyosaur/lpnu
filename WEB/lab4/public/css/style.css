@@ -8,11 +8,11 @@ header {
     margin: -10px;
 }
 
-.login {
+.login, .signup {
   color: white;
 }
 
-#login-form-wrapper {
+#login-form-wrapper, #signup-form-wrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -22,7 +22,7 @@ header {
   background-color: rgb(255, 255, 255);
 }
 
-.login-form {
+.login-form, .signup-form {
   position: fixed;
   top: 0;
   left: 40%;
@@ -32,7 +32,7 @@ header {
   background-color: rgb(255, 255, 255);
 }
 
-#error-msg {
+#error-msg, #error-msg-2 {
   color: red;
 }
 

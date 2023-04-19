@@ -12,4 +12,6 @@ Route::put('/students/{id}', [Index::class, 'edit']);
 
 Route::get('/login', [Login::class, 'loginForm']);
 Route::post('/login', [Login::class, 'login']);
+Route::post('/signup', [Login::class, 'signup']);
 Route::post('/logout', [Login::class, 'logout']);
+Route::get('/id', [Login::class, 'id']);

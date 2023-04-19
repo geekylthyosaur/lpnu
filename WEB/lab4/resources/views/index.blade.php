@@ -22,6 +22,7 @@
 
     <div id="login" class="login">
       <a id="login-button" class="login" href="#">Login</a>
+      <a id="signup-button" class="signup" href="#">Sign Up</a>
     </div>
 
     <div id="user" class="user">
@@ -75,6 +76,24 @@
     </div>
   </div>
 
+  <div id="signup-form-wrapper" style="display: none;">
+    <div id="signup-form" class="signup-form">
+      <h1>Signup Form</h1>
+      <form action="login.php" method="post">
+  <input type="hidden" name="_token" value="{{ csrf_token() }}">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username-2" name="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password-2" name="password" required>
+        </div>
+        <button type="submit">Sign Up</button>
+      </form>
+      <p id="error-msg-2"></p>
+    </div>
+  </div>
 
   <div class="container">
     <nav class="menu">
@@ -167,7 +186,9 @@
       <button id="warning-modal-cancel" class="warning-modal-cancel btn">Cancel</button>
     </div>
   </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="{{ URL::asset('js/script.js') }}"></script>
 </body>
+
 </html>
 

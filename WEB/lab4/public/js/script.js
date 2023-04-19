@@ -1,6 +1,17 @@
 drawTable();
 let isLoggedIn = 0;
 let loggedInUser = "";
+$.get('/id', function(data) {
+    if (data.username !== null) {
+        loggedInUser = data.username;
+        isLoggedIn = 1;
+        const user = document.getElementById("user");
+        const login = document.getElementById("login");
+        user.style.display = "flex";
+        login.style.display = "none";
+      userName.innerHTML = loggedInUser;
+    }
+});
 let students = []
 let globalStudentId = 1;
 let studentIdToDelete = 0;
@@ -15,17 +26,21 @@ loginButton.addEventListener("click", () => {
 });
 
 const loginForm = document.getElementById("login-form-wrapper");
-const errorMsg = document.getElementById('error-msg');
 loginForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const username = document.getElementById('username').value;
   const password = document.getElementById('password').value;
 
   const xhr = new XMLHttpRequest();
-  xhr.open('POST', 'login.php', true);
-  xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+  xhr.open('POST', '/login', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('input[name="_token"]').value);
   xhr.onload = function () {
     if (xhr.status === 200) {
+      const errorContainer = document.getElementById('error-msg');
+      while (errorContainer.firstChild) {
+        errorContainer.removeChild(errorContainer.firstChild);
+      }
       loginForm.style.display = "none";
       loggedInUser = username;
       isLoggedIn = 1;
@@ -35,14 +50,74 @@ loginForm.addEventListener('submit', (event) => {
       login.style.display = "none";
       userName.innerHTML = loggedInUser;
     } else {
-      errorMsg.textContent = xhr.responseText;
+      const response = JSON.parse(xhr.responseText);
+      if (response.errors) {
+        const errorContainer = document.getElementById('error-msg');
+        errorContainer.innerHTML = '';
+        response.errors.forEach(function (error) {
+          const errorMessage = document.createElement('p');
+          errorMessage.textContent = error;
+          errorContainer.appendChild(errorMessage);
+        });
+      }
       const user = document.getElementById("user");
       const login = document.getElementById("login");
       user.style.display = "none";
       login.style.display = "block";
     };
   };
-  xhr.send(`username=${username}&password=${password}`);
+  xhr.send(JSON.stringify({"password": password, "username": username}));
+});
+
+const signupButton = document.getElementById("signup-button");
+signupButton.addEventListener("click", () => {
+  const signupForm = document.getElementById("signup-form-wrapper");
+  signupForm.style.display = "block";
+});
+
+const signupForm = document.getElementById("signup-form-wrapper");
+signupForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+  const username = document.getElementById('username-2').value;
+  const password = document.getElementById('password-2').value;
+
+  const xhr = new XMLHttpRequest();
+  xhr.open('POST', '/signup', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('input[name="_token"]').value);
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      const errorContainer = document.getElementById('error-msg');
+      while (errorContainer.firstChild) {
+        errorContainer.removeChild(errorContainer.firstChild);
+      }
+      signupForm.style.display = "none";
+      loggedInUser = username;
+      isLoggedIn = 1;
+      const user = document.getElementById("user");
+      const signup = document.getElementById("login");
+      user.style.display = "flex";
+      signup.style.display = "none";
+      userName.innerHTML = loggedInUser;
+    } else {
+      const response = JSON.parse(xhr.responseText);
+      if (response.errors) {
+        const errorContainer = document.getElementById('error-msg-2');
+        errorContainer.innerHTML = '';
+        response.errors.forEach(function (error) {
+          const errorMessage = document.createElement('p');
+          errorMessage.textContent = error;
+          errorContainer.appendChild(errorMessage);
+        });
+      }
+      const user = document.getElementById("user");
+      const signup = document.getElementById("login");
+      user.style.display = "none";
+      signup.style.display = "block";
+    };
+  };
+  let json = {"username": username, "password": password};
+  xhr.send(JSON.stringify(json));
 });
 
 const userName = document.getElementById("user-name");
@@ -73,18 +148,16 @@ const logoutButton = document.getElementById("logout-button");
 logoutButton.addEventListener('click', () => {
   isLoggedIn = 0;
   loggedInUser = "";
-  if (isLoggedIn === 1) {
-    const user = document.getElementById("user");
-    const login = document.getElementById("login");
-    user.style.display = "flex";
-    login.style.display = "none";
-    userName.innerHTML = loggedInUser;
-  } else {
-    const user = document.getElementById("user");
-    const login = document.getElementById("login");
-    user.style.display = "none";
-    login.style.display = "block";
-  }
+  const user = document.getElementById("user");
+  const login = document.getElementById("login");
+  user.style.display = "none";
+  login.style.display = "block";
+  const xhr = new XMLHttpRequest();
+  console.log(studentIdToDelete);
+  xhr.open('POST', '/logout', true);
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  xhr.setRequestHeader('X-CSRF-TOKEN', document.querySelector('input[name="_token"]').value);
+  xhr.send();
 });
 
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Student;
+use Illuminate\Database\QueryException;
+
 
 class Index extends Controller
 {
@@ -21,7 +23,7 @@ class Index extends Controller
         ]);
     }
 
-    public function edit(Request $request, $id) 
+    public function edit(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
             'group' => 'required|string|max:255',
@@ -42,20 +44,20 @@ class Index extends Controller
         if (!$student) {
             return response()->json(['message' => 'Student not found.'], 404);
         }
-        
+
         $student->first_name = $request->input('first_name');
         $student->last_name = $request->input('last_name');
         $student->ggg = $request->input('group');
         $student->status = $request->input('status');
         $student->gender = $request->input('gender');
         $student->birthday = $request->input('birthday');
-        
+
         $student->save();
-        
+
         return response()->json(['message' => 'Student updated successfully.'], 200);
     }
 
-    public function delete($id) 
+    public function delete($id)
     {
         $student = Student::find($id);
 
@@ -68,7 +70,7 @@ class Index extends Controller
         return response()->json(['message' => 'Student deleted successfully.'], 200);
     }
 
-    public function add(Request $request) 
+    public function add(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'group' => 'required|string|max:255',
@@ -96,6 +98,17 @@ class Index extends Controller
             $student->status = 1;
             $student->save();
         } catch (\Exception $e) {
+            if ($e instanceof \Illuminate\Database\QueryException) {
+            return response()->json([
+                'success' => false,
+                'errors' => ["Internal Server Error"],
+            ], 500);
+            } elseif ($e instanceof \PDOException) {
+            return response()->json([
+                'success' => false,
+                'errors' => ["Internal Server Error"],
+            ], 500);
+            }
             return response()->json([
                 'success' => false,
                 'errors' => [$e->getMessage()],

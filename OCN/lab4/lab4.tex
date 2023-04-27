@@ -28,8 +28,8 @@
 \newcommand\teacher{асистент кафедри ПЗ \\ Задорожний І.М.}
 \newcommand\mygroup{ПЗ-22}
 \newcommand\lab{4}
-\newcommand\theme{Дослідження та робота з таблицею маршрутизації у Windows XP}
-\newcommand\purpose{Ознайомитися з принципами маршрутизації та навчитися користуватися утилітою route для зміни таблиці маршрутизації вручну}
+\newcommand\theme{Дослідження роботи DNS сервера та протоколу DHCP}
+\newcommand\purpose{Вивчити принципи роботи DNS, на практиці ознайомитися з принципами роботи DNS-клієнта на прикладі утиліти nslookup, детально дослідити формат DNS-запиту (і відповіді) за допомогою Wireshark і nslookup, а також ознайомитися з DHCP повідомленнями}
 
 \begin{document}
 \begin{normalsize}
@@ -83,6 +83,17 @@
 	\end{description}
 
 \section*{Теоретичні відомості}
+Назвіть приклади родових доменів вищого рівня. - Родові домени вищого рівня - це рівень доменної ієрархії в системі DNS, що відповідають за організацію всіх доменів на Інтернеті. До них відносяться такі приклади:
+\begin{list}{}{}
+\item .com - комерційні організації;
+\item .org - некомерційні організації;
+\item .net - мережі та провайдери Інтернету;
+\item .edu - освітні заклади;
+\item .gov - урядові організації;
+\item .mil - військові організації;
+\end{list}
+
+Охарактеризуйте передумови виникнення DNS. - Потрібно було спростити масштабування, адже раніше існував файл hosts.txt, в якому містилася вся інформація про відповідність всіх символьних імен вузлів і їхніх IP-адрес. Цей файл зберігався на одному вузлі мережі ARPAnet і в нього при потребі вносилися зміни.
 
 \section*{Хід виконання}
 
@@ -104,86 +115,94 @@
 		\caption{Пакет відповіді на DNS запит від google.com}
 	 \end{minipage}
  \end{figure}
-
+ 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=\textwidth]{21}
-	\caption{Пакет DNS запиту на адресу wikipedia.org}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth]{22}
-	\caption{Пакет відповіді на DNS запит від wikipedia.org}
+	\begin{minipage}[t]{0.49\textwidth}
+		\includegraphics[width=\textwidth]{21}
+		\caption{Пакет DNS запиту на адресу wikipedia.org}
+	\end{minipage}
+	\hfill
+	\begin{minipage}[t]{0.49\textwidth}
+		\includegraphics[width=\textwidth]{22}
+		\caption{Пакет відповіді на DNS запит від wikipedia.org}
+	\end{minipage}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{31}
-	\caption{Запитав у DNS-сервера, заданого за замовчуванням, інформацію про доменні імена google.com і wikipedia.org. Запитав цю ж інформацію в інших DNS-серверів.}
+	\caption{Запитав у DNS-сервера, заданого за замовчуванням, інформацію про доменні імена google.com і wikipedia.org. Запитав цю ж інформацію в іншого DNS-серверів.}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{32}
-	\caption{}
+	\caption{Запит DNS серверу з вимкненим режимом відлагодження}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{33}
-	\caption{}
+	\caption{Запит DNS серверу з увімкненим режимом відлагодження}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{34}
-	\caption{1/2}
+	\caption{Запит DNS серверу з увімкненим розширеним режимом відлагодження 1/2}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{35}
-	\caption{2/2}
+	\caption{Запит DNS серверу з увімкненим розширеним режимом відлагодження 2/2}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{51}
-	\caption{2/2}
+	\caption{Запит DNS серверу про неіснуючий домен 1/3}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{52}
-	\caption{2/2}
+	\caption{Запит DNS серверу про неіснуючий домен 2/3}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{53}
-	\caption{2/2}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=\textwidth]{61}
-	\caption{2/2}
+	\caption{Запит DNS серверу про неіснуючий домен 3/3}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{62}
-	\caption{2/2}
+	\caption{Виконання рекурсивного та нерекурсивного запиту до DNS сервера}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=\textwidth]{61}
+	\caption{Перехоплені пакети під час виконання рекурсивного та нерекурсивного запиту до DNS сервера}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{7}
-	\caption{2/2}
+	\caption{Ознайомився із інформацією про решту ключових слів, що застосовуються з командою set}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=\textwidth]{8}
-	\caption{2/2}
+	\caption{Виконав команди в автономному режимі роботи утиліти nslookup}
 \end{figure}
 
+Поясніть передумови виникнення служби DNS і причини, чому схема
+розпізнавання IP-адрес за символьними іменами в мережі ARPAnet стала
+непрацездатною з ростом числа вузлів.
+ 
+Потрібно було спростити масштабування, адже раніше існував файл hosts.txt, в якому містилася вся інформація про відповідність всіх символьних імен вузлів і їхніх IP-адрес. Цей файл зберігався на одному вузлі мережі ARPAnet і в нього при потребі вносилися зміни. Система ARPAnet вимагала повної таблиці імен на кожному комп'ютера, що було не ефективним з точки зору масштабування.
+
+
 \section*{Висновки}
-Під час виконання лабораторної роботи я 
+Під час виконання лабораторної роботи я вивчив принципи роботи DNS, на практиці ознайомився з принципами роботи DNS-клієнта на прикладі утиліти nslookup, детально дослідив формат DNS-запиту (і відповіді) за допомогою Wireshark і nslookup, а також ознайомився з DHCP повідомленнями.
 	    
 \end{normalsize}
 \end{document}

@@ -32,7 +32,7 @@
       };
     },
     mounted() {
-      this.socket = io('http://localhost:3000');
+      this.socket = io('http://localhost:3080');
       this.socket.on('rooms', (rooms) => {
         this.rooms = rooms;
         if (this.rooms.length > 0) {

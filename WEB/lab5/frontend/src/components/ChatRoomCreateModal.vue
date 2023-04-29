@@ -20,7 +20,7 @@
             <div class="form-group">
               <label for="userList">Select users:</label>
               <select v-model="selectedUsers" multiple class="form-control" id="userList">
-                <option v-for="user in userList" :key="user.id" :value="user.id">{{ user.username }}</option>
+                <option v-for="user in userList" :key="user.id" :value="user">{{ user.username }}</option>
               </select>
             </div>
           </div>
@@ -37,6 +37,8 @@
 <script>
   import axios from 'axios'
 
+  const currentUsername = localStorage.getItem('username');
+  
   export default {
     data() {
       return {
@@ -49,8 +51,7 @@
     mounted() {
       axios.get('http://127.0.0.1:3000/all')
         .then(response => {
-          const loggedInUser = localStorage.getItem('username');
-          this.userList = response.data.filter(user => user.username !== loggedInUser);
+          this.userList = response.data.filter(user => user.username !== currentUsername);
         })
         .catch(error => {
           console.error(error);
@@ -66,21 +67,18 @@
         document.body.classList.remove('modal-open')
       },
       createRoom() {
-        axios.post('/api/chat-rooms', {
+        axios.post('http://127.0.0.1:3000/rooms', {
           name: this.newRoomName,
-          users: this.selectedUsers
+          users: this.selectedUsers.map(user => user.username).concat(currentUsername),
         })
-          .then(response => {
-            console.log('New chat room created:', response.data);
-            this.newRoomName = '';
-            this.selectedUsers = [];
+          .then(() => {
             this.closeModal();
+            this.$emit('roomCreated', this.newRoomName);
           })
           .catch(error => {
             // Handle error
             console.error(error);
           });
-        this.$emit('choosedRoom', this.newRoomName);
       }
     }
   };

@@ -67,8 +67,8 @@
           password: this.password,
         };
         axios.post('http://127.0.0.1:3000/signup', user)
-          .then(() => {
-            this.$emit('loggedIn', this.username);
+          .then(response => {
+            this.$emit('loggedIn', this.username, response.data.token);
           })
           .catch(error => {
             console.log(error);

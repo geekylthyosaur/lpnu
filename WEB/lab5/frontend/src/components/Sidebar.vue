@@ -1,12 +1,12 @@
 <template>
   <div class="list-group text-center">
-    <router-link to="/dashboard" class="list-group-item" v-bind:class="{ active: selectedTab === 'dashboard'}">
+    <router-link @click="this.$emit('clicked', 'dashboard')" to="/dashboard" class="list-group-item" v-bind:class="{ active: selectedTab === 'dashboard'}">
       Dashboard
     </router-link>
-    <router-link to="/students" class="list-group-item" v-bind:class="{ active: selectedTab === 'students'}">
+    <router-link @click="this.$emit('clicked', 'students')" to="/students" class="list-group-item" v-bind:class="{ active: selectedTab === 'students'}">
       Students
     </router-link>
-    <router-link to="/tasks" class="list-group-item" v-bind:class="{ active: selectedTab === 'tasks'}">
+    <router-link @click="this.$emit('clicked', 'tasks')" to="/tasks" class="list-group-item" v-bind:class="{ active: selectedTab === 'tasks'}">
       Tasks
     </router-link>
   </div>

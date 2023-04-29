@@ -1,14 +1,18 @@
 <template>  
   <div class="container-fluid">
     <div class="row">
-      <site-header/>
+      <site-header @clicked="headerClick"/>
     </div>
     <div class="row">
       <div class="col-md-3 sidebar">
-        <sidebar/>
+        <sidebar v-if="!showChat" selectedTab="students" @clicked="sidebarClick"/>
+        <sidebar v-if="showChat" selectedTab="none" @clicked="sidebarClick"/>
       </div>
-      <div class="col-md-9">
+      <div v-if="!showChat" class="col-md-9">
         <students-table/>
+      </div>
+      <div v-if="showChat" class="col-md-9">
+        <chat/>
       </div>
     </div>
   </div>
@@ -18,19 +22,36 @@
 import SiteHeader from './components/Header.vue'
 import StudentsTable from './components/StudentsTable.vue'
 import SideBar from './components/Sidebar.vue'
+import ChatClient from './components/Chat.vue'
 
 export default {
   name: 'App',
   data() {
     return {
       loggedIn: false,
+      showChat: true,
     };
   },
   components: {
     'site-header': SiteHeader,
     'students-table': StudentsTable,
     'sidebar': SideBar,
-  }
+    'chat': ChatClient,
+  },
+  methods: {
+    sidebarClick(tab) {
+      if (tab === 'dashboard') {
+        console.log('dashboard');
+      } else if (tab === 'students') {
+        this.showChat = false;
+      } else if (tab === 'tasks') {
+        console.log('tasks');
+      }
+    },
+    headerClick() {
+      this.showChat = true;
+    }
+  },
 }
 </script>
 

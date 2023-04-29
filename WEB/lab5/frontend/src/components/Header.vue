@@ -18,7 +18,7 @@
               <signup-modal @loggedIn="setLoggedIn"/>
             </li>
             <!-- If user is logged in -->
-            <li v-if="loggedIn" class="nav-item dropdown">
+            <li @click="this.$emit('clicked')" v-if="loggedIn" class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" @mouseover="showNotificationsDropdown = true; showUserDropdown = false">
                 <!-- Notification icon with dot -->
                 <i :class="['fa', 'fa-bell', {'notification-dot': notifications.length}]"></i>
@@ -68,6 +68,16 @@
         },
       },
     },
+    mounted() {
+      const authToken = localStorage.getItem('token');
+      const username = localStorage.getItem('username');
+      if (authToken && username) {
+        this.username = username;
+        this.loggedIn = true;
+        localStorage.setItem('token', `Bearer ${authToken}`);
+        localStorage.setItem('username', `${username}`);
+      }
+    },
     components: {
       'login-modal': LoginModal,
       'signup-modal': SignupModal,
@@ -81,13 +91,16 @@
       };
     },
     methods: {
-      setLoggedIn(username) {
+      setLoggedIn(username, authToken) {
         this.username = username;
         this.loggedIn = true;
+        localStorage.setItem('token', `Bearer ${authToken}`);
+        localStorage.setItem('username', `${username}`);
       },
       unsetLoggedIn() {
         this.username = '';
         this.loggedIn = false;
+        localStorage.clear();
       },
     },
   }

@@ -56,6 +56,10 @@
   import ErrorModal from './ErrorModal.vue'
   import axios from 'axios'
 
+  const instance = axios.create({
+    baseURL: 'http://127.0.0.1:3000',
+  });
+
   export default {
     name: 'StudentsTable',
     components: {
@@ -91,10 +95,9 @@
         }
       },
       fetchStudents() {
-        axios.get('http://127.0.0.1:3000/students')
+        instance.get('/students')
           .then(response => {
             this.students = response.data;
-            console.log(this.students);
           })
           .catch(error => {
             this.error = true;
@@ -102,7 +105,7 @@
           })
       },
       addStudent(student) {
-        axios.post('http://127.0.0.1:3000/students', student)
+        instance.post('/students', student)
           .then(response => {
             this.students.push(response.data);
           })
@@ -112,7 +115,7 @@
           });
       },
       updateStudent(student) {
-        axios.put(`http://127.0.0.1:3000/students/${student._id}`, student)
+        instance.put(`/students/${student._id}`, student)
           .then(response => {
             const index = this.students.findIndex(student => student._id === response.data._id)
             if (index !== -1) {
@@ -125,7 +128,7 @@
           });
       },
       deleteStudent(studentId) {
-        axios.delete(`http://127.0.0.1:3000/students/${studentId}`)
+        instance.delete(`/students/${studentId}`)
           .then(() => {
             const index = this.students.findIndex(student => student._id === studentId)
             if (index !== -1) {

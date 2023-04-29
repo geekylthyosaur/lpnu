@@ -15,11 +15,11 @@
             <form>
               <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" v-model="username">
+                <input type="text" class="form-control" id="username" v-model="username" v-bind:class="{ 'is-invalid': authFailed }">
               </div>
               <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" v-model="password">
+                <input type="password" class="form-control" id="password" v-model="password" v-bind:class="{ 'is-invalid': authFailed }">
               </div>
             </form>
           </div>
@@ -42,7 +42,8 @@
       return {
         username: '',
         password: '',
-        showModal: false
+        showModal: false,
+        authFailed: false,
       };
     },
     methods: {
@@ -58,13 +59,15 @@
           password: this.password,
         };
         axios.post('http://127.0.0.1:3000/login', user)
-          .then(() => {
-            this.$emit('loggedIn', this.username);
+          .then(response => {
+            this.$emit('loggedIn', this.username, response.data.token);
+            this.authFailed = false;
+            this.closeModal();
           })
-          .catch(error => {
-            console.log(error);
+          .catch(() => {
+            this.authFailed = true;
+            return;
           });
-        this.closeModal();
       }
     }
   };

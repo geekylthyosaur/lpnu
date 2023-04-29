@@ -1,7 +1,7 @@
 <template>  
   <div class="container-fluid">
     <div class="row">
-      <site-header loggedIn/>
+      <site-header/>
     </div>
     <div class="row">
       <div class="col-md-3 sidebar">
@@ -21,6 +21,11 @@ import SideBar from './components/Sidebar.vue'
 
 export default {
   name: 'App',
+  data() {
+    return {
+      loggedIn: false,
+    };
+  },
   components: {
     'site-header': SiteHeader,
     'students-table': StudentsTable,

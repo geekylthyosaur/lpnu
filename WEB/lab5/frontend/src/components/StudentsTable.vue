@@ -1,12 +1,13 @@
 <template>
   <div>
+    <error-modal v-if="error" @ok="closeError" showModal/>
     <div class="container-fluid mt-4">
       <div class="row">
         <div class="col-md-6">
-          <h3>Students</h3>
+          <h3 class="ml-5">Students</h3>
         </div>
         <div class="col-md-6 d-flex justify-content-end">
-          <add-modal @studentCreated="addStudent"/>
+          <add-modal @studentCreated="addStudent" class="mr-5"/>
         </div>
       </div>
       <table class="table">
@@ -31,14 +32,14 @@
             <td>{{ student.group }}</td>
             <td>{{ student.name }}</td>
             <td>{{ student.gender }}</td>
-            <td>{{ student.birthday }}</td>
+            <td>{{ new Date(student.birthday).toDateString() }}</td>
             <td>
               <span class="badge bg-success"></span>
             </td>
             <td>
               <div class="d-flex justify-content-start">
-                <edit-modal :student="student" @studentUpdated="updateStudent"/>
-                <delete-modal :student="student" @deleteStudent="deleteStudent"/>
+                <edit-modal :student="student" @studentUpdated="updateStudent" class="mr-1"/>
+                <delete-modal :student="student" @deleteStudent="deleteStudent(student._id)" class="ml-1"/>
               </div>
             </td>
           </tr>
@@ -49,9 +50,11 @@
 </template>
 
 <script>
-  import AddStudentModal from './AddStudent.vue'
-  import EditStudentModal from './EditStudent.vue'
-  import DeleteStudentModal from './DeleteStudent.vue'
+  import AddStudentModal from './AddModal.vue'
+  import EditStudentModal from './EditModal.vue'
+  import DeleteStudentModal from './DeleteModal.vue'
+  import ErrorModal from './ErrorModal.vue'
+  import axios from 'axios'
 
   export default {
     name: 'StudentsTable',
@@ -59,19 +62,24 @@
       'add-modal': AddStudentModal,
       'edit-modal': EditStudentModal,
       'delete-modal': DeleteStudentModal,
+      'error-modal': ErrorModal,
     },
     data() {
       return {
         students: [],
         selectedStudents: [],
+        error: false,
       }
+    },
+    mounted() {
+      this.fetchStudents();
     },
     methods: {
       selectAll() {
         if (this.selectedStudents.length === this.students.length) {
           this.selectedStudents = []
         } else {
-          this.selectedStudents = this.students.map(student => student.id)
+          this.selectedStudents = this.students.map(student => student._id)
         }
       },
       toggleSelection(studentId) {
@@ -82,19 +90,54 @@
           this.selectedStudents.splice(index, 1)
         }
       },
-      addStudent(student) {
-        this.students.push(student);
+      fetchStudents() {
+        axios.get('http://127.0.0.1:3000/students')
+          .then(response => {
+            this.students = response.data;
+            console.log(this.students);
+          })
+          .catch(error => {
+            this.error = true;
+            console.log(error);
+          })
       },
-      updateStudent(updatedStudent) {
-        const index = this.students.findIndex(student => student.id === updatedStudent.id)
-        if (index !== -1) {
-          this.students.splice(index, 1, updatedStudent)
-        }
+      addStudent(student) {
+        axios.post('http://127.0.0.1:3000/students', student)
+          .then(response => {
+            this.students.push(response.data);
+          })
+          .catch(error => {
+            this.error = true;
+            console.log(error);
+          });
+      },
+      updateStudent(student) {
+        axios.put(`http://127.0.0.1:3000/students/${student._id}`, student)
+          .then(response => {
+            const index = this.students.findIndex(student => student._id === response.data._id)
+            if (index !== -1) {
+              this.students.splice(index, 1, response.data)
+            }
+          })
+          .catch(error => {
+            this.error = true;
+            console.log(error);
+          });
       },
       deleteStudent(studentId) {
-        console.log(studentId);
+        axios.delete(`http://127.0.0.1:3000/students/${studentId}`)
+          .then(() => {
+            const index = this.students.findIndex(student => student._id === studentId)
+            if (index !== -1) {
+              this.students.splice(index, 1)
+            }
+          })
+          .catch(error => {
+            this.error = true;
+            console.log(error);
+          });
       },
-    }
+    },
   }
 </script>
 

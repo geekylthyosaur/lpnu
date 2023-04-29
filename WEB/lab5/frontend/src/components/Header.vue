@@ -11,11 +11,11 @@
         <div class="ml-auto">
           <ul class="navbar-nav">
             <!-- If user is not logged in -->
-            <li v-if="!loggedIn" class="nav-item">
-              <router-link class="nav-link" to="/login" style="user-select: none;">Login</router-link>
+            <li v-if="!loggedIn" class="nav-item mr-1">
+              <login-modal @loggedIn="setLoggedIn"/>
             </li>
-            <li v-if="!loggedIn" class="nav-item">
-              <router-link class="nav-link" to="/signup" style="user-select: none;">Signup</router-link>
+            <li v-if="!loggedIn" class="nav-item ml-1">
+              <signup-modal @loggedIn="setLoggedIn"/>
             </li>
             <!-- If user is logged in -->
             <li v-if="loggedIn" class="nav-item dropdown">
@@ -38,13 +38,13 @@
               </div>
             </li>
             <li v-if="loggedIn" class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" @mouseover="showUserDropdown = true; showNotificationsDropdown = false">
+              <a class="nav-link dropdown-toggle col-1" href="#" role="button" @mouseover="showUserDropdown = true; showNotificationsDropdown = false">
                 <!-- User icon -->
                 <i class="fa fa-user"></i>
               </a>
               <div class="dropdown-menu dropdown-menu-right" v-bind:class="{ show: showUserDropdown }" @mouseleave="showUserDropdown = false">
-                <a class="dropdown-item" href="#">Profile</a>
-                <a class="dropdown-item" href="#">Logout</a>
+                <a class="dropdown-item" href="#">{{ username }}</a>
+                <a class="dropdown-item" href="#" @click="unsetLoggedIn">Logout</a>
               </div>
             </li>
           </ul>
@@ -55,10 +55,12 @@
 </template>
 
 <script>
+  import LoginModal from './LoginModal.vue';
+  import SignupModal from './SignupModal.vue';
+
   export default {
     name: 'SiteHeader',
     props: {
-      loggedIn: Boolean,
       notifications: {
         type: Array,
         default() {
@@ -66,11 +68,27 @@
         },
       },
     },
+    components: {
+      'login-modal': LoginModal,
+      'signup-modal': SignupModal,
+    },
     data() {
       return {
+        loggedIn: false,
+        username: '',
         showUserDropdown: false,
         showNotificationsDropdown: false,
       };
+    },
+    methods: {
+      setLoggedIn(username) {
+        this.username = username;
+        this.loggedIn = true;
+      },
+      unsetLoggedIn() {
+        this.username = '';
+        this.loggedIn = false;
+      },
     },
   }
 </script>

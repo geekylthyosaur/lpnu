@@ -31,7 +31,7 @@
 
 .list-group-item {
   border: none;
-  border-radius: 0;
+  border-radius: 5;
   font-weight: bold;
 }
 

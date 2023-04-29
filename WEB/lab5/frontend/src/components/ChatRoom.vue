@@ -16,17 +16,30 @@
 </template>
 
 <script>
+  import axios from 'axios'
+
   export default {
     name: 'ChatRoom',
     mounted() {
-      // get messages from api
+      axios.get(`http://127.0.0.1:3000/rooms/${this.currentRoomId}`)
+        .then(response => {
+          console.log(response);
+          this.currentRoom = response.data;
+        })
+        .catch(error => {
+          // Handle error
+          console.error(error);
+        });
+    },
+    props: {
+      currentRoomId: String,
     },
     data() {
       return {
         currentUser: localStorage.getItem('username'),
         currentRoom: {
-          id: 1,
-          name: 'Chat Room 1',
+          id: '',
+          name: '',
           messages: [],
         },
         newMessage: ''

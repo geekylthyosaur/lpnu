@@ -23,10 +23,25 @@ async function createRoom(req, res) {
 async function getRoomWithUser(req, res) {
   try {
     const { username } = req.params;
-    console.log(username);
     const room = await Room.find({ users: { $in: [username] } }).lean().exec();
 
     console.log("Getting room with username!");
+    console.log(room);
+
+    res.status(200).json(room);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error.' });
+  }
+}
+
+async function getRoomById(req, res) {
+  try {
+    const { roomid } = req.params;
+    console.log(roomid);
+    const room = await Room.findOne({ _id: roomid }).lean().exec();
+
+    console.log("Getting room by id!");
     console.log(room);
 
     res.status(200).json(room);
@@ -61,6 +76,7 @@ async function deleteUserFromRoom(req, res) {
 module.exports = {
   createRoom,
   getRoomWithUser,
+  getRoomById,
   deleteUserFromRoom,
 };
 

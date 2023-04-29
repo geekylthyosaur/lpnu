@@ -2,8 +2,8 @@
   <div class="container">
     <h3>My Chat Rooms</h3>
     <ul class="list-group row">
-      <li v-for="room in rooms" :key="room.id" class="list-group-item">
-        <a>{{ room.name }}</a>
+      <li v-for="room in rooms" :key="room._id" class="list-group-item">
+        <a @click="this.$emit('roomSelected', room._id)">{{ room.name }}</a>
         <button @click="deleteRoom(room._id)" class="btn btn-danger btn-sm float-right">Exit</button>
       </li>
     </ul>
@@ -42,7 +42,7 @@
           });
       },
       fetchAvailableRooms() {
-        axios.get(`http://127.0.0.1:3000/rooms/${currentUsername}`)
+        axios.get(`http://127.0.0.1:3000/rooms/all/${currentUsername}`)
           .then(response => {
             this.rooms = response.data;
           })

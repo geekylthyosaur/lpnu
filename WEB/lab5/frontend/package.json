@@ -11,8 +11,9 @@
     "axios": "^1.4.0",
     "bootstrap": "^5.2.3",
     "core-js": "^3.8.3",
+    "mitt": "^3.0.0",
     "socket.io-client": "^4.6.1",
-    "vue": "^3.2.13"
+    "vue": "^3.2.47"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

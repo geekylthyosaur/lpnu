@@ -5,11 +5,9 @@ const messageSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     auto: true,
   },
-  fromId: {
+  senderId: {
     type: mongoose.Schema.Types.ObjectId,
-  },
-  toId: {
-    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
   },
   isReadByToId: {
     type: mongoose.Schema.Types.Boolean,

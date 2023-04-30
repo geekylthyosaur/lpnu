@@ -58,23 +58,23 @@
         group: '',
         name: '',
         gender: '',
-        birthday: ''
+        birthday: new Date(),
       }
     },
     mounted() {
-      this.group = this.student.group
-      this.name = this.student.name
-      this.gender = this.student.gender
-      this.birthday = new Date(this.student.birthday)
+      this.group = this.student.group;
+      this.name = this.student.name;
+      this.gender = this.student.gender;
+      this.birthday = new Date(this.student.birthday).toISOString().slice(0,10);
     },
     methods: {
       openModal() {
-        this.showModal = true
-        document.body.classList.add('modal-open')
+        this.showModal = true;
+        document.body.classList.add('modal-open');
       },
       closeModal() {
-        this.showModal = false
-        document.body.classList.remove('modal-open')
+        this.showModal = false;
+        document.body.classList.remove('modal-open');
       },
       updateStudent() {
         const student = {
@@ -82,7 +82,7 @@
           group: this.group,
           name: this.name,
           gender: this.gender,
-          birthday: this.birthday
+          birthday: new Date(this.birthday),
         }
         this.validationErrors = Object.keys(this.validateStudent(student));
         if (!Object.keys(this.validationErrors).length) {

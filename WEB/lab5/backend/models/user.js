@@ -5,7 +5,14 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     auto: true,
   },
-  username: String,
+  unreadRoomIds: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Room',
+  },
+  username: {
+    type: String,
+    unique: true,
+  },
   password: String,
 });
 

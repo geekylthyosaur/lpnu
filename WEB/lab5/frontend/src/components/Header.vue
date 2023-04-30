@@ -18,35 +18,36 @@
               <signup-modal @loggedIn="setLoggedIn"/>
             </li>
             <!-- If user is logged in -->
-            <li @click="this.$emit('clicked')" v-if="loggedIn" class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" @mouseover="showNotificationsDropdown = true; showUserDropdown = false">
-                <!-- Notification icon with dot -->
-                <i :class="['fa', 'fa-bell', {'notification-dot': notifications.length}]"></i>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" v-bind:class="{ show: showNotificationsDropdown && notifications.length }"  @mouseleave="showNotificationsDropdown  = false">
-                <div v-for="(notification, index) in notifications" :key="index" class="dropdown-item">
-                  <div class="row">
-                    <div class="col-2">
-                      <i class="fa fa-user"></i>
-                    </div>
-                    <div class="col-10">
-                      <b>{{ notification.sender }}</b>
-                      <div>{{ notification.message }}</div>
+            <div class="d-flex">
+              <li @click="this.$emit('clicked')" v-if="loggedIn" class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" @mouseover="showNotificationsDropdown = true; showUserDropdown = false">
+                  <!-- Notification icon with dot -->
+                  <i :class="['fa', 'fa-bell', {'notification-dot': notifications.length}]"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" v-bind:class="{ show: showNotificationsDropdown && notifications.length }"  @mouseleave="showNotificationsDropdown  = false">
+                  <div v-for="(notification, index) in notifications" :key="index" class="dropdown-item">
+                    <div class="row">
+                      <div class="col-2">
+                        <i class="fa fa-user"></i>
+                      </div>
+                      <div class="col-10">
+                        <div>{{ notification }}</div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            </li>
-            <li v-if="loggedIn" class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle col-1" href="#" role="button" @mouseover="showUserDropdown = true; showNotificationsDropdown = false">
-                <!-- User icon -->
-                <i class="fa fa-user"></i>
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" v-bind:class="{ show: showUserDropdown }" @mouseleave="showUserDropdown = false">
-                <a class="dropdown-item" href="#">{{ username }}</a>
-                <a class="dropdown-item" href="#" @click="unsetLoggedIn">Logout</a>
-              </div>
-            </li>
+              </li>
+              <li v-if="loggedIn" class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle col-1" href="#" role="button" @mouseover="showUserDropdown = true; showNotificationsDropdown = false">
+                  <!-- User icon -->
+                  <i class="fa fa-user"></i>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" v-bind:class="{ show: showUserDropdown }" @mouseleave="showUserDropdown = false">
+                  <a class="dropdown-item" href="#">{{ username }}</a>
+                  <a class="dropdown-item" href="#" @click="unsetLoggedIn">Logout</a>
+                </div>
+              </li>
+            </div>
           </ul>
         </div>
       </div>
@@ -57,18 +58,12 @@
 <script>
   import LoginModal from './LoginModal.vue';
   import SignupModal from './SignupModal.vue';
+  import io from 'socket.io-client'
 
   export default {
     name: 'SiteHeader',
-    props: {
-      notifications: {
-        type: Array,
-        default() {
-          return [];
-        },
-      },
-    },
-    mounted() {
+    created() {
+      this.socket = io('http://127.0.0.1:3080');
       const authToken = localStorage.getItem('token');
       const username = localStorage.getItem('username');
       if (authToken && username) {
@@ -76,6 +71,13 @@
         this.loggedIn = true;
         localStorage.setItem('token', `Bearer ${authToken}`);
         localStorage.setItem('username', `${username}`);
+        setInterval(() => {
+          this.socket.emit('getUnreadRooms', username);
+        }, 1000);
+        this.socket.on('unreadRooms', (unreadRooms) => {
+          console.log(unreadRooms.map(room => room.name));
+          this.notifications = unreadRooms.map(room => room.name);
+        });
       }
     },
     components: {
@@ -85,9 +87,11 @@
     data() {
       return {
         loggedIn: false,
+        socket: null,
         username: '',
         showUserDropdown: false,
         showNotificationsDropdown: false,
+        notifications: [],
       };
     },
     methods: {

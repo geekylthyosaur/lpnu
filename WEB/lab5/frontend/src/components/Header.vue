@@ -75,7 +75,6 @@
           this.socket.emit('getUnreadRooms', username);
         }, 1000);
         this.socket.on('unreadRooms', (unreadRooms) => {
-          console.log(unreadRooms.map(room => room.name));
           this.notifications = unreadRooms.map(room => room.name);
         });
       }

@@ -20,6 +20,7 @@ db.once('open', function () {
     const userRouter = require('./routes/users');
     const messagesRouter = require('./routes/messages');
     const roomsRouter = require('./routes/rooms');
+    const tasksRouter = require('./routes/tasks');
 
     app.use(cors());
     app.use(express.json());
@@ -27,6 +28,7 @@ db.once('open', function () {
     app.use('/', userRouter);
     app.use('/messages', messagesRouter);
     app.use('/rooms', roomsRouter);
+    app.use('/tasks', tasksRouter);
 
     const server = http.createServer(app);
     socket(server);

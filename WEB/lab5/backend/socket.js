@@ -17,15 +17,12 @@ function init(server) {
       try {
         const user = await User.findOne({ username }).populate('unreadRoomIds').exec();
         if (!user) {
-          return res.status(404).json({ message: 'User not found.' });
+          return;
         }
         const unreadRooms = await Room.find({
           _id: { $in: user.unreadRoomIds },
           users: { $in: [username] }
         }).lean().exec();
-
-        console.log('Getting unread rooms!');
-        console.log(unreadRooms);
 
         io.to(socket.id).emit('unreadRooms', unreadRooms);
       } catch (err) {

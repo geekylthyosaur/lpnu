@@ -75,13 +75,7 @@
         if (this.newMessage.trim() === '') {
           return;
         }
-        const message = {
-          id: this.currentRoom.messages.length + 1,
-          author: this.currentUser,
-          content: this.newMessage.trim()
-        };
         this.socket.emit('newMessage', this.currentRoomId, this.currentUser, this.newMessage);
-        this.currentRoom.messages.push(message);
         this.newMessage = '';
       },
       closeChat() {

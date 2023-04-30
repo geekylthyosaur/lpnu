@@ -4,15 +4,15 @@
       <site-header @clicked="headerClick"/>
     </div>
     <div class="row">
-      <div class="col-md-3 sidebar">
+      <div class="col-md-3 mt-3 sidebar">
         <sidebar v-if="!showChat" selectedTab="students" @clicked="sidebarClick"/>
         <sidebar v-if="showChat" selectedTab="none" @clicked="sidebarClick"/>
       </div>
       <div v-if="!showChat" class="col-md-9">
-        <students-table/>
+        <students-table class="mt-3"/>
       </div>
       <div v-if="showChat" class="col-md-9">
-        <chat/>
+        <chat class="mt-3"/>
       </div>
     </div>
   </div>

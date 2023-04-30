@@ -1,75 +1,62 @@
- const socketio = require('socket.io');
+const Room = require('./models/room');
+const { Message } = require('./models/message');
 const User = require('./models/user');
-const messageController = require('./controllers/messageController');
-const Message = require('./models/message');
 
-module.exports = function (server) {
-  const io = socketio(server, {
+const socketIO = require('socket.io');
+
+function init(server) {
+  const io = socketIO(server, {
     cors: {
-      origin: "*",
-    }
+      origin: '*',
+      methods: ['GET', 'POST'],
+    },
   });
 
-  io.on('connection', async (socket) => {
-    console.log('User connected:', socket.id);
+  io.on('connection', (socket) => {
+    socket.on('getOldMessages', async (roomId) => {
+      try {
+        const room = await Room.findById(roomId).populate('messages').exec();
+        console.log('Getting old messages!');
+        console.log(room.messages);
+        console.log(room);
+        socket.emit('oldMessages', room.messages);
+      } catch (err) {
+        console.error(err);
+      }
+    });
 
-    // Get the logged in user's ID from the socket's query string
-    const userId = socket.handshake.query.userId;
-
-    // Get the user from the database
-    const fromUser = await User.findById(userId);
-
-    // If the user is not found, disconnect the socket
-    if (!fromUser) {
-      console.log('User not found');
-      socket.disconnect();
-      return;
-    }
-
-    // Join the room for this user's ID
-    socket.join(userId);
-    console.log('User join success. Id: ' + fromUser._id);
-
-    // Listen for incoming chat messages
-    socket.on('message', async (message) => {
-      const { fromId, toId, content } = message;
-
-      console.log('Message received:', message);
-
-      // Get the user to send the message to from the database
-      const toUser = await User.findById(toId);
-
-      // If the user is not found, return an error message
-      if (!toUser) {
-        console.log('User not found');
-        //callback('User not found');
-        return;
+    socket.on('newMessage', async (roomId, username, messageContent) => {
+      const sender = await User.findOne({ username });
+      if (!sender) {
+        return console.error(`Sender ${username} not found`);
       }
 
-      const newMessage = new Message({
-        fromId,
-        toId,
-        content,
-      });
-
-      await newMessage.save();
-
-      var newMessageData = {
-        fromId: newMessage.fromId,
-        toId: newMessage.toId,
-        fromLogin: fromUser.login,
-        toLogin: toUser.login,
-        content: newMessage.content
-      };
-
-      io.to(fromId).emit('message', newMessageData);
-      io.to(toId).emit('message', newMessageData);
+      const message = new Message({ content: messageContent, sender });
+      try {
+        const savedMessage = await message.save();
+        const room = await Room.findById(roomId);
+        room.messages.push(savedMessage._id);
+        await room.save();
+        socket.to(roomId).emit('newMessage', savedMessage);
+      } catch (error) {
+        console.error(error);
+      }
     });
 
-    // Listen for disconnection events
-    socket.on('disconnect', () => {
-      console.log('User disconnected:', socket.id);
+    socket.on('connect', async ({ roomId, userId }) => {
+      socket.join(roomId);
+
+      Room.findOne({ roomId }).sort({ timestamp: -1 }).exec((err, messages) => {
+        if (err) {
+          return console.error(err);
+        }
+        socket.emit('loadMessages', messages.reverse());
+      });
     });
   });
-};
- 
+
+  return io;
+}
+
+module.exports = init;
+

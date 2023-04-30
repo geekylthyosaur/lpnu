@@ -1,13 +1,15 @@
 <template>
-  <div class="container">
-    <h3>My Chat Rooms</h3>
+  <div class="container my-3 p-3 border rounded shadow-sm">
+    <h3 class="text-center mb-4">My Chat Rooms</h3>
     <ul class="list-group row">
-      <li v-for="room in rooms" :key="room._id" class="list-group-item">
-        <a @click="this.$emit('roomSelected', room._id)">{{ room.name }}</a>
-        <button @click="deleteRoom(room._id)" class="btn btn-danger btn-sm float-right">Exit</button>
-      </li>
+      <a v-for="room in rooms" :key="room._id" @click="$emit('roomSelected', room._id)">
+        <li class="list-group-item py-3 mb-2">
+          {{ room.name }}
+          <button @click="deleteRoom(room._id)" class="btn btn-outline-danger btn-sm float-right">Leave</button>
+        </li>
+      </a>
     </ul>
-    <chat-room-create-modal @roomCreated="fetchAvailableRooms" class="row mt-2"/>
+    <chat-room-create-modal @roomCreated="fetchAvailableRooms" class="d-flex align-items-center justify-content-center"/>
   </div>
 </template>
 

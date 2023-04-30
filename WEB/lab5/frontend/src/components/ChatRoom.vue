@@ -1,6 +1,15 @@
 <template>
   <div class="container">
-    <h3>{{ currentRoom.name }}</h3>
+    <div class="row">
+      <div class="col-md-5 ml-5">
+        <h3>{{ currentRoom.name }}</h3>
+      </div>
+      <div class="col-md-5 mr-5">
+        <button @click="this.$emit('closeChat')" type="button" class="close">
+          <span>&times;</span>
+        </button>
+      </div>
+    </div>
     <ul class="list-group">
       <li v-for="message in currentRoom.messages" :key="message.id" class="list-group-item">
         <strong>{{ message.author }}:</strong> {{ message.content }}
@@ -17,6 +26,7 @@
 
 <script>
   import axios from 'axios'
+  import io from 'socket.io-client'
 
   export default {
     name: 'ChatRoom',
@@ -30,6 +40,12 @@
           // Handle error
           console.error(error);
         });
+
+      this.socket = io('http://127.0.0.1:3080');
+      this.socket.emit('getOldMessages', this.currentRoomId);
+      this.socket.on('oldMessages', oldMessages => {
+        this.currentRoom.messages = oldMessages;
+      });
     },
     props: {
       currentRoomId: String,
@@ -55,9 +71,10 @@
           author: this.currentUser,
           content: this.newMessage.trim()
         };
+        this.socket.emit('newMessage', this.currentRoomId, this.currentUser, this.newMessage);
         this.currentRoom.messages.push(message);
         this.newMessage = '';
-      }
+      },
     }
   };
 </script>

@@ -5,7 +5,7 @@
         <chat-rooms @roomSelected="selectRoom"/>
       </div>
       <div class="col-md-8">
-        <chat-room v-if="currentRoomId !== ''" v-bind:currentRoomId="currentRoomId"/>
+        <chat-room @closeChat="currentRoomId = ''" v-if="currentRoomId !== ''" v-bind:currentRoomId="currentRoomId"/>
       </div>
     </div>
   </div>
@@ -24,10 +24,7 @@
     data() {
       return {
         socket: null,
-        rooms: [],
         currentRoomId: '',
-        messages: [],
-        messageText: '',
       };
     },
     methods: {
@@ -39,9 +36,5 @@
 </script>
 
 <style>
-#messages {
-  max-height: 300px;
-  overflow-y: auto;
-}
 </style>
 

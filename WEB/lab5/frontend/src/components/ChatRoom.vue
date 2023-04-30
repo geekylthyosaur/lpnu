@@ -5,7 +5,7 @@
         <h3>{{ currentRoom.name }}</h3>
       </div>
       <div class="col-md-5 text-md-right mt-3 mt-md-0">
-        <button @click="closeChat" type="button" class="close">
+        <button @click="closechat" type="button" class="close">
           <span>&times;</span>
         </button>
       </div>
@@ -78,11 +78,11 @@
         this.socket.emit('newMessage', this.currentRoomId, this.currentUser, this.newMessage);
         this.newMessage = '';
       },
-      closeChat() {
+      closechat() {
         this.socket.emit('leaveRoom', this.currentRoomId);
         this.$emit('closeChat');
       }
-    }
+    },
   };
 </script>
 

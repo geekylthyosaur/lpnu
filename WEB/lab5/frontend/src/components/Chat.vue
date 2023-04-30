@@ -2,7 +2,7 @@
   <div class="container">
     <div class="row">
       <div class="col-md-4">
-        <chat-rooms @roomSelected="selectRoom"/>
+        <chat-rooms @roomSelected="selectRoom" @deletedRoom="currentRoomId = ''"/>
       </div>
       <div class="col-md-8">
         <chat-room @closeChat="currentRoomId = ''" v-if="currentRoomId !== ''" v-bind:currentRoomId="currentRoomId"/>

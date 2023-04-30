@@ -18,6 +18,7 @@
 	language=c,
 	tabsize=4,
 	keepspaces,
+	breaklines=true,
 	showstringspaces=false,
 }
 \graphicspath{ {./pictures} }
@@ -27,9 +28,10 @@
 \newcommand\lecturer{асистент кафедри ПЗ \\ Степанов Д.С.}
 \newcommand\teacher{доцент кафедри ПЗ \\ Грицай О.Д.}
 \newcommand\mygroup{ПЗ-22}
-\newcommand\lab{4}
-\newcommand\theme{Основні типи та функції доступу до БД MySQL}
-\newcommand\purpose{Засвоїти елементи створення, модифікації, читання та занесення даних з таблиць БД засобами РНР}
+\newcommand\lab{5}
+\newcommand\theme{Node.js як засіб написання сценаріїв}
+\newcommand\purpose{асвоїти елементи програмування серверної частини застосувань мовою
+	Node.js}
 
 \begin{document}
 \begin{normalsize}
@@ -94,120 +96,173 @@ https://cacoo.com/diagrams/ZvVhYS3UpG5PdbBy/EDE3A
 таблицю студента\\
 
 \section*{Теоретичні відомості}
-Одним з інструментів підтримки динамічних сценаріїв при перегляді Web-сторінок у
-межах комп’ютера користувача є мова програмування JavaScript – спрощений
-варіант мови програмування Java. Нею запезпечується рух об’єктів на сторінці,
-введення та виведення параметрів, зміна зображень вікон тощо. Програми модифікації,
-створення гіпертекстових сторінок традиційно називають скриптами (scripts), які
-інтерпретуються програмою перегляду. Спосіб базується на ідеології об’єктно-
-орієнтованого програмування. Зупинимось на скриптах, написаних мовою JavaScript.
+Node.js - це опенсорсне кросплатформове середовище виконання для JavaScript, яке
+працює на серверах.
+Платформа Node.js побудована на базі JavaScript двигун V8 від Google, який
+використовується в браузері Google Chrome. Ця платформа в основному використовується
+для створення веб-серверів, проте сфера її застосування цим не обмежується.
+Однією з основних привабливих особливостей Node.js є швидкість. JavaScript-код,
+що виконується в середовищі Node.js, може бути вдвічі швидше, ніж код, написаний
+компілюваними мовами, на кшталт C або Java, і на порядки швидше за інтерпретовані
+мови на кшталт Python або Ruby.
 
-Усі операції в програмі на JavaScript описують дії над об’єктами – елементами
-робочої області броузера та контейнерами мови HTML. Об’єкти мають властивості та
-методи. Існують також інші функції, які дають змогу працювати зі стандартними
-математичними функціями та керувати процесом виконання програми. JavaScript має
-механізм опрацювання подій перегляду динамічних об’єктів та управління
-багатовіконним інтерфейсом. Об’єкти JavaScript беруть свій початок від класу
-Window.
+У традиційних мовах програмування (C, Java, Python, PHP) всі інструкції за
+замовчуванням є блокуючими, якщо тільки розробник явно не подбає про асинхронне
+виконання коду. В результаті якщо, наприклад, у такому середовищі, зробити мережевий
+запит для завантаження якогось JSON-коду, виконання потоку, з якого зроблений запит,
+буде припинено доти, доки не завершиться отримання та обробка відповіді.
 
-Bootstrap – це фреймворк для розробки клієнтських застосувань (front end). Bootstrap
-містить шаблони на базі HTML та CSS з текстом, формами, кнопками, таблицями,
-навігацією, модулями, каруселями зображень та багато інших сучасних елементів веб
-сторінок, а також вбудовані засоби JavaScript (плагіни). Bootstrap дозволяє створювати
-адаптивні сторінки у телефонах, планшетах та ноутбуках.. Bootstrap 3 підтримує
-реалізацію для мобільних телефонів. Bootstrap підтримується у сучасних браузерах
-(Chrome, Firefox, Internet Explorer, Safari, Opera). Версія 4.0 містить препроцесор CSS
-(SASS ) та підтримку flex-box.
+JavaScript значно спрощує написання асинхронного та неблокуючого коду з
+використанням єдиного потоку, функцій зворотного виклику (коллбеків) та підходу до
+розробки, що базується на подіях. Щоразу, коли нам потрібно виконати важку операцію,
+ми передаємо відповідному механізму коллбек, який буде викликаний одразу після
+завершення цієї операції. В результаті, щоб програма продовжила роботу, чекати
+результатів виконання подібних операцій не потрібно.
+
+Подібний механізм виник у браузерах. Ми не можемо дозволити собі чекати, скажімо,
+закінчення виконання AJAX-запиту, не маючи при цьому можливості реагувати на дії
+користувача, наприклад на клацання по кнопках. Для того, щоб користувачам було зручно
+працювати з веб-сторінками, все, і завантаження даних з мережі, і обробка натискання на
+кнопки має відбуватися одночасно, в режимі реального часу.
+Якщо ви створювали колись обробник події натискання на кнопку, то ви вже
+користувалися методиками асинхронного програмування.
+
+Завдяки простоті та зручності роботи з менеджером пакетів для Node.js, який
+називається npm, екосистема Node.js розвивається. Зараз у реєстрі npm є понад
+півмільйона опенсорсних пакетів, які може вільно використовувати будь-який Node.js-
+розробник.
 
 \section*{Хід виконання}
 \begin{lstlisting}
-<?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$json = file_get_contents('php://input');
-	$student = json_decode($json);
-	
-	$id = trim($student->id);
-	$group = trim($student->group);
-	$name = trim($student->name);
-	$gender = trim($student->gender);
-	$birthday = trim($student->birthday);
-	$status = trim($student->status);
-	
-	$errors = [];
-	
-	if (empty($id)) {
-		$errors[] = 'ID is required.';
-	}
-	
-	if (empty($group)) {
-		$errors[] = 'Group is required.';
-	}
-	
-	if (empty($name) || strlen($name) < 5) {
-		$errors[] = 'Name is required and should be at least 5 characters in length.';
-	}
-	
-	if (empty($gender) || !in_array($gender, ['Male', 'Female', 'Other'])) {
-		$errors[] = 'Gender is required and must be "male", "female", or "other".';
-	}
-	
-	if (empty($birthday)) {
-		$errors[] = 'Birthday is required.';
-	} elseif (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $birthday)) {
-		$errors[] = 'Birthday must be in the format "YYYY-MM-DD".';
-	}
-	
-	if (empty($status) || !in_array($status, ['0', '1'])) {
-		$errors[] = 'Status is required and must be "0" or "1".';
-	}
-	
-	if (!empty($errors)) {
-		http_response_code(400);
-		echo json_encode(['errors' => $errors]);
-		exit;
-	} else {
-		http_response_code(200);
-		exit;
-	}
-}
-?>
+const Room = require('./models/room');
+const { Message } = require('./models/message');
+const User = require('./models/user');
 
+const socketIO = require('socket.io');
+
+function init(server) {
+	const io = socketIO(server, {
+		cors: {
+			origin: '*',
+			methods: ['GET', 'POST'],
+		},
+	});
+	
+	io.on('connection', (socket) => {
+		socket.on('getUnreadRooms', async (username) => {
+			try {
+				const user = await User.findOne({ username }).populate('unreadRoomIds').exec();
+				if (!user) {
+					return;
+				}
+				const unreadRooms = await Room.find({
+					_id: { $in: user.unreadRoomIds },
+					users: { $in: [username] }
+				}).lean().exec();
+				
+				io.to(socket.id).emit('unreadRooms', unreadRooms);
+			} catch (err) {
+				console.error(err);
+			}
+		});
+		
+		socket.on('setRoomAsRead', async (roomId, username) => {
+			try {
+				const user = await User.findOne({ username });
+				
+				const room = await Room.findOne({ _id: roomId, users: { $in: [username] } });
+				
+				console.log('Setting room as read!');
+				console.log(username, roomId);
+				
+				const updatedUser = await User.findByIdAndUpdate(user._id, { $pull: { unreadRoomIds: room._id } }, { new: true });
+			} catch (err) {
+				console.error(err);
+			}
+		});
+		
+		socket.on('getOldMessages', async (roomId) => {
+			try {
+				const room = await Room.findById(roomId).populate({ path: 'messages', populate: { path: 'senderId' }, options: { strictPopulate: false } }).exec();
+				console.log('Getting old messages for room!');
+				console.log(room);
+				const messages = room.messages.map(message => {
+					return {
+						_id: message._id,
+						senderId: message.senderId._id,
+						author: message.senderId.username,
+						isReadByToId: message.isReadByToId,
+						content: message.content,
+						createdAt: message.createdAt,
+						updatedAt: message.updatedAt,
+					}
+				});
+				io.to(roomId).emit('oldMessages', messages);
+			} catch (err) {
+				console.error(err);
+			}
+		});
+		
+		socket.on('newMessage', async (roomId, username, messageContent) => {
+			const sender = await User.findOne({ username });
+			if (!sender) {
+				return console.error(`Sender ${username} not found`);
+			}
+			
+			const message = new Message({ content: messageContent, senderId: sender._id });
+			console.log('Got new message!');
+			console.log(message);
+			console.log(sender);
+			
+			try {
+				const savedMessage = await message.save();
+				const room = await Room.findById(roomId);
+				room.messages.push(savedMessage._id);
+				
+				const connectedUsernames = Object.keys(io.sockets.adapter.rooms[roomId]?.sockets || {}).filter(socketId => socketId !== socket.id);
+				const connectedUsers = await User.find({ username: { $in: connectedUsernames } });
+				console.log(connectedUsers.map(u => u.username));
+				
+				const users = await User.find({ username: { $in: room.users } });
+				const senderIndex = users.findIndex(user => user.username === sender.username);
+				if (senderIndex !== -1) {
+					users.splice(senderIndex, 1);
+				}
+				const nonConnectedUsers = users.filter(user => !connectedUsernames.includes(user.username));
+				for (const user of nonConnectedUsers) {
+					user.unreadRoomIds.addToSet(room._id);
+					await user.save();
+					console.log('Setting unread room for user!');
+					console.log(user.username, room.name);
+				}
+				
+				await room.save();
+				io.to(roomId).emit('newMessage', sender.username, messageContent);
+			} catch (error) {
+				console.error(error);
+			}
+		});
+		
+		socket.on('joinRoom', (roomId) => {
+			console.log(`Socket ${socket.id} joining room ${roomId}`);
+			socket.join(roomId);
+		});
+		
+		socket.on('leaveRoom', (roomId) => {
+			console.log(`Socket ${socket.id} leaving room ${roomId}`);
+			socket.leave(roomId);
+		});
+	});
+	
+	return io;
+}
+
+module.exports = init;
 \end{lstlisting}
 
-\section*{Результати}
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.35]{23}
-	\caption{Валідація даних серверною частиною.}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.35]{1}
-	\caption{Загальний вигляд сторінки}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.35]{3}
-	\caption{Модальне вікно для додавання студента та його валідація}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.35]{6}
-	\caption{Модальне вікно для видалення студента та його валідація}
-\end{figure}
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[scale=0.35]{7}
-	\caption{Модальне вікно для видалення студента}
-\end{figure}
 
 \section*{Висновки}
-Під час виконання лабораторної роботи я засвоїв елементи створення, модифікації, читання та занесення даних з
-таблиць БД засобами РНР.
+Під час виконання лабораторної роботи я асвоїв елементи програмування серверної частини застосувань мовою Node.js
 	    
 \end{normalsize}
 \end{document}

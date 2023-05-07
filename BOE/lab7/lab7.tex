@@ -29,8 +29,10 @@
 \newcommand\teacher{доцент кафедри ПЗ \\ Коцун В.І.}
 \newcommand\mygroup{ПЗ-22}
 \newcommand\lab{7}
-\newcommand\theme{}
-\newcommand\purpose{}
+\newcommand\theme{Дослідження роботи аналого-цифрового і цифроаналогового перетворювачів}
+\newcommand\purpose{Методом комп'ютерного моделювання дослідити роботу
+	аналого-цифрового і цифро-аналогового перетворювачів та визначити похибку
+	перетворення}
 
 \begin{document}
 \begin{normalsize}
@@ -83,11 +85,17 @@
 		\item[Мета.] \purpose.
 	\end{description}
 
-	\section*{Теоретичні відомості}
-
 	\section*{Індивідуальне завдання}
 	\begin{enumerate}
-		\item 
+		\item Запустити програму NI Multisim.  Зібрати схему представлену на рис. 2.
+		\item Встановити параметри генератора на синусоїдальні коливання (рис. 3.) з частотою 1 Гц та амплітудою згідно зі своїм варіантом (табл. 1).
+		
+		\item Відкрити вікно Grapher View, та провести аналіз роботи АЦП-ЦАП перетворення. 
+		\item Провести якісний аналіз відхилення перетвореного сигналу відносно вхідного. Результати представити у вигляді залежності, як показано на прикладі.
+		\item Провести кількісний аналіз похибки перетворення. Для цього на генераторі встановити наступні параметри: синусоїдальні коливання з частотою 1 Гц та амплітудою згідно зі своїм варіантом. Для значень вхідної напруги Uвх (значення напруги на каналі осцилографа А) визначити значення вихідної (перетвореної) напруги Uвих (значення напруги на каналі осцилографа В). Отримані дані внести в таблицю. Розрахувати похибку вимірювання напруги згідно рівнянь (2) і (3).
+		\item Дії описані в пункті 5 повторити для інших значень частот в межах від 1 Гц до 100 Гц . 
+		\item Побудувати залежність точності перетворення від частоти.
+		
 	\end{enumerate}
 
 	\section*{Хід виконання}
@@ -101,98 +109,79 @@
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\textwidth]{2}
-		\caption{Осцилограма для схеми 1}
+		\caption{Осцилограма 1 для схеми 1}
 	\end{figure}
 
-	\begin{multicols}{2}
-		За даними осцилографа:
-		\begin{gather}
-			T_{\text{і}}=46.951\text{ мс}\nonumber\\
-			T_{\text{п}}=46.970\text{ мс}\nonumber\\
-			T=T_{\text{і}}+T_{\text{п}}=93.921\text{ мс}\nonumber
-		\end{gather}
-		
-		\columnbreak
-		
-		За обрахунками:
-		\begin{gather}
-			T_{\text{і}}=46.41\text{ мс}\nonumber\\
-			T_{\text{п}}=46.2\text{ мс}\nonumber\\
-			T=T_{\text{і}}+T_{\text{п}}=92.61\text{ мс}\nonumber
-		\end{gather}
-	\end{multicols}
-
-	\begin{table}[H]
-		\centering
-		\renewcommand*\arraystretch{1.3}
-		\begin{tabular}{|p{0.12\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|}
-			\hline
-			$C$, $\mu F$&1&1.5&2&2.5&3\\
-			\hline
-			$T$, мс&42.8&64.0&85.6&106.4&127.25\\
-			\hline
-		\end{tabular}
-		\caption{Таблиця залежності періоду коливань від ємностей $C_1$ та $C_2$}
-	\end{table}
-	
-	\begin{table}[H]
-		\centering
-		\renewcommand*\arraystretch{1.3}
-		\begin{tabular}{|p{0.12\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|}
-			\hline
-			$R$, $kOhm$&20&25&30&35&40\\
-			\hline
-			$T$, мс&62.88&78.4&93.2&109.0&125.0\\
-			\hline
-		\end{tabular}
-		\caption{Таблиця залежності періоду коливань від величини $R_1$ та $R_2$}
-	\end{table}
-	
-	\begin{table}[H]
-		\centering
-		\renewcommand*\arraystretch{1.3}
-		\begin{tabular}{|p{0.12\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|}
-			\hline
-			$C_2$, $\mu F$&1&1.5&2&2.5&3\\
-			\hline
-			$T$, мс&68.5&78.4&89.8&100.0&110.6\\
-			\hline
-			$T_{\text{ні}}$, мс&21.0&31.4&42.8&53.0&64.0\\
-			\hline
-			$T_{\text{шп}}$&1.445&1.667&1.922&2.128&2.373\\
-			\hline
-		\end{tabular}
-		\caption{Таблиця залежності шпаруватості імпульсів від ємності $C_2$}
-	\end{table}
-	
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\textwidth]{3}
-		\caption{Схема 2}
+		\caption{Осцилограма 2 для схеми 1}
 	\end{figure}
+
+	\begin{table}[H]
+		\centering
+		\renewcommand*\arraystretch{1.3}
+		\begin{tabular}{|c|c|c|c|c|c|c|c|}
+			\hline
+			\multicolumn{4}{|c|}{\textbf{$1$ $Hz$}} & \multicolumn{4}{c|}{\textbf{$10$ $Hz$}} \\
+			\hline
+			\textbf{$U_{\text{вх}}$} & \textbf{$U_{\text{вих}}$} & \textbf{$\Delta U$} & \textbf{$\Delta U$ (\%)} & \textbf{$U_{\text{вх}}$} & \textbf{$U_{\text{вих}}$} & \textbf{$\Delta U$} & \textbf{$\Delta U$ (\%)} \\
+			\hline
+			1.36&1.28&0.058&5.88&1.85&1.64&0.11&11.35\\
+			\hline
+			2.36&2.22&0.05&5.93&4.44&4.1&0.07&7.65\\
+			\hline
+			4.93&4.80&0.02&2.63&6.07&5.85&0.03&3.62\\
+			\hline
+		\end{tabular}
+	\end{table}
+
+	\begin{table}[H]
+		\centering
+		\renewcommand*\arraystretch{1.3}
+		\begin{tabular}{|c|c|c|c|c|c|c|c|}
+			\hline
+			\multicolumn{4}{|c|}{\textbf{$30$ $Hz$}} & \multicolumn{4}{c|}{\textbf{$50$ $Hz$}} \\
+			\hline
+			\textbf{$U_{\text{вх}}$} & \textbf{$U_{\text{вих}}$} & \textbf{$\Delta U$} & \textbf{$\Delta U$ (\%)} & \textbf{$U_{\text{вх}}$} & \textbf{$U_{\text{вих}}$} & \textbf{$\Delta U$} & \textbf{$\Delta U$ (\%)} \\
+			\hline
+			1.44&1.28&0.11&11.11&2.97&2.1&0.29&29.29\\
+			\hline
+			3.91&3.75&0.04&4.09&5.68&5.62&0.01&1.05\\
+			\hline
+			6.38&6.32&0.0&0.94&6.88&6.56&0.04&4.65\\
+			\hline
+		\end{tabular}
+	\end{table}
+	
+	\begin{table}[H]
+		\centering
+		\renewcommand*\arraystretch{1.3}
+		\begin{tabular}{|c|c|c|c|c|c|c|c|}
+			\hline
+			\multicolumn{4}{|c|}{\textbf{$70$ $Hz$}} & \multicolumn{4}{c|}{\textbf{$100$ $Hz$}} \\
+			\hline
+			\textbf{$U_{\text{вх}}$} & \textbf{$U_{\text{вих}}$} & \textbf{$\Delta U$} & \textbf{$\Delta U$ (\%)} & \textbf{$U_{\text{вх}}$} & \textbf{$U_{\text{вих}}$} & \textbf{$\Delta U$} & \textbf{$\Delta U$ (\%)} \\
+			\hline
+			4.04&2.92&0.27&27.72&6.44&4.1&0.36&36.36\\
+			\hline
+			6.12&5.39&0.11&11.92&6.98&6.56&0.06&6.01\\
+			\hline
+			6.95&6.67&0.04&4.02&1.3&4.1&2.15&215\\
+			\hline
+		\end{tabular}
+	\end{table}
 	
 	\begin{figure}[H]
 		\centering
 		\includegraphics[width=\textwidth]{4}
-		\caption{Осцилограма для схеми 2}
+		\caption{Графік залежності  точності перетворення від частоти}
 	\end{figure}
 	
-	\begin{table}[H]
-		\centering
-		\renewcommand*\arraystretch{1.3}
-		\begin{tabular}{|p{0.12\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|p{0.08\linewidth}|}
-			\hline
-			$F_{r_{\text{г}}}$, $Hz$&1&5&10&20&30\\
-			\hline
-			$F_{r_{\text{МВ}}}$, $Hz$&1&5&10&20&30\\
-			\hline
-		\end{tabular}
-		\caption{Таблиця залежності періоду коливань від величини $R_1$ та $R_2$}
-	\end{table}
-	
 	\section*{Висновки}
-	Під час виконання лабораторної роботи я вивчив схему побудови симетричного мультивібратора
-	(MB), дослідив його роботу в різних режимах.
+	Під час виконання лабораторної роботи я методом комп'ютерного моделювання дослідив роботу
+	аналого-цифрового і цифро-аналогового перетворювачів та визначив похибку
+	перетворення.
 	    
 \end{normalsize}
 \end{document}

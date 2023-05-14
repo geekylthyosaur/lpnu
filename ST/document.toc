@@ -1,0 +1,5 @@
+\babel@toc {ukrainian}{}\relax 
+\contentsline {section}{ВСТУП}{3}{Doc-Start}%
+\contentsline {section}{ОСНОВНА ЧАСТИНА}{4}{Doc-Start}%
+\contentsline {section}{ВИСНОВКИ}{10}{Doc-Start}%
+\contentsline {section}{Список використаної літератури}{12}{Doc-Start}%

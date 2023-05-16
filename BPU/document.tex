@@ -1,0 +1,220 @@
+\documentclass[oneside,14pt]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+\usepackage{amssymb,amsfonts,amsmath,amsthm,mathtext,textcomp}
+
+\usepackage[includehead, headsep=0pt, footskip=0pt, top=2cm, bottom=2cm, left=2cm, right=15mm]{geometry}
+\usepackage{indentfirst}
+\usepackage[onehalfspacing]{setspace}
+\usepackage[headings]{fancyhdr}
+\usepackage{etoolbox}
+\usepackage{flafter}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[center]{titlesec}
+\titlelabel{\thetitle.\quad}
+\usepackage{array}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\baselinestretch}{1.5}
+\pagestyle{fancy}
+\fancyfoot[R]{\thepage}
+\lstset{breaklines=true,}
+\graphicspath{ {./pictures} }
+\counterwithin{figure}{section}
+
+\begin{document}
+\begin{titlepage}
+	\begin{center}
+МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\\
+НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ <<ЛЬВІВСЬКА ПОЛІТЕХНІКА>>\\
+ННІ АДМІНІСТРУВАННЯ ТА ПІСЛЯДИПЛОМНОЇ ОСВІТИ\\
+КАФЕДРА ТЕХНОЛОГІЙ УПРАВЛІННЯ
+
+		
+		\vspace{80pt}
+Контрольна робота\\
+з дисципліни <<Бізнес-планування та управління проектами>>\\
+Варіант №16
+\begin{flushleft}
+	1 теор. пит. №16\\
+	2 теор. пит. №6\\
+	1 прак. зав. №3\\
+	2 прак. зав. №9\\
+\end{flushleft}
+		\vspace*{20pt}
+		
+		\begin{flushright}
+			\textbf{Виконав}:\\
+			
+			студент групи БПУ-ТУ-213\\
+			Коваленко Д.М.\\
+			\vspace{10pt}
+			\textbf{Прийняла}:\\
+			ст викл. Лебідь Т.В.
+			
+			\vspace{28pt}
+			«\rule{1cm}{0.15mm}» \rule{1.5cm}{0.15mm} 2023 р.\\
+			$\sum$ = \rule{1cm}{0.15mm}……………\\
+			
+		\end{flushright}
+		\vspace{\fill}
+		Львів — 2023
+	\end{center}
+\end{titlepage}
+\setcounter{page}{2}
+\tableofcontents
+\newpage
+
+\section*{ВСТУП}
+\addcontentsline{toc}{section}{ВСТУП}
+
+\newpage
+\section*{Теоретичне питання 1}
+\addcontentsline{toc}{section}{Теоретичне питання 1}
+
+\newpage
+\section*{Теоретичне питання 2}
+\addcontentsline{toc}{section}{Теоретичне питання 2}
+
+\newpage
+\section*{Практичне завдання 1}
+\addcontentsline{toc}{section}{Практичне завдання 1}
+
+Бюджет проекту 6 млн. грн. (без урахування фінансових витрат). Підприємство планує фінансувати проект за рахунок кредиту. Банк встановив процентну ставку 30\% річних. Кредит повинен погашатись рівними частинами впродовж 1,5 року. Визначити розміри періодичних сплат, суму сплачених процентів та загальну суму погашення, якщо такі платежі здійснюються один раз у півроку, а кредит надається на початку проекту (01.01.2017 р.). Скласти звіт про рух грошових коштів на фінансування витрат за проектом.
+
+Розв'язання:
+
+Для розрахунку розміру періодичних сплат та суми сплачених процентів використовуємо формулу ануїтетного платежу:
+
+$A = (P * i) / (1 - (1 + i)^{-n})$
+
+Розрахуємо розмір періодичного платежу:
+\begin{gather}
+	P = 6,000,000 \text{ грн.}\nonumber\\
+	i = 30\% / 100 / 2 = 0.15\nonumber\\
+	n = 1.5 * 2 = 3\nonumber\\
+	A = (6,000,000 * 0.15) / (1 - (1 + 0.15)^{-3})\nonumber\\
+	A = 2,254,115.56 \text{ грн.}\nonumber
+\end{gather}
+
+Тепер розрахуємо суму сплачених процентів:
+
+\begin{gather}
+	\text{Сума процентів } = (A * n) - P\nonumber\\
+	\text{Сума процентів } = (2,254,115.56 * 3) - 6,000,000\nonumber\\
+	\text{Сума процентів }  6,762,346.68 \text{ грн.}\nonumber
+\end{gather}
+
+Загальна сума погашення буде складатись з суми кредиту та суми сплачених процентів:
+
+\begin{gather}
+	\text{Загальна сума погашення }= P + \text{ Сума процентів}\nonumber\\
+	\text{Загальна сума погашення }= 6,000,000 + 6,762,346.68\nonumber\\
+	\text{Загальна сума погашення }= 12,762,346.68\text{ грн.}\nonumber
+\end{gather}
+
+Тепер складемо звіт про рух грошових коштів на фінансування витрат за проектом. З представлених даних зробимо наступні припущення:
+
+Періодичні платежі здійснюються один раз у півріччя (раз у 6 місяців).
+Кредит надається на початку проекту (01.01.2017 р.).
+
+Звіт про рух грошових коштів на фінансування витрат за проектом:
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		Дата & Отримано & Виплачено & Залишок \\
+		\hline
+		01.01.2017 & 6,000,000 грн. & - & 6,000,000 грн. \\
+		\hline
+		01.07.2017 & - & 2,254,115.56 грн. & 3,745,884.44 грн. \\
+		\hline
+		01.01.2018 & - & 2,254,115.56 грн. & 1,491,768.88 грн. \\
+		\hline
+		01.07.2018 & - & 2,254,115.56 грн. & 237,653.32 грн. \\
+		\hline
+		01.01.2019 & - & 2,254,115.56 грн. & -2,016,462.24 грн. \\
+		\hline
+	\end{tabular}
+\end{table}
+
+Отже, рух грошових коштів на фінансування витрат за проектом показує, що на початку проекту підприємство отримало 6,000,000 грн. кредиту. Протягом наступних трьох півріччів було виплачено по 2,254,115.56 грн., а на початку 2019 року борг становив -2,016,462.24 грн., що означає, що борг був повністю погашений.
+
+\newpage
+\section*{Практичне завдання 2}
+\addcontentsline{toc}{section}{Практичне завдання 2}
+
+Результати оцінювання трьома експертами (Е1, Е2, Е3) проектних альтернатив (А1, А2, А3, А4) за критерієм пріоритетності реалізації за десятибальною шкалою наведено у табл. 4.1. Необхідно встановити пріоритетність проектних альтернатив за їхніми коефіцієнтами вагомості.
+
+	\begin{table}[H]
+		\centering
+		\caption{Експертні оцінки альтернатив}
+		\begin{tabular}{|p{0.13\linewidth}|p{0.13\linewidth}|p{0.13\linewidth}|p{0.13\linewidth}|p{0.13\linewidth}|p{0.13\linewidth}|}
+			\hline
+			\multirow{2}{*}{Експерти} & \multicolumn{4}{c|}{Експертні оцінки альтернатив} & \multirow{2}{*}{$\sum$} \\
+			\cline{2-5}
+			& А1 & А2 & А3 & А4 & \\
+			\hline
+			Е1 & 2 & 5 & 1 & 2 & 10 \\
+			\hline
+			Е2 & 2 & 2 & 3 & 3 & 10 \\
+			\hline
+			Е3 & 1 & 3 & 3 & 3 & 10 \\
+			\hline
+		\end{tabular}
+	\end{table}
+	
+	Розв'язання:
+	Запишемо суму оцінок альтернатив і загальну суму балів, використаних при оцінці даних альтернатив.
+
+	\begin{table}[H]
+		\centering
+		\caption{Експертні оцінки альтернатив}
+		\begin{tabular}{|p{0.13\linewidth}|p{0.13\linewidth}|p{0.13\linewidth}|p{0.13\linewidth}|p{0.13\linewidth}|p{0.13\linewidth}|}
+			\hline
+			\multirow{2}{*}{Експерти} & \multicolumn{4}{c|}{Експертні оцінки альтернатив} & \multirow{2}{*}{$\sum$} \\
+			\cline{2-5}
+			& А1 & А2 & А3 & А4 & \\
+			\hline
+			Е1 & 2 & 5 & 1 & 2 & 10 \\
+			\hline
+			Е2 & 2 & 2 & 3 & 3 & 10 \\
+			\hline
+			Е3 & 1 & 3 & 3 & 3 & 10 \\
+			\hline
+			Сума & 5 & 10 & 7 & 8 & 30 \\
+			\hline
+		\end{tabular}
+	\end{table}
+	
+	Значення коефіцієнтів вагомості визначають за такою формулою:
+	
+	\begin{gather}
+		K_{B_i}=\frac{A_{\text{ср}_i}}{\sum A_{\text{ср}_i}}
+	\end{gather}
+	
+	Де $K_B$ - коефіцієнт вагомості.
+	
+	\begin{gather}
+		K_{B_1}=\frac{5}{30}=0.166\nonumber\\
+		K_{B_1}=\frac{10}{30}=0.333\nonumber\\
+		K_{B_1}=\frac{7}{30}=0.233\nonumber\\
+		K_{B_1}=\frac{8}{30}=0.266\nonumber
+	\end{gather}
+	
+	Отже, приорітети альтернатив необхідно виставити в такому порядку: 
+	
+	\begin{gather}
+		A_2\rightarrow A_4\rightarrow A_3\rightarrow A_1	\nonumber
+	\end{gather}
+
+\newpage
+\section*{СПИСОК ВИКОРИСТАНИХ ДЖЕРЕЛ}
+\addcontentsline{toc}{section}{Список використаної джерел}
+
+\end{document}

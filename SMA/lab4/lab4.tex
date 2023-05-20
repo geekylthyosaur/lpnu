@@ -105,42 +105,39 @@
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[scale=1]{singleton}
+		\includegraphics[]{singleton}
 		\caption{UML діаграма реалізації шаблону Singleton}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[]{singleton-ex}
+		\caption{UML діаграма прикладу реалізації шаблону Singleton}
 	\end{figure}
 	
 	\begin{small}
 		\begin{lstlisting}
-export class GameMenu extends Node {
-	private static instance: GameMenu;
-	public startGame: () => void = () => {
-		console.error("startGame method is not implemented");
-	};
-	private isInitial: boolean = true;
-	private isOpened: boolean = true;
+export class GameState {
+	private static instance: GameState;
+	private state: State;
 	
 	private constructor() {
-		super("div", "game-menu-icon", "<span>Menu</span>");
-		this.bootstrap();
+		this.state = State.Playing;
 	}
 	
-	private bootstrap(): void {
-		if (this.isInitial) {
-			this.openMenu();
+	public static getInstance(): GameState {
+		if (!GameState.instance) {
+			GameState.instance = new GameState();
 		}
-		this.getNode().addEventListener("click", () => {
-			if (!this.isOpened && !this.isInitial) {
-				this.openMenu();
-			}
-		});
+		return GameState.instance;
 	}
 	
-	public static getInstance(): GameMenu {
-		if (!GameMenu.instance) {
-			GameMenu.instance = new GameMenu();
-		}
-		
-		return GameMenu.instance;
+	public getState(): State {
+		return this.state;
+	}
+	
+	public setState(state: State): void {
+		this.state = state;
 	}
 }
 		\end{lstlisting}
@@ -152,157 +149,55 @@ export class GameMenu extends Node {
 		\caption{UML діаграма реалізації шаблону Abstract Factory}
 	\end{figure}
 	
+		\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{abstract-factory-ex}
+		\caption{UML діаграма прикладу реалізації шаблону Abstract Factory}
+	\end{figure}
+	
 	\begin{small}
 		\begin{lstlisting}
-interface CardDeck {
-	createAttackCardDeck(): Card[];
-	createHealCardDeck(): Card[];
-	createDefenseCardDeck(): Card[];
+export interface AlienFactory {
+	createAlien(scene: Phaser.Scene, x: number, y: number): Alien;
 }
 
-class AttackCardSet implements CardDeck {
-	private numberOfHealCards: number = 5;
-	private numberOfAttackCards: number = 7;
-	private numberOfDefenseCards: number = 3;
-	
-	createAttackCardDeck(): Card[] {
-		let cards = [];
-		for (let index = 0; index < this.numberOfAttackCards; index++) {
-			cards.push(CardFactory.createCard("attack"));
-		}
-		return cards;
-	}
-	createHealCardDeck(): Card[] {
-		let cards = [];
-		for (let index = 0; index < this.numberOfHealCards; index++) {
-			cards.push(CardFactory.createCard("attack"));
-		}
-		return cards;
-	}
-	createDefenseCardDeck(): Card[] {
-		let cards = [];
-		for (let index = 0; index < this.numberOfDefenseCards; index++) {
-			cards.push(CardFactory.createCard("attack"));
-		}
-		return cards;
+export class Type1AlienFactory implements AlienFactory {
+	createAlien(scene: Phaser.Scene, x: number, y: number): AlienT1 {
+		return new AlienT1(scene, x, y);
 	}
 }
 
-class DefenseCardSet implements CardDeck {
-	private numberOfHealCards: number = 3;
-	private numberOfAttackCards: number = 5;
-	private numberOfDefenseCards: number = 7;
-	
-	createAttackCardDeck(): Card[] {
-		let cards = [];
-		for (let index = 0; index < this.numberOfAttackCards; index++) {
-			cards.push(CardFactory.createCard("attack"));
-		}
-		return cards;
+export class Type2AlienFactory implements AlienFactory {
+	createAlien(scene: Phaser.Scene, x: number, y: number): AlienT2 {
+		return new AlienT2(scene, x, y);
 	}
-	createHealCardDeck(): Card[] {
-		let cards = [];
-		for (let index = 0; index < this.numberOfHealCards; index++) {
-			cards.push(CardFactory.createCard("attack"));
-		}
-		return cards;
-	}
-	createDefenseCardDeck(): Card[] {
-		let cards = [];
-		for (let index = 0; index < this.numberOfDefenseCards; index++) {
-			cards.push(CardFactory.createCard("attack"));
-		}
-		return cards;
-	}
-}
-
-class HealCardSet implements CardDeck {
-	private numberOfHealCards: number = 7;
-	private numberOfAttackCards: number = 5;
-	private numberOfDefenseCards: number = 3;
-	
-	createAttackCardDeck(): Card[] {
-		let cards = [];
-		for (let index = 0; index < this.numberOfAttackCards; index++) {
-			cards.push(CardFactory.createCard("attack"));
-		}
-		return cards;
-	}
-	createHealCardDeck(): Card[] {
-		let cards = [];
-		for (let index = 0; index < this.numberOfHealCards; index++) {
-			cards.push(CardFactory.createCard("attack"));
-		}
-		return cards;
-	}
-	createDefenseCardDeck(): Card[] {
-		let cards = [];
-		for (let index = 0; index < this.numberOfDefenseCards; index++) {
-			cards.push(CardFactory.createCard("attack"));
-		}
-		return cards;
-	}
-}
-
-export function createDeck(type: string): Card[] {
-	const deck = [];
-	if (type === "attack") {
-		const factory = new AttackCardSet();
-		deck.push(...factory.createAttackCardDeck());
-		deck.push(...factory.createHealCardDeck());
-		deck.push(...factory.createDefenseCardDeck());
-	} else if (type === "defense") {
-		const factory = new DefenseCardSet();
-		deck.push(...factory.createDefenseCardDeck());
-		deck.push(...factory.createHealCardDeck());
-		deck.push(...factory.createAttackCardDeck());
-	} else if (type === "heal") {
-		const factory = new HealCardSet();
-		deck.push(...factory.createHealCardDeck());
-		deck.push(...factory.createAttackCardDeck());
-		deck.push(...factory.createDefenseCardDeck());
-	}
-	return deck;
 }
 		\end{lstlisting}
 	\end{small}
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=\textwidth]{factory}
+		\includegraphics[]{factory}
 		\caption{UML діаграма реалізації шаблону Factory}
 	\end{figure}
 	
+		\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{factory-ex}
+		\caption{UML діаграма прикладу реалізації шаблону Factory}
+	\end{figure}
+	
 	\begin{small}
 		\begin{lstlisting}
-class AttackCard extends Card {
-	effect(): void {
-		console.log("Dealing damage");
+export class BulletFactory {
+	private scene: Phaser.Scene;
+	
+	constructor(scene: Phaser.Scene) {
+		this.scene = scene;
 	}
-}
-
-class DefenseCard extends Card {
-	effect(): void {
-		console.log("Defending");
-	}
-}
-
-class HealCard extends Card {
-	effect(): void {
-		console.log("Healing");
-	}
-}
-
-export class CardFactory {
-	static createCard(type: string): Card {
-		if (type === "attack") {
-			return new AttackCard();
-		} else if (type === "heal") {
-			return new HealCard();
-		} else if (type === "defense") {
-			return new DefenseCard();
-		}
-		throw new Error("Unknown card type");
+	
+	createBullet(): Bullet {
+		return new Bullet(this.scene);
 	}
 }
 		\end{lstlisting}
@@ -310,65 +205,54 @@ export class CardFactory {
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=\textwidth]{builder}
+		\includegraphics[]{builder}
 		\caption{UML діаграма реалізації шаблону Builder}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[]{builder-ex}
+		\caption{UML діаграма прикладу реалізації шаблону Builder}
 	\end{figure}
 	
 	\begin{small}
 		\begin{lstlisting}
-interface CardBuilder {
-	setTitle(title: string): void;
-	setDescription(description: string): void;
-	setType(type: string): void;
-	setActionPoints(value: number): void;
-	setDefensePoints(value: number): void;
-}
-
-class AttackCardBuilder implements CardBuilder {
-	private card: Card;
-	
-	private bootstrap(): void {
-		fetch('cards.json')
-		.then(response => response.json())
-		.then(data => {
-			const cardData = data[Math.floor(Math.random() * data.length)];
-			this.setTitle(cardData.title);
-			this.setDescription(cardData.description);
-			this.setType(cardData.type);
-			this.setTitle(cardData.title);
-			this.setActionPoints(cardData.actionPoints);
-			this.setDefensePoints(cardData.defensPoints);
-			this.appendChild(this.createTitle());
-			this.appendChild(this.createDescription());
-			this.appendChild(this.createType());
-		});
-	}
+export class Ship {
+	private x: number;
+	private y: number;
+	private collideWorldBounds: boolean;
 	
 	constructor() {
-		this.card = new Card();
+		this.x = 400;
+		this.y = 500;
+		this.collideWorldBounds = true;
 	}
 	
-	setTitle(title: string): void {
-		this.card.title = title;
+	setX(x: number): Ship {
+		this.x = x;
+		return this;
 	}
 	
-	setDescription(description: string): void {
-		this.card.description = description;
+	setY(y: number): Ship {
+		this.y = y;
+		return this;
 	}
 	
-	setType(type: string): void {
-		this.card.type = type;
+	setCollideWorldBounds(collide: boolean): Ship {
+		this.collideWorldBounds = collide;
+		return this;
 	}
 	
-	setActionPoints(value: number): void {
-		this.card.actionPoints = value;
+	build(scene: Phaser.Scene): Phaser.Physics.Arcade.Sprite {
+		let ship = scene.physics.add.sprite(this.x, this.y, AssetType.Ship);
+		ship.setCollideWorldBounds(this.collideWorldBounds);
+		return ship;
 	}
 	
-	setDefensePoints(value: number): void {
-		this.card.defensPoints = value;
+	static create(): Ship {
+		return new Ship();
 	}
 }
-
 		\end{lstlisting}
 	\end{small}
 	
@@ -378,54 +262,35 @@ class AttackCardBuilder implements CardBuilder {
 		\caption{UML діаграма реалізації шаблону Prototype}
 	\end{figure}
 	
+		\begin{figure}[H]
+		\centering
+		\includegraphics{prototype-ex}
+		\caption{UML діаграма прикладу реалізації шаблону Prototype}
+	\end{figure}
+	
 	\begin{small}
 		\begin{lstlisting}
-export class Card extends Node {
-	private title: string | undefined;
-	private description: string | undefined;
-	private type: string | undefined;
-	private actionPoints: number | undefined;
-	private defensPoints: number | undefined;
-	
-	constructor() {
-		super("div", "card");
-		this.bootstrap();
+export class EnemyBullet extends Phaser.Physics.Arcade.Sprite {
+	constructor(scene: Phaser.Scene) {
+		super(scene, 0, 0, AssetType.EnemyBullet);
 	}
 	
-	private bootstrap(): void {
-		// this.appendChild(this.createTitle());
-		// this.appendChild(this.createDescription());
-		// this.appendChild(this.createType());
+	clone(): EnemyBullet {
+		return new EnemyBullet(this.scene);
 	}
 	
-	public getTitle(): string | undefined {
-		return this.title;
-	}
-	
-	public getDescription(): string | undefined {
-		return this.description;
-	}
-	
-	public getType(): string | undefined {
-		return this.type;
-	}
-	
-	public getActionPoints(): number | undefined {
-		return this.actionPoints;
-	}
-	
-	public getDefensPoints(): number | undefined {
-		return this.defensPoints;
-	}
-	
-	public clone(): this {
-		const clone = Object.create(this);
-		return clone;
+	kill() {
+		this.destroy();
 	}
 }
-
 		\end{lstlisting}
 	\end{small}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\textwidth]{out}
+		\caption{UML діаграма усього проекту}
+	\end{figure}
 	
 	\section*{Висновки}
 	   Під час виконання лабораторної роботи я здобув навички використання твірних шаблонів проектування при моделюванні програмних систем.

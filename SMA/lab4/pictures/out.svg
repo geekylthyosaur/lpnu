@@ -1,0 +1,687 @@
+<svg version="1.1" baseProfile="full" width="3603.0" height="879.0" viewbox="0 0 3603 879" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">
+<desc >#.interface: fill=lightblue
+#.enumeration: fill=lightgreen
+#.type: fill=lightgray
+[LabGame||]
+[Game]&lt;:-[LabGame]
+[Alien|-health: number;-_rate: number|+hit(): void]
+[AlienT1||]
+[AlienT2||]
+[Sprite]&lt;:-[Alien]
+[Alien]&lt;:-[AlienT1]
+[Alien]&lt;:-[AlienT2]
+[&lt;enumeration&gt;AssetType|Bullet;EnemyBullet;AlienT1;AlienT2;Ship;SmallKaboom;Kaboom;LargeKaboom;Starfield]
+[&lt;enumeration&gt;SoundType|Kaboom;Shoot;InvaderKilled]
+[Bullet||+shoot(): void;+kill(): void]
+[BulletFactory|-scene: Scene|+createBullet(): Bullet]
+[Sprite]&lt;:-[Bullet]
+[EnemyBullet||+clone(): EnemyBullet;+kill(): void]
+[Sprite]&lt;:-[EnemyBullet]
+[GameState|-static instance: GameState;-state: State|+static getInstance(): GameState;+getState(): State;+setState(): void]
+[&lt;enumeration&gt;State|Playing;GameOver;Win]
+[Kaboom||]
+[Sprite]&lt;:-[Kaboom]
+[Ship|-x: number;-y: number;-collideWorldBounds: boolean|+setX(): Ship;+setY(): Ship;+setCollideWorldBounds(): Ship;+build(): Sprite;+static create(): Ship]
+[MainScene|+state: GameState;+assetManager: AssetManager;+animationFactory: AnimationFactory;+scoreManager: ScoreManager;+bulletTime: number;+firingTimer: number;+starfield: TileSprite;+player: Sprite;+alienManager: AlienManager;+cursors: CursorKeys;+fireKey: Key|+preload(): void;+create(): void;+update(): void;-_shipKeyboardHandler(): void;-_bulletHitAliens(): void;-_enemyBulletHitPlayer(): void;-_enemyFires(): void;-_fireBullet(): void;+restart(): void]
+[Scene]&lt;:-[MainScene]
+[Type1AlienFactory||+createAlien(): AlienT1]
+[Type2AlienFactory||+createAlien(): AlienT2]
+[&lt;interface&gt;AlienFactory||+createAlien(): Alien]
+[AlienFactory]&lt;:--[Type1AlienFactory]
+[AlienFactory]&lt;:--[Type2AlienFactory]
+[AnimationFactory|-_scene: Scene|-_init(): void]
+[&lt;enumeration&gt;AnimationType|FlyT1;FlyT2;SmallKaboom;Kaboom;LargeKaboom]
+[AlienManager|+aliens: Group;-_scene: Scene|+getRandomAliveEnemy(): Alien;+reset(): void;-_sortAliens(): void;-_animate(): void]
+[AssetManager|+bullets: Group;+enemyBullets: Group;+explosions: Group;-_scene: Scene|+gameOver(): void;+reset(): void;-_createEnemyBullets(): Group;-_createBullets(): Group;-_createExplosions(): Group]
+[ScoreManager|+scoreText: Text;+line1Text: Text;+line2Text: Text;+lives: Group;+highScore: number;+score: number;-_scene: Scene|-_init(): void;-_setLivesText(): void;+resetLives(): void;+setWinText(): void;+setGameOverText(): void;+hideText(): void;-_setBigText(): void;+setHighScore(): void;+print(): void;+increaseScore(): void;+padding(): string]</desc>
+<g stroke-width="1.0" text-align="left" font="12pt Helvetica, Arial, sans-serif" font-size="12pt" font-family="Helvetica" font-weight="normal" font-style="normal">
+<g font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" stroke-width="3.0" stroke-linejoin="round" stroke-linecap="round" stroke="#33322E">
+<g stroke="transparent" fill="transparent">
+<rect x="0.0" y="0.0" height="879.0" width="3603.0" stroke="none"></rect>
+</g>
+<g transform="translate(8, 8)" fill="#33322E">
+<g transform="translate(20, 20)" fill="#eee8d5" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal">
+<path d="M46.5 195.3 L46.5 353 L46.5 531 L46.5 531.0 " fill="none"></path>
+<path d="M51.8 195.3 L46.5 195.3 L41.2 195.3 L46.5 182.0 Z"></path>
+<path d="M363.7 191.5 L203.5 353 L203.5 500.5 L203.5 500.5 " fill="none"></path>
+<path d="M367.5 195.2 L363.7 191.5 L359.9 187.7 L373.1 182.0 Z"></path>
+<path d="M184.4 621.3 L146 756 L146 776 L146.0 776.0 " fill="none"></path>
+<path d="M189.6 622.8 L184.4 621.3 L179.3 619.9 L188.1 608.5 Z"></path>
+<path d="M222.6 621.3 L261 756 L261 776 L261.0 776.0 " fill="none"></path>
+<path d="M227.7 619.9 L222.6 621.3 L217.4 622.8 L218.9 608.5 Z"></path>
+<path d="M386.6 195.3 L376.5 353 L376.5 512 L376.5 512.0 " fill="none"></path>
+<path d="M392.0 195.6 L386.6 195.3 L381.3 195.0 L387.5 182.0 Z"></path>
+<path d="M432.0 182.6 L893.5 353 L893.5 512 L893.5 512.0 " fill="none"></path>
+<path d="M433.9 177.6 L432.0 182.6 L430.2 187.6 L419.5 177.9 Z"></path>
+<path d="M432.4 178.5 L1068.5 353 L1068.5 531 L1068.5 531.0 " fill="none"></path>
+<path d="M433.8 173.4 L432.4 178.5 L430.9 183.7 L419.5 175.0 Z"></path>
+<path d="M1808.5 195.3 L1808.5 353 L1808.5 373 L1808.5 373.0 " fill="none"></path>
+<path d="M1813.8 195.3 L1808.5 195.3 L1803.2 195.3 L1808.5 182.0 Z"></path>
+<g stroke-dasharray="6 6">
+<path d="M2189.7 212.8 L2101 353 L2101 519.5 L2101.0 519.5 " fill="none"></path>
+</g>
+<path d="M2194.2 215.6 L2189.7 212.8 L2185.2 209.9 L2196.9 201.5 Z"></path>
+<g stroke-dasharray="6 6">
+<path d="M2248.3 212.8 L2337 353 L2337 519.5 L2337.0 519.5 " fill="none"></path>
+</g>
+<path d="M2252.8 209.9 L2248.3 212.8 L2243.8 215.6 L2241.1 201.5 Z"></path>
+<g data-name="LabGame">
+<g fill="#eee8d5" stroke="#33322E" data-name="LabGame">
+<rect x="0.0" y="531.0" height="47.0" width="93.0" data-name="LabGame"></rect>
+<path d="M0.0 562.0 L93.0 562.0" fill="none" data-name="LabGame"></path>
+<path d="M0.0 570.0 L93.0 570.0" fill="none" data-name="LabGame"></path>
+</g>
+<g transform="translate(0, 531)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="LabGame">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="LabGame">
+<a id=".LabGame" xlink:href=""><text x="38.5" y="13.5" stroke="none" text-anchor="middle" data-name="LabGame">LabGame</text></a>
+
+</g>
+</g>
+<g transform="translate(0, 562)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="LabGame">
+<g transform="translate(8, 8)" fill="#33322E" data-name="LabGame">
+
+</g>
+</g>
+<g transform="translate(0, 570)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="LabGame">
+<g transform="translate(8, 8)" fill="#33322E" data-name="LabGame">
+
+</g>
+</g>
+</g>
+<g data-name="Game">
+<g fill="#eee8d5" stroke="#33322E" data-name="Game">
+<rect x="15.0" y="151.0" height="31.0" width="63.0" data-name="Game"></rect>
+</g>
+<g transform="translate(15, 151)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Game">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Game">
+<text x="23.5" y="13.5" stroke="none" text-anchor="middle" data-name="Game">Game</text>
+
+</g>
+</g>
+</g>
+<g data-name="Alien">
+<g fill="#eee8d5" stroke="#33322E" data-name="Alien">
+<rect x="133.0" y="500.5" height="108.0" width="141.0" data-name="Alien"></rect>
+<path d="M133.0 531.5 L274.0 531.5" fill="none" data-name="Alien"></path>
+<path d="M133.0 577.5 L274.0 577.5" fill="none" data-name="Alien"></path>
+</g>
+<g transform="translate(133, 500.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Alien">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Alien">
+<a id="src/interface/alien.ts.Alien" xlink:href="src/interface/alien.ts"><text x="62.5" y="13.5" stroke="none" text-anchor="middle" data-name="Alien">Alien</text></a>
+
+</g>
+</g>
+<g transform="translate(133, 531.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Alien">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Alien">
+<text x="0.0" y="13.5" stroke="none" data-name="Alien">-health: number</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Alien">-_rate: number</text>
+
+</g>
+</g>
+<g transform="translate(133, 577.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Alien">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Alien">
+<text x="0.0" y="13.5" stroke="none" data-name="Alien">+hit(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="AlienT1">
+<g fill="#eee8d5" stroke="#33322E" data-name="AlienT1">
+<rect x="108.5" y="776.0" height="47.0" width="75.0" data-name="AlienT1"></rect>
+<path d="M108.5 807.0 L183.5 807.0" fill="none" data-name="AlienT1"></path>
+<path d="M108.5 815.0 L183.5 815.0" fill="none" data-name="AlienT1"></path>
+</g>
+<g transform="translate(108.5, 776)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="AlienT1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AlienT1">
+<a id="src/interface/alien.ts.AlienT1" xlink:href="src/interface/alien.ts"><text x="29.5" y="13.5" stroke="none" text-anchor="middle" data-name="AlienT1">AlienT1</text></a>
+
+</g>
+</g>
+<g transform="translate(108.5, 807)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AlienT1">
+<g transform="translate(8, 8)" fill="#33322E" data-name="AlienT1">
+
+</g>
+</g>
+<g transform="translate(108.5, 815)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AlienT1">
+<g transform="translate(8, 8)" fill="#33322E" data-name="AlienT1">
+
+</g>
+</g>
+</g>
+<g data-name="AlienT2">
+<g fill="#eee8d5" stroke="#33322E" data-name="AlienT2">
+<rect x="223.5" y="776.0" height="47.0" width="75.0" data-name="AlienT2"></rect>
+<path d="M223.5 807.0 L298.5 807.0" fill="none" data-name="AlienT2"></path>
+<path d="M223.5 815.0 L298.5 815.0" fill="none" data-name="AlienT2"></path>
+</g>
+<g transform="translate(223.5, 776)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="AlienT2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AlienT2">
+<a id="src/interface/alien.ts.AlienT2" xlink:href="src/interface/alien.ts"><text x="29.5" y="13.5" stroke="none" text-anchor="middle" data-name="AlienT2">AlienT2</text></a>
+
+</g>
+</g>
+<g transform="translate(223.5, 807)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AlienT2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="AlienT2">
+
+</g>
+</g>
+<g transform="translate(223.5, 815)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AlienT2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="AlienT2">
+
+</g>
+</g>
+</g>
+<g data-name="Sprite">
+<g fill="#eee8d5" stroke="#33322E" data-name="Sprite">
+<rect x="357.5" y="151.0" height="31.0" width="62.0" data-name="Sprite"></rect>
+</g>
+<g transform="translate(357.5, 151)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Sprite">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Sprite">
+<text x="23.0" y="13.5" stroke="none" text-anchor="middle" data-name="Sprite">Sprite</text>
+
+</g>
+</g>
+</g>
+<g data-name="AssetType">
+<g fill="lightgreen" stroke="#33322E" data-name="AssetType">
+<rect x="459.5" y="75.5" height="182.0" width="127.0" data-name="AssetType"></rect>
+<path d="M459.5 106.5 L586.5 106.5" fill="none" data-name="AssetType"></path>
+</g>
+<g transform="translate(459.5, 75.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AssetType">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AssetType">
+<a id="src/interface/assets.ts.AssetType" xlink:href="src/interface/assets.ts"><text x="55.5" y="13.5" stroke="none" text-anchor="middle" data-name="AssetType">AssetType</text></a>
+
+</g>
+</g>
+<g transform="translate(459.5, 106.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AssetType">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AssetType">
+<a id="src/interface/bullet.ts.Bullet" xlink:href="src/interface/bullet.ts"><text x="0.0" y="13.5" stroke="none" data-name="AssetType">Bullet</text></a>
+<a id="src/interface/enemy-bullet.ts.EnemyBullet" xlink:href="src/interface/enemy-bullet.ts"><text x="0.0" y="28.5" stroke="none" data-name="AssetType">EnemyBullet</text></a>
+<a id="src/interface/alien.ts.AlienT1" xlink:href="src/interface/alien.ts"><text x="0.0" y="43.5" stroke="none" data-name="AssetType">AlienT1</text></a>
+<a id="src/interface/alien.ts.AlienT2" xlink:href="src/interface/alien.ts"><text x="0.0" y="58.5" stroke="none" data-name="AssetType">AlienT2</text></a>
+<a id="src/interface/ship.ts.Ship" xlink:href="src/interface/ship.ts"><text x="0.0" y="73.5" stroke="none" data-name="AssetType">Ship</text></a>
+<text x="0.0" y="88.5" stroke="none" data-name="AssetType">SmallKaboom</text>
+<a id="src/interface/kaboom.ts.Kaboom" xlink:href="src/interface/kaboom.ts"><text x="0.0" y="103.5" stroke="none" data-name="AssetType">Kaboom</text></a>
+<text x="0.0" y="118.5" stroke="none" data-name="AssetType">LargeKaboom</text>
+<text x="0.0" y="133.5" stroke="none" data-name="AssetType">Starfield</text>
+
+</g>
+</g>
+</g>
+<g data-name="SoundType">
+<g fill="lightgreen" stroke="#33322E" data-name="SoundType">
+<rect x="626.5" y="120.5" height="92.0" width="119.0" data-name="SoundType"></rect>
+<path d="M626.5 151.5 L745.5 151.5" fill="none" data-name="SoundType"></path>
+</g>
+<g transform="translate(626.5, 120.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="SoundType">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="SoundType">
+<a id="src/interface/assets.ts.SoundType" xlink:href="src/interface/assets.ts"><text x="51.5" y="13.5" stroke="none" text-anchor="middle" data-name="SoundType">SoundType</text></a>
+
+</g>
+</g>
+<g transform="translate(626.5, 151.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="SoundType">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="SoundType">
+<a id="src/interface/kaboom.ts.Kaboom" xlink:href="src/interface/kaboom.ts"><text x="0.0" y="13.5" stroke="none" data-name="SoundType">Kaboom</text></a>
+<text x="0.0" y="28.5" stroke="none" data-name="SoundType">Shoot</text>
+<text x="0.0" y="43.5" stroke="none" data-name="SoundType">InvaderKilled</text>
+
+</g>
+</g>
+</g>
+<g data-name="Bullet">
+<g fill="#eee8d5" stroke="#33322E" data-name="Bullet">
+<rect x="314.0" y="512.0" height="85.0" width="125.0" data-name="Bullet"></rect>
+<path d="M314.0 543.0 L439.0 543.0" fill="none" data-name="Bullet"></path>
+<path d="M314.0 551.0 L439.0 551.0" fill="none" data-name="Bullet"></path>
+</g>
+<g transform="translate(314, 512)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Bullet">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Bullet">
+<a id="src/interface/bullet.ts.Bullet" xlink:href="src/interface/bullet.ts"><text x="54.5" y="13.5" stroke="none" text-anchor="middle" data-name="Bullet">Bullet</text></a>
+
+</g>
+</g>
+<g transform="translate(314, 543)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Bullet">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Bullet">
+
+</g>
+</g>
+<g transform="translate(314, 551)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Bullet">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Bullet">
+<text x="0.0" y="13.5" stroke="none" data-name="Bullet">+shoot(): void</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Bullet">+kill(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="BulletFactory">
+<g fill="#eee8d5" stroke="#33322E" data-name="BulletFactory">
+<rect x="785.5" y="120.0" height="93.0" width="186.0" data-name="BulletFactory"></rect>
+<path d="M785.5 151.0 L971.5 151.0" fill="none" data-name="BulletFactory"></path>
+<path d="M785.5 182.0 L971.5 182.0" fill="none" data-name="BulletFactory"></path>
+</g>
+<g transform="translate(785.5, 120)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="BulletFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="BulletFactory">
+<a id="src/interface/bullet.ts.BulletFactory" xlink:href="src/interface/bullet.ts"><text x="85.0" y="13.5" stroke="none" text-anchor="middle" data-name="BulletFactory">BulletFactory</text></a>
+
+</g>
+</g>
+<g transform="translate(785.5, 151)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="BulletFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="BulletFactory">
+<text x="0.0" y="13.5" stroke="none" data-name="BulletFactory">-scene: Scene</text>
+
+</g>
+</g>
+<g transform="translate(785.5, 182)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="BulletFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="BulletFactory">
+<text x="0.0" y="13.5" stroke="none" data-name="BulletFactory">+createBullet(): Bullet</text>
+
+</g>
+</g>
+</g>
+<g data-name="EnemyBullet">
+<g fill="#eee8d5" stroke="#33322E" data-name="EnemyBullet">
+<rect x="799.0" y="512.0" height="85.0" width="189.0" data-name="EnemyBullet"></rect>
+<path d="M799.0 543.0 L988.0 543.0" fill="none" data-name="EnemyBullet"></path>
+<path d="M799.0 551.0 L988.0 551.0" fill="none" data-name="EnemyBullet"></path>
+</g>
+<g transform="translate(799, 512)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="EnemyBullet">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="EnemyBullet">
+<a id="src/interface/enemy-bullet.ts.EnemyBullet" xlink:href="src/interface/enemy-bullet.ts"><text x="86.5" y="13.5" stroke="none" text-anchor="middle" data-name="EnemyBullet">EnemyBullet</text></a>
+
+</g>
+</g>
+<g transform="translate(799, 543)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="EnemyBullet">
+<g transform="translate(8, 8)" fill="#33322E" data-name="EnemyBullet">
+
+</g>
+</g>
+<g transform="translate(799, 551)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="EnemyBullet">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="EnemyBullet">
+<text x="0.0" y="13.5" stroke="none" data-name="EnemyBullet">+clone(): EnemyBullet</text>
+<text x="0.0" y="28.5" stroke="none" data-name="EnemyBullet">+kill(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="GameState">
+<g fill="#eee8d5" stroke="#33322E" data-name="GameState">
+<rect x="1011.5" y="97.5" height="138.0" width="276.0" data-name="GameState"></rect>
+<path d="M1011.5 128.5 L1287.5 128.5" fill="none" data-name="GameState"></path>
+<path d="M1011.5 174.5 L1287.5 174.5" fill="none" data-name="GameState"></path>
+</g>
+<g transform="translate(1011.5, 97.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="GameState">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="GameState">
+<a id="src/interface/game-state.ts.GameState" xlink:href="src/interface/game-state.ts"><text x="130.0" y="13.5" stroke="none" text-anchor="middle" data-name="GameState">GameState</text></a>
+
+</g>
+</g>
+<g transform="translate(1011.5, 128.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="GameState">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="GameState">
+<text x="0.0" y="13.5" stroke="none" data-name="GameState">-static instance: GameState</text>
+<text x="0.0" y="28.5" stroke="none" data-name="GameState">-state: State</text>
+
+</g>
+</g>
+<g transform="translate(1011.5, 174.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="GameState">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="GameState">
+<text x="0.0" y="13.5" stroke="none" data-name="GameState">+static getInstance(): GameState</text>
+<text x="0.0" y="28.5" stroke="none" data-name="GameState">+getState(): State</text>
+<text x="0.0" y="43.5" stroke="none" data-name="GameState">+setState(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="State">
+<g fill="lightgreen" stroke="#33322E" data-name="State">
+<rect x="1327.5" y="120.5" height="92.0" width="101.0" data-name="State"></rect>
+<path d="M1327.5 151.5 L1428.5 151.5" fill="none" data-name="State"></path>
+</g>
+<g transform="translate(1327.5, 120.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="State">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="State">
+<a id="src/interface/game-state.ts.State" xlink:href="src/interface/game-state.ts"><text x="42.5" y="13.5" stroke="none" text-anchor="middle" data-name="State">State</text></a>
+
+</g>
+</g>
+<g transform="translate(1327.5, 151.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="State">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="State">
+<text x="0.0" y="13.5" stroke="none" data-name="State">Playing</text>
+<text x="0.0" y="28.5" stroke="none" data-name="State">GameOver</text>
+<text x="0.0" y="43.5" stroke="none" data-name="State">Win</text>
+
+</g>
+</g>
+</g>
+<g data-name="Kaboom">
+<g fill="#eee8d5" stroke="#33322E" data-name="Kaboom">
+<rect x="1028.0" y="531.0" height="47.0" width="81.0" data-name="Kaboom"></rect>
+<path d="M1028.0 562.0 L1109.0 562.0" fill="none" data-name="Kaboom"></path>
+<path d="M1028.0 570.0 L1109.0 570.0" fill="none" data-name="Kaboom"></path>
+</g>
+<g transform="translate(1028, 531)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Kaboom">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Kaboom">
+<a id="src/interface/kaboom.ts.Kaboom" xlink:href="src/interface/kaboom.ts"><text x="32.5" y="13.5" stroke="none" text-anchor="middle" data-name="Kaboom">Kaboom</text></a>
+
+</g>
+</g>
+<g transform="translate(1028, 562)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Kaboom">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Kaboom">
+
+</g>
+</g>
+<g transform="translate(1028, 570)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Kaboom">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Kaboom">
+
+</g>
+</g>
+</g>
+<g data-name="Ship">
+<g fill="#eee8d5" stroke="#33322E" data-name="Ship">
+<rect x="1468.5" y="75.0" height="183.0" width="267.0" data-name="Ship"></rect>
+<path d="M1468.5 106.0 L1735.5 106.0" fill="none" data-name="Ship"></path>
+<path d="M1468.5 167.0 L1735.5 167.0" fill="none" data-name="Ship"></path>
+</g>
+<g transform="translate(1468.5, 75)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Ship">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Ship">
+<a id="src/interface/ship.ts.Ship" xlink:href="src/interface/ship.ts"><text x="125.5" y="13.5" stroke="none" text-anchor="middle" data-name="Ship">Ship</text></a>
+
+</g>
+</g>
+<g transform="translate(1468.5, 106)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Ship">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Ship">
+<text x="0.0" y="13.5" stroke="none" data-name="Ship">-x: number</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Ship">-y: number</text>
+<text x="0.0" y="43.5" stroke="none" data-name="Ship">-collideWorldBounds: boolean</text>
+
+</g>
+</g>
+<g transform="translate(1468.5, 167)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Ship">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Ship">
+<text x="0.0" y="13.5" stroke="none" data-name="Ship">+setX(): Ship</text>
+<text x="0.0" y="28.5" stroke="none" data-name="Ship">+setY(): Ship</text>
+<text x="0.0" y="43.5" stroke="none" data-name="Ship">+setCollideWorldBounds(): Ship</text>
+<text x="0.0" y="58.5" stroke="none" data-name="Ship">+build(): Sprite</text>
+<text x="0.0" y="73.5" stroke="none" data-name="Ship">+static create(): Ship</text>
+
+</g>
+</g>
+</g>
+<g data-name="MainScene">
+<g fill="#eee8d5" stroke="#33322E" data-name="MainScene">
+<rect x="1654.0" y="373.0" height="363.0" width="309.0" data-name="MainScene"></rect>
+<path d="M1654.0 404.0 L1963.0 404.0" fill="none" data-name="MainScene"></path>
+<path d="M1654.0 585.0 L1963.0 585.0" fill="none" data-name="MainScene"></path>
+</g>
+<g transform="translate(1654, 373)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="MainScene">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="MainScene">
+<a id="src/scenes/main.ts.MainScene" xlink:href="src/scenes/main.ts"><text x="146.5" y="13.5" stroke="none" text-anchor="middle" data-name="MainScene">MainScene</text></a>
+
+</g>
+</g>
+<g transform="translate(1654, 404)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MainScene">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="MainScene">
+<text x="0.0" y="13.5" stroke="none" data-name="MainScene">+state: GameState</text>
+<text x="0.0" y="28.5" stroke="none" data-name="MainScene">+assetManager: AssetManager</text>
+<text x="0.0" y="43.5" stroke="none" data-name="MainScene">+animationFactory: AnimationFactory</text>
+<text x="0.0" y="58.5" stroke="none" data-name="MainScene">+scoreManager: ScoreManager</text>
+<text x="0.0" y="73.5" stroke="none" data-name="MainScene">+bulletTime: number</text>
+<text x="0.0" y="88.5" stroke="none" data-name="MainScene">+firingTimer: number</text>
+<text x="0.0" y="103.5" stroke="none" data-name="MainScene">+starfield: TileSprite</text>
+<text x="0.0" y="118.5" stroke="none" data-name="MainScene">+player: Sprite</text>
+<text x="0.0" y="133.5" stroke="none" data-name="MainScene">+alienManager: AlienManager</text>
+<text x="0.0" y="148.5" stroke="none" data-name="MainScene">+cursors: CursorKeys</text>
+<text x="0.0" y="163.5" stroke="none" data-name="MainScene">+fireKey: Key</text>
+
+</g>
+</g>
+<g transform="translate(1654, 585)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="MainScene">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="MainScene">
+<text x="0.0" y="13.5" stroke="none" data-name="MainScene">+preload(): void</text>
+<text x="0.0" y="28.5" stroke="none" data-name="MainScene">+create(): void</text>
+<text x="0.0" y="43.5" stroke="none" data-name="MainScene">+update(): void</text>
+<text x="0.0" y="58.5" stroke="none" data-name="MainScene">-_shipKeyboardHandler(): void</text>
+<text x="0.0" y="73.5" stroke="none" data-name="MainScene">-_bulletHitAliens(): void</text>
+<text x="0.0" y="88.5" stroke="none" data-name="MainScene">-_enemyBulletHitPlayer(): void</text>
+<text x="0.0" y="103.5" stroke="none" data-name="MainScene">-_enemyFires(): void</text>
+<text x="0.0" y="118.5" stroke="none" data-name="MainScene">-_fireBullet(): void</text>
+<text x="0.0" y="133.5" stroke="none" data-name="MainScene">+restart(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="Scene">
+<g fill="#eee8d5" stroke="#33322E" data-name="Scene">
+<rect x="1775.5" y="151.0" height="31.0" width="66.0" data-name="Scene"></rect>
+</g>
+<g transform="translate(1775.5, 151)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Scene">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Scene">
+<text x="25.0" y="13.5" stroke="none" text-anchor="middle" data-name="Scene">Scene</text>
+
+</g>
+</g>
+</g>
+<g data-name="Type1AlienFactory">
+<g fill="#eee8d5" stroke="#33322E" data-name="Type1AlienFactory">
+<rect x="2003.0" y="519.5" height="70.0" width="196.0" data-name="Type1AlienFactory"></rect>
+<path d="M2003.0 550.5 L2199.0 550.5" fill="none" data-name="Type1AlienFactory"></path>
+<path d="M2003.0 558.5 L2199.0 558.5" fill="none" data-name="Type1AlienFactory"></path>
+</g>
+<g transform="translate(2003, 519.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Type1AlienFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Type1AlienFactory">
+<a id="src/interface/factory/alien-factory.ts.Type1AlienFactory" xlink:href="src/interface/factory/alien-factory.ts"><text x="90.0" y="13.5" stroke="none" text-anchor="middle" data-name="Type1AlienFactory">Type1AlienFactory</text></a>
+
+</g>
+</g>
+<g transform="translate(2003, 550.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Type1AlienFactory">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Type1AlienFactory">
+
+</g>
+</g>
+<g transform="translate(2003, 558.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Type1AlienFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Type1AlienFactory">
+<text x="0.0" y="13.5" stroke="none" data-name="Type1AlienFactory">+createAlien(): AlienT1</text>
+
+</g>
+</g>
+</g>
+<g data-name="Type2AlienFactory">
+<g fill="#eee8d5" stroke="#33322E" data-name="Type2AlienFactory">
+<rect x="2239.0" y="519.5" height="70.0" width="196.0" data-name="Type2AlienFactory"></rect>
+<path d="M2239.0 550.5 L2435.0 550.5" fill="none" data-name="Type2AlienFactory"></path>
+<path d="M2239.0 558.5 L2435.0 558.5" fill="none" data-name="Type2AlienFactory"></path>
+</g>
+<g transform="translate(2239, 519.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Type2AlienFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Type2AlienFactory">
+<a id="src/interface/factory/alien-factory.ts.Type2AlienFactory" xlink:href="src/interface/factory/alien-factory.ts"><text x="90.0" y="13.5" stroke="none" text-anchor="middle" data-name="Type2AlienFactory">Type2AlienFactory</text></a>
+
+</g>
+</g>
+<g transform="translate(2239, 550.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Type2AlienFactory">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Type2AlienFactory">
+
+</g>
+</g>
+<g transform="translate(2239, 558.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Type2AlienFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Type2AlienFactory">
+<text x="0.0" y="13.5" stroke="none" data-name="Type2AlienFactory">+createAlien(): AlienT2</text>
+
+</g>
+</g>
+</g>
+<g data-name="AlienFactory">
+<g fill="lightblue" stroke="#33322E" data-name="AlienFactory">
+<rect x="2131.0" y="131.5" height="70.0" width="176.0" data-name="AlienFactory"></rect>
+<path d="M2131.0 162.5 L2307.0 162.5" fill="none" data-name="AlienFactory"></path>
+<path d="M2131.0 170.5 L2307.0 170.5" fill="none" data-name="AlienFactory"></path>
+</g>
+<g transform="translate(2131, 131.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AlienFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AlienFactory">
+<a id="src/interface/factory/alien-factory.ts.AlienFactory" xlink:href="src/interface/factory/alien-factory.ts"><text x="80.0" y="13.5" stroke="none" text-anchor="middle" data-name="AlienFactory">AlienFactory</text></a>
+
+</g>
+</g>
+<g transform="translate(2131, 162.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AlienFactory">
+<g transform="translate(8, 8)" fill="#33322E" data-name="AlienFactory">
+
+</g>
+</g>
+<g transform="translate(2131, 170.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AlienFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AlienFactory">
+<text x="0.0" y="13.5" stroke="none" data-name="AlienFactory">+createAlien(): Alien</text>
+
+</g>
+</g>
+</g>
+<g data-name="AnimationFactory">
+<g fill="#eee8d5" stroke="#33322E" data-name="AnimationFactory">
+<rect x="2347.0" y="120.0" height="93.0" width="153.0" data-name="AnimationFactory"></rect>
+<path d="M2347.0 151.0 L2500.0 151.0" fill="none" data-name="AnimationFactory"></path>
+<path d="M2347.0 182.0 L2500.0 182.0" fill="none" data-name="AnimationFactory"></path>
+</g>
+<g transform="translate(2347, 120)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="AnimationFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AnimationFactory">
+<a id="src/interface/factory/animation-factory.ts.AnimationFactory" xlink:href="src/interface/factory/animation-factory.ts"><text x="68.5" y="13.5" stroke="none" text-anchor="middle" data-name="AnimationFactory">AnimationFactory</text></a>
+
+</g>
+</g>
+<g transform="translate(2347, 151)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AnimationFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AnimationFactory">
+<text x="0.0" y="13.5" stroke="none" data-name="AnimationFactory">-_scene: Scene</text>
+
+</g>
+</g>
+<g transform="translate(2347, 182)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AnimationFactory">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AnimationFactory">
+<text x="0.0" y="13.5" stroke="none" data-name="AnimationFactory">-_init(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="AnimationType">
+<g fill="lightgreen" stroke="#33322E" data-name="AnimationType">
+<rect x="2540.0" y="105.5" height="122.0" width="133.0" data-name="AnimationType"></rect>
+<path d="M2540.0 136.5 L2673.0 136.5" fill="none" data-name="AnimationType"></path>
+</g>
+<g transform="translate(2540, 105.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AnimationType">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AnimationType">
+<a id="src/interface/factory/animation-factory.ts.AnimationType" xlink:href="src/interface/factory/animation-factory.ts"><text x="58.5" y="13.5" stroke="none" text-anchor="middle" data-name="AnimationType">AnimationType</text></a>
+
+</g>
+</g>
+<g transform="translate(2540, 136.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AnimationType">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AnimationType">
+<text x="0.0" y="13.5" stroke="none" data-name="AnimationType">FlyT1</text>
+<text x="0.0" y="28.5" stroke="none" data-name="AnimationType">FlyT2</text>
+<text x="0.0" y="43.5" stroke="none" data-name="AnimationType">SmallKaboom</text>
+<a id="src/interface/kaboom.ts.Kaboom" xlink:href="src/interface/kaboom.ts"><text x="0.0" y="58.5" stroke="none" data-name="AnimationType">Kaboom</text></a>
+<text x="0.0" y="73.5" stroke="none" data-name="AnimationType">LargeKaboom</text>
+
+</g>
+</g>
+</g>
+<g data-name="AlienManager">
+<g fill="#eee8d5" stroke="#33322E" data-name="AlienManager">
+<rect x="2713.0" y="90.0" height="153.0" width="270.0" data-name="AlienManager"></rect>
+<path d="M2713.0 121.0 L2983.0 121.0" fill="none" data-name="AlienManager"></path>
+<path d="M2713.0 167.0 L2983.0 167.0" fill="none" data-name="AlienManager"></path>
+</g>
+<g transform="translate(2713, 90)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="AlienManager">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AlienManager">
+<a id="src/interface/manager/alien-manager.ts.AlienManager" xlink:href="src/interface/manager/alien-manager.ts"><text x="127.0" y="13.5" stroke="none" text-anchor="middle" data-name="AlienManager">AlienManager</text></a>
+
+</g>
+</g>
+<g transform="translate(2713, 121)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AlienManager">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AlienManager">
+<text x="0.0" y="13.5" stroke="none" data-name="AlienManager">+aliens: Group</text>
+<text x="0.0" y="28.5" stroke="none" data-name="AlienManager">-_scene: Scene</text>
+
+</g>
+</g>
+<g transform="translate(2713, 167)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AlienManager">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AlienManager">
+<text x="0.0" y="13.5" stroke="none" data-name="AlienManager">+getRandomAliveEnemy(): Alien</text>
+<text x="0.0" y="28.5" stroke="none" data-name="AlienManager">+reset(): void</text>
+<text x="0.0" y="43.5" stroke="none" data-name="AlienManager">-_sortAliens(): void</text>
+<text x="0.0" y="58.5" stroke="none" data-name="AlienManager">-_animate(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="AssetManager">
+<g fill="#eee8d5" stroke="#33322E" data-name="AssetManager">
+<rect x="3023.0" y="67.5" height="198.0" width="260.0" data-name="AssetManager"></rect>
+<path d="M3023.0 98.5 L3283.0 98.5" fill="none" data-name="AssetManager"></path>
+<path d="M3023.0 174.5 L3283.0 174.5" fill="none" data-name="AssetManager"></path>
+</g>
+<g transform="translate(3023, 67.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="AssetManager">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AssetManager">
+<a id="src/interface/manager/asset-manager.ts.AssetManager" xlink:href="src/interface/manager/asset-manager.ts"><text x="122.0" y="13.5" stroke="none" text-anchor="middle" data-name="AssetManager">AssetManager</text></a>
+
+</g>
+</g>
+<g transform="translate(3023, 98.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AssetManager">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AssetManager">
+<text x="0.0" y="13.5" stroke="none" data-name="AssetManager">+bullets: Group</text>
+<text x="0.0" y="28.5" stroke="none" data-name="AssetManager">+enemyBullets: Group</text>
+<text x="0.0" y="43.5" stroke="none" data-name="AssetManager">+explosions: Group</text>
+<text x="0.0" y="58.5" stroke="none" data-name="AssetManager">-_scene: Scene</text>
+
+</g>
+</g>
+<g transform="translate(3023, 174.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AssetManager">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AssetManager">
+<text x="0.0" y="13.5" stroke="none" data-name="AssetManager">+gameOver(): void</text>
+<text x="0.0" y="28.5" stroke="none" data-name="AssetManager">+reset(): void</text>
+<text x="0.0" y="43.5" stroke="none" data-name="AssetManager">-_createEnemyBullets(): Group</text>
+<text x="0.0" y="58.5" stroke="none" data-name="AssetManager">-_createBullets(): Group</text>
+<text x="0.0" y="73.5" stroke="none" data-name="AssetManager">-_createExplosions(): Group</text>
+
+</g>
+</g>
+</g>
+<g data-name="ScoreManager">
+<g fill="#eee8d5" stroke="#33322E" data-name="ScoreManager">
+<rect x="3323.0" y="0.0" height="333.0" width="224.0" data-name="ScoreManager"></rect>
+<path d="M3323.0 31.0 L3547.0 31.0" fill="none" data-name="ScoreManager"></path>
+<path d="M3323.0 152.0 L3547.0 152.0" fill="none" data-name="ScoreManager"></path>
+</g>
+<g transform="translate(3323, 0)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="ScoreManager">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="ScoreManager">
+<a id="src/interface/manager/score-manager.ts.ScoreManager" xlink:href="src/interface/manager/score-manager.ts"><text x="104.0" y="13.5" stroke="none" text-anchor="middle" data-name="ScoreManager">ScoreManager</text></a>
+
+</g>
+</g>
+<g transform="translate(3323, 31)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ScoreManager">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ScoreManager">
+<text x="0.0" y="13.5" stroke="none" data-name="ScoreManager">+scoreText: Text</text>
+<text x="0.0" y="28.5" stroke="none" data-name="ScoreManager">+line1Text: Text</text>
+<text x="0.0" y="43.5" stroke="none" data-name="ScoreManager">+line2Text: Text</text>
+<text x="0.0" y="58.5" stroke="none" data-name="ScoreManager">+lives: Group</text>
+<text x="0.0" y="73.5" stroke="none" data-name="ScoreManager">+highScore: number</text>
+<text x="0.0" y="88.5" stroke="none" data-name="ScoreManager">+score: number</text>
+<text x="0.0" y="103.5" stroke="none" data-name="ScoreManager">-_scene: Scene</text>
+
+</g>
+</g>
+<g transform="translate(3323, 152)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ScoreManager">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ScoreManager">
+<text x="0.0" y="13.5" stroke="none" data-name="ScoreManager">-_init(): void</text>
+<text x="0.0" y="28.5" stroke="none" data-name="ScoreManager">-_setLivesText(): void</text>
+<text x="0.0" y="43.5" stroke="none" data-name="ScoreManager">+resetLives(): void</text>
+<text x="0.0" y="58.5" stroke="none" data-name="ScoreManager">+setWinText(): void</text>
+<text x="0.0" y="73.5" stroke="none" data-name="ScoreManager">+setGameOverText(): void</text>
+<text x="0.0" y="88.5" stroke="none" data-name="ScoreManager">+hideText(): void</text>
+<text x="0.0" y="103.5" stroke="none" data-name="ScoreManager">-_setBigText(): void</text>
+<text x="0.0" y="118.5" stroke="none" data-name="ScoreManager">+setHighScore(): void</text>
+<text x="0.0" y="133.5" stroke="none" data-name="ScoreManager">+print(): void</text>
+<text x="0.0" y="148.5" stroke="none" data-name="ScoreManager">+increaseScore(): void</text>
+<text x="0.0" y="163.5" stroke="none" data-name="ScoreManager">+padding(): string</text>
+
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

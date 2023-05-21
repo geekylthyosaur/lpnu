@@ -1,7 +1,7 @@
 \babel@toc {ukrainian}{}\relax 
 \contentsline {section}{ВСТУП}{3}{Doc-Start}%
 \contentsline {section}{Теоретичне питання 1}{4}{Doc-Start}%
-\contentsline {section}{Теоретичне питання 2}{6}{Item.8}%
-\contentsline {section}{Практичне завдання 1}{8}{Item.15}%
-\contentsline {section}{Практичне завдання 2}{11}{Item.15}%
+\contentsline {section}{Теоретичне питання 2}{7}{Doc-Start}%
+\contentsline {section}{Практичне завдання 1}{10}{Doc-Start}%
+\contentsline {section}{Практичне завдання 2}{11}{table.1}%
 \contentsline {section}{Список використаної джерел}{13}{table.2}%

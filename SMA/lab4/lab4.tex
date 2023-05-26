@@ -203,58 +203,6 @@ export class BulletFactory {
 		\end{lstlisting}
 	\end{small}
 	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[]{builder}
-		\caption{UML діаграма реалізації шаблону Builder}
-	\end{figure}
-	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[]{builder-ex}
-		\caption{UML діаграма прикладу реалізації шаблону Builder}
-	\end{figure}
-	
-	\begin{small}
-		\begin{lstlisting}
-export class Ship {
-	private x: number;
-	private y: number;
-	private collideWorldBounds: boolean;
-	
-	constructor() {
-		this.x = 400;
-		this.y = 500;
-		this.collideWorldBounds = true;
-	}
-	
-	setX(x: number): Ship {
-		this.x = x;
-		return this;
-	}
-	
-	setY(y: number): Ship {
-		this.y = y;
-		return this;
-	}
-	
-	setCollideWorldBounds(collide: boolean): Ship {
-		this.collideWorldBounds = collide;
-		return this;
-	}
-	
-	build(scene: Phaser.Scene): Phaser.Physics.Arcade.Sprite {
-		let ship = scene.physics.add.sprite(this.x, this.y, AssetType.Ship);
-		ship.setCollideWorldBounds(this.collideWorldBounds);
-		return ship;
-	}
-	
-	static create(): Ship {
-		return new Ship();
-	}
-}
-		\end{lstlisting}
-	\end{small}
 	
 	\begin{figure}[H]
 		\centering

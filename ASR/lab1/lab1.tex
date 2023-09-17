@@ -1,0 +1,126 @@
+\documentclass[14pt]{extreport}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{array}
+\geometry{
+	a4paper,
+	left=20mm,
+	right=20mm,
+	top=20mm,
+	bottom=20mm
+}
+\lstset{
+	language=bash,
+	tabsize=4,
+	breaklines,
+	keepspaces,
+	showstringspaces=false,
+}
+\graphicspath{ {./pictures} }
+\setlength{\parindent}{4em}
+
+\newcommand\subject{Аналіз вимог до програмного забезпечення}
+\newcommand\lecturer{професор кафедри ПЗ\\Грицюк Ю.І.}
+\newcommand\teacher{асистент кафедри ПЗ\\Масюкевич В.В.}
+\newcommand\mygroup{ПЗ-32}
+\newcommand\lab{1}
+\newcommand\theme{Аналіз наявних програм-аналогів для встановлення вимог до нового програмного забезпечення для обраної предметної області}
+\newcommand\purpose{Проаналізувати наявні програмні продукти заданої предметної
+	області}
+
+\begin{document}
+\begin{normalsize}
+	\begin{titlepage}
+		\thispagestyle{empty}
+		\begin{center}
+			\textbf{МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\\
+				НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ "ЛЬВІВСЬКА ПОЛІТЕХНІКА"}
+		\end{center}
+		\begin{flushright}
+			Інститут \textbf{КНІТ}\\
+			Кафедра \textbf{ПЗ}
+		\end{flushright}
+		\vspace{200pt}
+		\begin{center}
+			\textbf{ЗВІТ}\\
+			\vspace{10pt}
+			До лабораторної роботи № \lab\\
+			\textbf{На тему}: “\textit{\theme}”\\
+			\textbf{З дисципліни}: “\subject”
+		\end{center}
+		\vspace{40pt}
+		\begin{flushright}
+			
+			\textbf{Лектор}:\\
+			\lecturer\\
+			\vspace{10pt}
+			\textbf{Виконав}:\\
+			
+			студент групи \mygroup\\
+			Коваленко Д.М.\\
+			\vspace{10pt}
+			\textbf{Прийняв}:\\
+			
+			\teacher\\
+			
+			\vspace{28pt}
+			«\rule{1cm}{0.15mm}» \rule{1.5cm}{0.15mm} 2023 р.\\
+			$\sum$ = \rule{1cm}{0.15mm}……………\\
+			
+		\end{flushright}
+		\vspace{\fill}
+		\begin{center}
+			\textbf{Львів — 2023}
+		\end{center}
+	\end{titlepage}
+		
+	\begin{description}
+		\item[Тема.] \theme.
+		\item[Мета.] \purpose.
+	\end{description}
+
+	\section*{Лабораторне завдання}
+	\begin{enumerate}
+		\item Вибрати предметну область із запропонованого переліку.
+		\item Здійснити пошук в мережі Інтернет кількох (від трьох до п'яти) наявних
+		програм-аналогів для обраної предметної області. Якщо у вільному доступі немає
+		програм-аналогів, проаналізувати вітчизняні та закордонні веб-ресурси.
+		\item Описати кожну із розглянутих програмних систем (сайтів).
+		\item Здійснити порівняння наявних програм-аналогів і внести дані в таблицю.
+		\item На основі проведеного аналізу скласти перелік вимог до ПС для заданої
+		предметної області.
+		\item Оформити звіт.
+	\end{enumerate}
+	
+	\section*{Хід роботи}
+	
+	\begin{table}[H]
+		\centering
+		\renewcommand*\arraystretch{1.3}
+		\begin{tabular}{|m{0.26\linewidth}|m{0.20\linewidth}|m{0.2\linewidth}|m{0.2\linewidth}|}
+			\hline
+			 & \textbf{EcoLane} & \textbf{TransLoc} & \textbf{OptiBus} \\\hline
+			\textbf{Веб-інтерфейс} & & + & + \\\hline
+			\textbf{Додаток для водія} & & + & \\\hline
+			\textbf{Побудова оптимального маршруту} & + & + & + \\\hline
+			\textbf{Відслідковування транспорту на маршрутах} & & + & \\\hline
+			\textbf{Комунікація з водієм} & & + & \\\hline
+			\textbf{Формування даних для аналітики} & + & & + \\\hline
+			\textbf{Інтеграція оплати проїзду} & + & & \\\hline
+			\textbf{Генерація оптимального розкладу руху} & + & & + \\\hline
+			\textbf{Оцінювання поїздки пасажирами} & + & & \\\hline
+			\textbf{Бронювання місць} & + & & + \\\hline
+			\textbf{Пробний режим роботи} & + & & \\\hline
+		\end{tabular}
+	\end{table}
+
+	\section*{Висновок}
+	 
+\end{normalsize}
+\end{document}

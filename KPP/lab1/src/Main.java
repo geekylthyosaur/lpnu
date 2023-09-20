@@ -2,16 +2,16 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        var scanner = new Scanner(System.in);
-        System.out.print("Enter n: ");
-        var inputStr = scanner.nextLine();
-        scanner.close();
-        var input = Integer.parseInt(inputStr);
-        var numerator = 1;
-        var denumerator = 1;
-        for (int n = 1; n <= input; n++) {
-            denumerator *= n;
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter the n: ");
+        int n = scanner.nextInt();
+        Series series = new Series();
+        try {
+            Fraction result = series.calculate(n);
+            System.out.printf("Result: " + result.toString());
         }
-        System.out.print("Result: " + numerator + "/" + denumerator);
+        catch (IllegalArgumentException e) {
+            System.out.printf(e.toString());
+        }
     }
 }

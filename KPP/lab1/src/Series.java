@@ -1,7 +1,7 @@
 import java.math.BigInteger;
 
 public class Series {
-    public Fraction calculate(int n) {
+    public static Fraction calculate(int n) {
         if (n < 1) {
             throw new IllegalArgumentException("n should be greater than zero");
         }

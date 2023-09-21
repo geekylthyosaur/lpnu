@@ -5,9 +5,8 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter the n: ");
         int n = scanner.nextInt();
-        Series series = new Series();
         try {
-            Fraction result = series.calculate(n);
+            var result = Series.calculate(n);
             System.out.printf("Result: " + result.toString());
         }
         catch (IllegalArgumentException e) {

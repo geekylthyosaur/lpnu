@@ -93,7 +93,7 @@
 	
 	\section*{Хід роботи}
 	\subsection*{База даних "Операції купівлі-продажу"}
-	
+	\iffalse
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.35]{1}
@@ -177,7 +177,7 @@
 		\includegraphics[scale=0.35]{15}
 		\caption{Створення полів таблиці Orders}
 	\end{figure}
-	
+	\fi
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.35]{16}
@@ -185,66 +185,256 @@
 	\end{figure}
 
 	\subsection*{База даних індивідуального завдання}
-	Варіант: база даних для роботи компанії з регулярних перевезень пасажирів.
+	\textbf{Варіант}: база даних для роботи компанії з регулярних перевезень пасажирів.
 
-	timetable:
+	\noindent\textbf{Опис бази даних:}
 	\begin{itemize}
-		\item id
-		\item route\_id
-		\item vehicle\_id
-		\item departure\_time
-		\item arrival\_time
-	\end{itemize}
-
-	routes:
-	\begin{itemize}
-		\item id
-		\item name
-		\item distance
+		\item \textbf{timetable} (\textit{id}, \textit{route\_id}, \textit{vehicle\_id}, \textit{departure\_time}, \textit{arrival\_time}, \textit{price}):
+		\begin{itemize}
+			\item \textbf{id} - унікальний номер транспортного засобу;
+			\item \textbf{route\_id} - посилання на номер маршруту;
+			\item \textbf{vehicle\_id} - посилання на номер транспортного засобу;
+			\item \textbf{departure\_time} - час відправлення;
+			\item \textbf{arrival\_time} - час прибуття;
+			\item \textbf{price} - вартість квитка;
+		\end{itemize}
+		\item \textbf{route} (\textit{id}, \textit{name}, \textit{distance}):
+		\begin{itemize}
+			\item \textbf{id} - унікальний номер маршруту;
+			\item \textbf{name} - назва маршруту;
+			\item \textbf{distance} - протяжність маршруту;
+		\end{itemize}
+		\item \textbf{stop} (\textit{id}, \textit{name}, \textit{coords}):
+		\begin{itemize}
+			\item \textbf{id} - унікальний номер зупинки;
+			\item \textbf{name} - назва зупинки;
+			\item \textbf{coords} - геогерафічні координати зупинки;
+		\end{itemize}
+		\item \textbf{route\_stop} (\textit{id}, \textit{route\_id}, \textit{stop\_id}, \textit{order\_index}):
+		\begin{itemize}
+			\item \textbf{id} - унікальний номер запису;
+			\item \textbf{route\_id} -  посилання на номер маршруту;
+			\item \textbf{stop\_id} - посилання на номер зупинки;
+			\item \textbf{order\_index} - порядковий номер зупинки на маршруті;
+		\end{itemize}
+		\item \textbf{vehicle} (\textit{id}, \textit{type}, \textit{status}, \textit{route\_id}, \textit{coords}, \textit{license\_plate}, \textit{capacity}):
+		\begin{itemize}
+			\item \textbf{id} - унікальний номер транспортного засобу;
+			\item \textbf{type} - тип транспортного засобу; 
+			\item \textbf{status} - статус транспортного засобу (в дорозі, в обслуговування, інше);
+			\item \textbf{route\_id} - посилання на номер маршруту;
+			\item \textbf{coords} - географічні координати транспортного засобу на маршруті;
+			\item \textbf{license\_plate} - номерний знак транспортного засобу;
+			\item \textbf{capacity} - місткість транспортного засобу;
+		\end{itemize}
+		\item \textbf{passenger} (\textit{id}, \textit{name}, \textit{email}, \textit{password}):
+		\begin{itemize}
+			\item \textbf{id} - унікальний номер пасажира;
+			\item \textbf{name} - ім'я пасажира;
+			\item \textbf{email} - електронна пошта пасажира;
+			\item \textbf{password} - пароль пасажира;
+		\end{itemize}
+		\item \textbf{feedback} (\textit{id}, \textit{passenger\_id}, \textit{time}, \textit{message}):
+		\begin{itemize}
+			\item \textbf{id} - унікальний номер повідомлення;
+			\item \textbf{passenger\_id} - посилання на номер пасажира;
+			\item \textbf{time} - час повідомлення;
+			\item \textbf{message} - текст повідомлення;
+		\end{itemize}
+		\item \textbf{ticket} (\textit{id}, \textit{passenger\_id}, \textit{timetable\_id}, \textit{purchase\_time}, \textit{seat}):
+		\begin{itemize}
+			\item \textbf{id} - унікальний номер квитка;
+			\item \textbf{passenger\_id} - посилання на пасажира;
+			\item \textbf{timetable\_id} - посилання на номер запису у розкладі;
+			\item \textbf{purchase\_time} - час покупки;
+			\item \textbf{seat} - номер сидіння;
+		\end{itemize}
+		\item \textbf{driver} (\textit{id}, \textit{name}, \textit{vehicle\_id}):
+		\begin{itemize}
+			\item \textbf{id} - унікальний номер транспортного засобу;
+			\item \textbf{vehicle\_id} - посилання на номер транспортного засобу;
+			\item \textbf{name} - ім'я водія;
+		\end{itemize}
+		\item \textbf{maintenance\_log} (\textit{id}, \textit{vehicle\_id}, \textit{time}, \textit{description}, \textit{cost});
+		\begin{itemize}
+			\item \textbf{id} - унікальний номер запису про обслуговування;
+			\item \textbf{vehicle\_id} - посилання на номер транспортного засобу;
+			\item \textbf{time} - час проведення обслуговування;
+			\item \textbf{description} - опис обслуговування;
+			\item \textbf{cost} - вартість обслуговування;
+		\end{itemize}
 	\end{itemize}
 	
-	stops:
-	\begin{itemize}
-		\item id
-		\item name
-		\item coords
-	\end{itemize}
 	
-	route\_stops:
-	\begin{itemize}
-		\item id
-		\item route\_id
-		\item stop\_id
-		\item order\_index
-	\end{itemize}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.4]{50}
+		\caption{Діаграма бази даних індивідуального варіанту}
+	\end{figure}
+	
+	\iffalse
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{20}
+		\caption{Створення таблиці "route"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{21}
+		\caption{Створення таблиці "route"}
+	\end{figure}
 
-	vehicles:
-	\begin{itemize}
-		\item id
-		\item type
-		\item status
-		\item route
-		\item coords
-		\item license\_plate
-		\item capacity
-	\end{itemize}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{22}
+		\caption{Створення таблиці "stop"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{23}
+		\caption{Створення таблиці "stop"}
+	\end{figure}
 
-	passangers:
-	\begin{itemize}
-		\item id
-		\item name
-		\item email
-		\item password
-	\end{itemize}
-
-	feedbacks:
-	\begin{itemize}
-		\item id
-		\item passenger\_id
-		\item time
-		\item 
-	\end{itemize}
-
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{24}
+		\caption{Створення таблиці "vehicle"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{25}
+		\caption{Створення таблиці "vehicle"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{26}
+		\caption{Створення таблиці "vehicle"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{27}
+		\caption{Створення таблиці "route\_stop"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{28}
+		\caption{Створення таблиці "route\_stop}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{29}
+		\caption{Створення таблиці "route\_stop"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{30}
+		\caption{Створення таблиці "timetable"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{31}
+		\caption{Створення таблиці "timetable}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{32}
+		\caption{Створення таблиці "timetable"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{33}
+		\caption{Створення таблиці "passenger"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{34}
+		\caption{Створення таблиці "passenger}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{35}
+		\caption{Створення таблиці "ticket"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{36}
+		\caption{Створення таблиці "ticket}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{37}
+		\caption{Створення таблиці "ticket"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{38}
+		\caption{Створення таблиці "feedback"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{39}
+		\caption{Створення таблиці "feedback}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{40}
+		\caption{Створення таблиці "feedback"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{41}
+		\caption{Створення таблиці "driver"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{42}
+		\caption{Створення таблиці "driver}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{43}
+		\caption{Створення таблиці "driver"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{44}
+		\caption{Створення таблиці "maintenance\_log"}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{45}
+		\caption{Створення таблиці "maintenance\_log}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{46}
+		\caption{Створення таблиці "maintenance\_log"}
+	\end{figure}
+	\fi
 	\section*{Висновок}
 	Під час виконання лабораторної роботи я встановив та налаштував PostgreSQL та PgAdmin. Для виконання лабораторної роботи я обрав шлях для встановлення та налаштування необхідних програмних компонентів за допомогою контейнеризованого оточення. Я здобув необхідні навички для роботи з PostgreSQL та pgAdmin.
 	 

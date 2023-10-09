@@ -1,0 +1,140 @@
+\documentclass[14pt]{extreport}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{float}
+\usepackage{array}
+\geometry{
+	a4paper,
+	left=20mm,
+	right=20mm,
+	top=20mm,
+	bottom=20mm
+}
+\lstset{
+	language=bash,
+	tabsize=4,
+	breaklines,
+	keepspaces,
+	showstringspaces=false,
+}
+\graphicspath{ {./pictures} }
+\setlength{\parindent}{4em}
+
+\newcommand\subject{Аналіз вимог до програмного забезпечення}
+\newcommand\lecturer{професор кафедри ПЗ\\Грицюк Ю.І.}
+\newcommand\teacher{асистент кафедри ПЗ\\Масюкевич В.В.}
+\newcommand\mygroup{ПЗ-32}
+\newcommand\lab{3}
+\newcommand\theme{Засіб Requirementswin для управління вимогами до програмного забезпечення}
+\newcommand\purpose{Ознайомитися із програмним засобом управління вимогами,
+	вивчити основні характеристики та можливості}
+
+\begin{document}
+\begin{normalsize}
+	\begin{titlepage}
+		\thispagestyle{empty}
+		\begin{center}
+			\textbf{МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\\
+				НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ "ЛЬВІВСЬКА ПОЛІТЕХНІКА"}
+		\end{center}
+		\begin{flushright}
+			Інститут \textbf{КНІТ}\\
+			Кафедра \textbf{ПЗ}
+		\end{flushright}
+		\vspace{140pt}
+		\begin{center}
+			\textbf{ЗВІТ}\\
+			\vspace{10pt}
+			До лабораторної роботи № \lab\\
+			\textbf{На тему}: “\textit{\theme}”\\
+			\textbf{З дисципліни}: “\subject”
+		\end{center}
+		\vspace{40pt}
+		\begin{flushright}
+			
+			\textbf{Лектор}:\\
+			\lecturer\\
+			\vspace{10pt}
+			\textbf{Виконав}:\\
+			
+			студент групи \mygroup\\
+			Коваленко Д.М.\\
+			\vspace{10pt}
+			\textbf{Прийняв}:\\
+			
+			\teacher\\
+			
+			\vspace{28pt}
+			«\rule{1cm}{0.15mm}» \rule{1.5cm}{0.15mm} 2023 р.\\
+			$\sum$ = \rule{1cm}{0.15mm}……………\\
+			
+		\end{flushright}
+		\vspace{\fill}
+		\begin{center}
+			\textbf{Львів — 2023}
+		\end{center}
+	\end{titlepage}
+		
+	\begin{description}
+		\item[Тема.] \theme.
+		\item[Мета.] \purpose.
+	\end{description}
+
+	\section*{Лабораторне завдання}
+	\begin{enumerate}
+		\item Внесення специфікації вимог до ПЗ в
+		програмний засіб RequirementsWin для управління вимогами.
+		\item Розробити ієрархічну структуру вимог та внести специфікацію
+		до програмного продукту (на задану тему) у засіб управління вимогами.
+	\end{enumerate}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{1}
+		\caption{Створення нового проекту}
+	\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{2}
+	\caption{Вигляд програми з відкритим проектом}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{3}
+	\caption{Вигляд програми з введеними вимогами до проекту}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{4}
+	\caption{Вигляд програми з вимогами у форматі таблиці}
+\end{figure}
+
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{5}
+	\caption{Вигляд програми для експорту вимог до HTML документу}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.35]{6}
+	\caption{Вигляд вимог у форматі HTML}
+\end{figure}
+	\section*{Висновок}
+	Під час виконання лабораторної роботи я ознайомився з програмним засобом управління вимогами, вивчити основні характеристики та можливості
+	
+\end{normalsize}
+\end{document}

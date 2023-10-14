@@ -11,7 +11,18 @@
     <div class="vr align-self-center" style="height: 100%; width: 3px; border: none; background-color: #bebebe;"></div>
     <div class="col align-self-center">
       <div class="row d-flex justify-content-center">
-        <canvas id="viewport" width="400" height="400" style="width: 400px; height: 400px;" @wheel="onWheel" @mousedown="onMouseDown"></canvas>
+        <div class="d-flex justify-content-center align-items-center" style="position: relative; width: 400px; height: 400px;">
+          <canvas id="viewport" width="400" height="400" style="width: 400px; height: 400px; background-color: black;" @mousedown="onMouseDown"></canvas>
+          <i v-if="rendering" class="fa fa-spinner icon-loading" style="position: absolute; top: 42%; left: 46%;"></i>
+        </div>
+      </div>
+      <div class="row d-flex justify-content-center">
+        <div class="btn btn-zoom btn-zoomout" @click="zoomOut">
+          <i class="fa fa-search-minus icon-zoomout"></i>
+        </div>
+        <div class="btn btn-zoom btn-zoomin" @click="zoomIn">
+          <i class="fa fa-search-plus icon-zoomin"></i>
+        </div>
       </div>
     </div>
   </div>
@@ -22,12 +33,12 @@
     name: 'FractalsA',
     data() {
       return {
+        rendering: false,
         offsetx: -200,
         offsety: -200,
         panx: -100,
         pany: 0,
         zoom: 150,
-      
         palette: [],
       };
     },
@@ -43,13 +54,9 @@
       },
     },
     methods: {
-      onWheel(event) {
-        var pos = this.getMousePos(event);
-        this.zoomFractal(pos.x, pos.y, 2, event.deltaY < 0);
-        this.generateImage();
-      },
       onMouseDown(event) {
         var pos = this.getMousePos(event);
+        console.log(pos);
         this.zoomFractal(pos.x, pos.y, 1, false);
         this.generateImage();
       },
@@ -59,6 +66,14 @@
           x: Math.round((event.clientX - rect.left)/(rect.right - rect.left)*this.canvas.width),
           y: Math.round((event.clientY - rect.top)/(rect.bottom - rect.top)*this.canvas.height)
         };
+      },
+      zoomIn() {
+        this.zoomFractal(200, 200, 2, true);
+        this.generateImage();
+      },
+      zoomOut() {
+        this.zoomFractal(200, 200, 2, false);
+        this.generateImage();
       },
       zoomFractal(x, y, factor, zoomin) {
         if (zoomin) {
@@ -72,29 +87,34 @@
         }
       },
       generateImage() {
+        this.rendering = true;
         for (var y = 0; y < this.canvas.height; y++) {
           for (var x = 0; x < this.canvas.width; x++) {
-            this.iterate(x, y);
+            setTimeout(this.iter, 1, x, y);
           }
         }
+        this.rendering = false;
       },
-      iterate(x, y) {
-        var maxIter = 20;
-        var x0 = (x + this.offsetx + this.panx) / this.zoom;
-        var y0 = (y + this.offsety + this.pany) / this.zoom;
+      iter(x, y) {
+        var maxIter = 250;
         
-        var a = 0;
-        var b = 0;
-        var rx = 0;
-        var ry = 0;
+        var zx = 0;
+        var zy = 0;
+        var cx = (x + this.offsetx + this.panx) / this.zoom;
+        var cy = (y + this.offsety + this.pany) / this.zoom;
         
         var iterations = 0;
-        while (iterations < maxIter && (rx * rx + ry * ry <= 4)) {
-          rx = a * a - b * b + x0;
-          ry = 2 * a * b + y0;
+        while (iterations < maxIter) {
+          const newZx = zx * zx - zy * zy + cx;
+          const newZy = 2 * zx * zy + cy;
           
-          a = rx;
-          b = ry;
+          zx = newZx;
+          zy = newZy;
+    
+          if (zx * zx + zy * zy > 4) {
+            break;
+          }
+          
           iterations++;
         }
         
@@ -142,5 +162,43 @@
 </script>
 
 <style scoped>
+.btn-zoom {
+  width: 60px;
+  height: 45px;
+  background-color: #ebebeb;
+  border: 3px solid #ebebeb;
+  border-radius: 0;
+  margin-top: 13px;
+}
+.btn-zoomin {
+  margin-right: auto;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+}
+.btn-zoomout {
+  margin-left: auto;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+.btn-zoom:active {
+  background-color: #ebebeb;
+  border: 3px solid #bebebe;
+}
+.icon-zoomin, .icon-zoomout {
+  font-size: 28px;
+}
+.icon-loading {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+  color: gray;
+  position: fixed;
+  transform: translateY(-200px);
+  animation: spin 1s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>
   

@@ -1,25 +1,25 @@
 <template>
   <div class="d-flex" style="height: 600px; width: 800px;">
-    <div class="col align-self-center" style="width: 343px;">
+    <div class="col align-self-center" style="max-width: 343px;">
       <div class="row d-flex justify-content-center">
         <div class="btn btn-custom d-inline-flex align-items-center" :class="{ active: showPopup }" @click="showPopup = !showPopup">
-          <span>Фрактали</span>
+          Фрактали
           <i class="fa fa-chevron-right right-arrow" v-if="!showPopup"></i>
         </div>
-        <div class="btn btn-custom d-inline-flex align-items-center">
+        <div class="btn btn-custom d-inline-flex align-items-center" @click="this.$emit('switchTo', 'Колірні схеми')">
           Колірні схеми
           <i class="fa fa-chevron-right right-arrow"></i>
         </div>
-        <div class="btn btn-custom d-inline-flex align-items-center">
+        <div class="btn btn-custom d-inline-flex align-items-center" @click="this.$emit('switchTo', 'Рухомі зображення')">
           Рухомі зображення
           <i class="fa fa-chevron-right right-arrow"></i>
         </div>
         <hr style="width: 90%; height: 3px; border: none; background-color: #bebebe;">
-        <div class="btn btn-custom d-inline-flex align-items-center">
+        <div class="btn btn-custom d-inline-flex align-items-center" @click="this.$emit('switchTo', 'Матеріали')">
           Матеріали
           <i class="fa fa-chevron-right right-arrow"></i>
         </div>
-        <div class="btn btn-custom d-inline-flex align-items-center">
+        <div class="btn btn-custom d-inline-flex align-items-center" @click="this.$emit('switchTo', 'Опитувальник')">
           Опитувальник
           <i class="fa fa-chevron-right right-arrow"></i>
         </div>
@@ -34,11 +34,11 @@
       </div>
     </div>
     <div class="popup" v-if="showPopup">
-      <div class="btn btn-custom d-inline-flex align-items-center" style="background-color: white;">
+      <div class="btn btn-custom d-inline-flex align-items-center" style="background-color: white;" @click="this.$emit('switchTo', 'Фрактал Мандельброта')">
         Фрактал Мандельброта
         <i class="fa fa-chevron-right right-arrow"></i>
       </div>
-      <div class="btn btn-custom d-inline-flex align-items-center" style="background-color: white;margin-bottom:0px;">
+      <div class="btn btn-custom d-inline-flex align-items-center" style="background-color: white;margin-bottom:0px;" @click="this.$emit('switchTo', 'Броунівський рух')">
         Броунівський рух
         <i class="fa fa-chevron-right right-arrow"></i>
       </div>

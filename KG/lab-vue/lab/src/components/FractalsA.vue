@@ -1,19 +1,21 @@
 <template>
   <div class="d-flex" style="height: 540px; width: 800px;">
-    <div class="col d-flex justify-content-center" style="max-width: 343px;">
-      <div class="row align-items-top">
-        <div class="btn">abc</div>
+    <div class="col" style="max-width: 343px;">
+      <div class="row d-flex justify-content-center">
+        <div class="btn btn-custom d-flex justify-content-center" style="margin-top: 13px;">
+          Вибрати колір
+          <input style="margin-left: 30px; margin-top: 3px;" type="color" value="#400000" name="" id="color" @change="generatePalette(); generateImage()">
+        </div>
       </div>
-      <div class="row align-items-end">
-        <div class="btn">abc</div>
+      <div class="row d-flex justify-content-center" style="margin-top: 367px;">
+        <div class="btn btn-custom" @click="saveImage">Зберегти зображення</div>
       </div>
     </div>
     <div class="vr align-self-center" style="height: 100%; width: 3px; border: none; background-color: #bebebe;"></div>
     <div class="col align-self-center">
       <div class="row d-flex justify-content-center">
-        <div class="d-flex justify-content-center align-items-center" style="position: relative; width: 400px; height: 400px;">
+        <div class="d-flex justify-content-center align-items-center" style="width: 400px; height: 400px;">
           <canvas id="viewport" width="400" height="400" style="width: 400px; height: 400px; background-color: black;" @mousedown="onMouseDown"></canvas>
-          <i v-if="rendering" class="fa fa-spinner icon-loading" style="position: absolute; top: 42%; left: 46%;"></i>
         </div>
       </div>
       <div class="row d-flex justify-content-center">
@@ -33,7 +35,6 @@
     name: 'FractalsA',
     data() {
       return {
-        rendering: false,
         offsetx: -200,
         offsety: -200,
         panx: -100,
@@ -56,7 +57,6 @@
     methods: {
       onMouseDown(event) {
         var pos = this.getMousePos(event);
-        console.log(pos);
         this.zoomFractal(pos.x, pos.y, 1, false);
         this.generateImage();
       },
@@ -87,13 +87,14 @@
         }
       },
       generateImage() {
-        this.rendering = true;
         for (var y = 0; y < this.canvas.height; y++) {
-          for (var x = 0; x < this.canvas.width; x++) {
-            setTimeout(this.iter, 1, x, y);
-          }
+          setTimeout(this.generateRow, 10, y);
         }
-        this.rendering = false;
+      },
+      generateRow(y) {
+        for (var x = 0; x < this.canvas.width; x++) {
+          this.iter(x, y);
+        }
       },
       iter(x, y) {
         var maxIter = 250;
@@ -103,28 +104,17 @@
         var cx = (x + this.offsetx + this.panx) / this.zoom;
         var cy = (y + this.offsety + this.pany) / this.zoom;
         
-        var iterations = 0;
-        while (iterations < maxIter) {
+        var i = 0;
+        for (;zx * zx + zy * zy < 4 && i < maxIter; ++i) {
           const newZx = zx * zx - zy * zy + cx;
           const newZy = 2 * zx * zy + cy;
           
           zx = newZx;
           zy = newZy;
-    
-          if (zx * zx + zy * zy > 4) {
-            break;
-          }
-          
-          iterations++;
         }
-        
-        var color;
-        if (iterations == maxIter) {
-            color = { r:0, g:0, b:0};
-        } else {
-            var index = Math.floor((iterations / (maxIter-1)) * 255);
-            color = this.palette[index];
-        }
+
+        var index = Math.floor((i / (maxIter-1)) * 255);
+        var color = this.palette[index] || { r:0, g:0, b:0};
         
         var pixelindex = (y * this.canvas.width + x) * 4;
         this.image.data[pixelindex] = color.r;
@@ -133,9 +123,11 @@
         this.image.data[pixelindex+3] = 255;
       },
       generatePalette() {
-        var roffset = 24;
-        var goffset = 16;
-        var boffset = 0;
+        var colorPicker = document.getElementById("color");
+        var color = this.hexToRgb(colorPicker.value);
+        var roffset = color.r;
+        var goffset = color.g;
+        var boffset = color.b;
         for (var i = 0; i < 256; i++) {
           this.palette[i] = { r:roffset, g:goffset, b:boffset};
           
@@ -152,6 +144,24 @@
         window.requestAnimationFrame(this.render);
         this.context.putImageData(this.image, 0, 0);
       },
+      saveImage() {
+        const img = new Image();
+        img.src = this.canvas.toDataURL('image/png');
+        const downloadLink = document.createElement('a');
+        downloadLink.href = img.src;
+        downloadLink.download = 'mandelbrot.png';
+        downloadLink.click();
+        downloadLink.remove();
+      },
+      hexToRgb(hex) {
+        hex = hex.replace(/^#/, '');
+
+        const r = parseInt(hex.slice(0, 2), 16);
+        const g = parseInt(hex.slice(2, 4), 16);
+        const b = parseInt(hex.slice(4, 6), 16);
+
+        return { r, g, b };
+      }
     },
     mounted() {
       this.generatePalette();
@@ -187,18 +197,18 @@
 .icon-zoomin, .icon-zoomout {
   font-size: 28px;
 }
-.icon-loading {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
-  color: gray;
-  position: fixed;
-  transform: translateY(-200px);
-  animation: spin 1s linear infinite;
+.btn-custom {
+  font-size: 22px;
+  margin-bottom: 13px;
+  border-radius: 24px;
+  height: 56px;
+  width: 306px;
+  background-color: #ebebeb;
+  border: 3px solid #ebebeb;
 }
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.btn:active {
+  border: 3px solid #bebebe;
+  background-color: #ebebeb;
 }
 </style>
   

@@ -83,7 +83,7 @@ export default {
 .popup {
   position: absolute;
   top: 70px;
-  right: 100px;
+  right: 129px;
   width: 332px;
   background-color: #ebebeb;
   padding: 13px;

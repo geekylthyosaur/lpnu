@@ -130,15 +130,16 @@
         var boffset = color.b;
         for (var i = 0; i < 256; i++) {
           this.palette[i] = { r:roffset, g:goffset, b:boffset};
-          
+
           if (i < 64) {
-            roffset += 3;
+            roffset += 2;
           } else if (i<128) {
-            goffset += 3;
+            goffset += 2;
           } else if (i<192) {
-            boffset += 3;
+            boffset += 2;
           }
         }
+        console.log(this.palette);
       },
       render() {
         window.requestAnimationFrame(this.render);

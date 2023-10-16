@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE ReqArray SYSTEM "Req.dtd">
+<ReqArray>
+    <SQ>17</SQ>
+    <ReqTypeArray>
+        <SQ>2</SQ>
+        <ReqAttributeTypeArray>
+            <SQ>3</SQ>
+            <AttributeTypeListValueSQ>10</AttributeTypeListValueSQ>
+            <ReqAttributeTypeList>
+                <ReqAttributeType>
+                    <Name>Приоритет</Name>
+                    <Dsc>Очередность реализации требования</Dsc>
+                    <N>2</N>
+                    <ShowInTable>true</ShowInTable>
+                    <Type>LIST</Type>
+                    <ValueList>
+                        <Value>
+                            <Val>Высокий</Val>
+                            <Icon>Images\HightPriority.gif</Icon>
+                            <N>8</N>
+                        </Value>
+                        <Value>
+                            <Val>Средний</Val>
+                            <Icon>Images\MediumPriority.gif</Icon>
+                            <N>9</N>
+                        </Value>
+                        <Value>
+                            <Val>Низкий</Val>
+                            <Icon>Images\LowPriority.gif</Icon>
+                            <N>10</N>
+                        </Value>
+                    </ValueList>
+                </ReqAttributeType>
+                <ReqAttributeType>
+                    <Name>Уровень</Name>
+                    <Dsc>Уровень детализации варианта использования</Dsc>
+                    <N>0</N>
+                    <ShowInTable>true</ShowInTable>
+                    <Type>LIST</Type>
+                    <ValueList>
+                        <Value>
+                            <Val>Обобщенный</Val>
+                            <Icon>Images\kite.gif</Icon>
+                            <N>0</N>
+                        </Value>
+                        <Value>
+                            <Val>Пользователя</Val>
+                            <Icon>Images\waves.gif</Icon>
+                            <N>1</N>
+                        </Value>
+                        <Value>
+                            <Val>Подфункции</Val>
+                            <Icon>Images\fish.gif</Icon>
+                            <N>2</N>
+                        </Value>
+                    </ValueList>
+                </ReqAttributeType>
+                <ReqAttributeType>
+                    <Name>Статус</Name>
+                    <Dsc>Статус требования</Dsc>
+                    <N>1</N>
+                    <ShowInTable>true</ShowInTable>
+                    <Type>LIST</Type>
+                    <ValueList>
+                        <Value>
+                            <Val>Внесено</Val>
+                            <Dsc>Требование внесено, но не рассмотрено</Dsc>
+                            <Icon>Images\New.gif</Icon>
+                            <N>3</N>
+                        </Value>
+                        <Value>
+                            <Val>Принято</Val>
+                            <Dsc>Требование принято к реализации</Dsc>
+                            <Icon>Images\approved.gif</Icon>
+                            <N>4</N>
+                        </Value>
+                        <Value>
+                            <Val>Отклонено</Val>
+                            <Dsc>Требование отклонено</Dsc>
+                            <Icon>Images\Deviated.gif</Icon>
+                            <N>5</N>
+                        </Value>
+                        <Value>
+                            <Val>Уточнить</Val>
+                            <Dsc>Требуется уточнение требования</Dsc>
+                            <Icon>Images\ReqQuery.gif</Icon>
+                            <N>6</N>
+                        </Value>
+                        <Value>
+                            <Val>Реализовано</Val>
+                            <Dsc>Требование реализовано</Dsc>
+                            <Icon>Images\check.gif</Icon>
+                            <N>7</N>
+                        </Value>
+                    </ValueList>
+                </ReqAttributeType>
+                <ReqAttributeType>
+                    <Name>Время статуса</Name>
+                    <Dsc>Время изменения статуса</Dsc>
+                    <N>3</N>
+                    <ShowInTable>false</ShowInTable>
+                    <Type>DATE</Type>
+                </ReqAttributeType>
+            </ReqAttributeTypeList>
+        </ReqAttributeTypeArray>
+        <ReqTypeList>
+            <ReqType>
+                <N>0</N>
+                <Name>Проект</Name>
+                <Dsc>Корневое требование проекта</Dsc>
+                <Prefix>P</Prefix>
+                <Icon>/var/home/user/Downloads/Images\P.gif</Icon>
+            </ReqType>
+            <ReqType>
+                <N>1</N>
+                <Name>Пользовательское</Name>
+                <Dsc>Общие требования к системе</Dsc>
+                <Prefix>U</Prefix>
+                <Icon>/var/home/user/Downloads/Images\U.gif</Icon>
+                <AttrList>
+                    <N>2</N>
+                    <N>1</N>
+                    <N>3</N>
+                </AttrList>
+            </ReqType>
+            <ReqType>
+                <N>2</N>
+                <Name>Вариант использования</Name>
+                <Dsc>Сценарий взаимодействия пользователя с системой или системы с другими системами</Dsc>
+                <Prefix>Uc</Prefix>
+                <Icon>/var/home/user/Downloads/Images\UC.gif</Icon>
+                <AttrList>
+                    <N>2</N>
+                    <N>0</N>
+                    <N>1</N>
+                    <N>3</N>
+                </AttrList>
+            </ReqType>
+        </ReqTypeList>
+    </ReqTypeArray>
+    <ReqList>
+        <Req ID="0" LastModif="1697464339496" RowIndex="0" TypeID="0">
+            <Name>Система управління компанією з регулярних перевезень</Name>
+            <ChildList>
+                <Req ID="1" LastModif="1697467316339" RowIndex="1" TypeID="1">
+                    <Name>Бронювання місць пасажирами</Name>
+                    <ReqDsc Pos="1">&lt;html&gt;
+  &lt;head&gt;
+
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;p style="margin-top: 0"&gt;
+      
+    &lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</ReqDsc>
+                    <ReqAttrList>
+                        <ReqAttr AttrPos="0">0</ReqAttr>
+                        <ReqAttr AttrPos="1">0</ReqAttr>
+                        <ReqAttr AttrPos="2">1697467313378</ReqAttr>
+                    </ReqAttrList>
+                    <ChildList>
+                        <Req ID="2" LastModif="1697466386786" RowIndex="2" TypeID="1">
+                            <Name>Користувачі мають можливість зареєструватися</Name>
+                            <ReqAttrList>
+                                <ReqAttr AttrPos="0">0</ReqAttr>
+                                <ReqAttr AttrPos="1">0</ReqAttr>
+                                <ReqAttr AttrPos="2">1697466385650</ReqAttr>
+                            </ReqAttrList>
+                        </Req>
+                        <Req ID="3" LastModif="1697466432002" RowIndex="3" TypeID="1">
+                            <Name>Можливість оплати проїзду пасажирами</Name>
+                            <ReqAttrList>
+                                <ReqAttr AttrPos="0">0</ReqAttr>
+                                <ReqAttr AttrPos="1">0</ReqAttr>
+                                <ReqAttr AttrPos="2">1697466431298</ReqAttr>
+                            </ReqAttrList>
+                        </Req>
+                    </ChildList>
+                </Req>
+                <Req ID="4" LastModif="1697466455874" RowIndex="4" TypeID="1">
+                    <Name>Інтеграція з платіжними системами</Name>
+                    <ReqAttrList>
+                        <ReqAttr AttrPos="0">0</ReqAttr>
+                        <ReqAttr AttrPos="1">0</ReqAttr>
+                        <ReqAttr AttrPos="2">1697466454858</ReqAttr>
+                    </ReqAttrList>
+                </Req>
+                <Req ID="8" LastModif="1697466727426" RowIndex="5" TypeID="1">
+                    <Name>Можливість відстеження транспортних засобів у реальному часі</Name>
+                    <ReqAttrList>
+                        <ReqAttr AttrPos="0">1</ReqAttr>
+                        <ReqAttr AttrPos="1">0</ReqAttr>
+                        <ReqAttr AttrPos="2">1697466726690</ReqAttr>
+                    </ReqAttrList>
+                    <ChildList>
+                        <Req ID="9" LastModif="1697466762882" RowIndex="6" TypeID="1">
+                            <Name>Відображення позиції транспортних засобів на карті</Name>
+                            <ReqAttrList>
+                                <ReqAttr AttrPos="0">2</ReqAttr>
+                                <ReqAttr AttrPos="1">0</ReqAttr>
+                                <ReqAttr AttrPos="2">1697466761769</ReqAttr>
+                            </ReqAttrList>
+                        </Req>
+                    </ChildList>
+                </Req>
+                <Req ID="10" LastModif="1697466801403" RowIndex="7" TypeID="1">
+                    <Name>Можливість генерації аналітичних даних</Name>
+                    <ReqAttrList>
+                        <ReqAttr AttrPos="0">0</ReqAttr>
+                        <ReqAttr AttrPos="1">0</ReqAttr>
+                        <ReqAttr AttrPos="2">1697466796082</ReqAttr>
+                    </ReqAttrList>
+                    <ChildList>
+                        <Req ID="14" LastModif="1697467019402" RowIndex="11" TypeID="1">
+                            <Name>Можливість отримати звіт про прибутковість кожного рейсу</Name>
+                            <ReqAttrList>
+                                <ReqAttr AttrPos="0">0</ReqAttr>
+                                <ReqAttr AttrPos="1">0</ReqAttr>
+                                <ReqAttr AttrPos="2">1697467018234</ReqAttr>
+                            </ReqAttrList>
+                        </Req>
+                    </ChildList>
+                </Req>
+                <Req ID="11" LastModif="1697466869122" RowIndex="8" TypeID="1">
+                    <Name>Генерація оптимальних маршрутів</Name>
+                    <ReqAttrList>
+                        <ReqAttr AttrPos="0">1</ReqAttr>
+                        <ReqAttr AttrPos="1">0</ReqAttr>
+                        <ReqAttr AttrPos="2">1697466868338</ReqAttr>
+                    </ReqAttrList>
+                    <ChildList>
+                        <Req ID="15" LastModif="1697467053666" RowIndex="12" TypeID="1">
+                            <Name>Адміністратори можуть редагувати маршрути</Name>
+                            <ReqAttrList>
+                                <ReqAttr AttrPos="0">1</ReqAttr>
+                                <ReqAttr AttrPos="1">0</ReqAttr>
+                                <ReqAttr AttrPos="2">1697467052482</ReqAttr>
+                            </ReqAttrList>
+                        </Req>
+                    </ChildList>
+                </Req>
+                <Req ID="12" LastModif="1697466888147" RowIndex="9" TypeID="1">
+                    <Name>Генерація оптимальних розкладів руху</Name>
+                    <ReqAttrList>
+                        <ReqAttr AttrPos="0">1</ReqAttr>
+                        <ReqAttr AttrPos="1">0</ReqAttr>
+                        <ReqAttr AttrPos="2">1697466886434</ReqAttr>
+                    </ReqAttrList>
+                    <ChildList>
+                        <Req ID="16" LastModif="1697467493547" RowIndex="13" TypeID="1">
+                            <Name>Адміністратори можуть редагувати розклад руху</Name>
+                            <ReqDsc Pos="0">&lt;html&gt;
+  &lt;head&gt;
+
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;p style="margin-top: 0"&gt;
+      
+    &lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</ReqDsc>
+                            <ReqAttrList>
+                                <ReqAttr AttrPos="0">1</ReqAttr>
+                                <ReqAttr AttrPos="1">0</ReqAttr>
+                                <ReqAttr AttrPos="2">1697467070330</ReqAttr>
+                            </ReqAttrList>
+                        </Req>
+                    </ChildList>
+                </Req>
+                <Req ID="13" LastModif="1697466947770" RowIndex="10" TypeID="1">
+                    <Name>Можливість адміністратору взаємодіяти з водіями</Name>
+                    <ReqAttrList>
+                        <ReqAttr AttrPos="0">0</ReqAttr>
+                        <ReqAttr AttrPos="1">0</ReqAttr>
+                        <ReqAttr AttrPos="2">1697466947218</ReqAttr>
+                    </ReqAttrList>
+                    <ChildList>
+                        <Req ID="17" LastModif="1697467135018" RowIndex="14" TypeID="1">
+                            <Name>Можливість адміністратору спілкуватись з водієм</Name>
+                            <ReqDsc Pos="1">&lt;html&gt;
+  &lt;head&gt;
+
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;p style="margin-top: 0"&gt;
+      
+    &lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</ReqDsc>
+                            <ReqAttrList>
+                                <ReqAttr AttrPos="0">1</ReqAttr>
+                                <ReqAttr AttrPos="1">0</ReqAttr>
+                                <ReqAttr AttrPos="2">1697467125698</ReqAttr>
+                            </ReqAttrList>
+                        </Req>
+                    </ChildList>
+                </Req>
+            </ChildList>
+        </Req>
+    </ReqList>
+    <ReqLinkSQ>5</ReqLinkSQ>
+    <ReqLinkInList>
+        <ReqLink FromId="4" LastModified="1697466642211" N="1" OtherSide="0" Status="0" ToId="3"/>
+        <ReqLink FromId="10" LastModified="1697466894034" N="3" OtherSide="2" Status="0" ToId="12"/>
+        <ReqLink FromId="10" LastModified="1697466901642" N="5" OtherSide="4" Status="0" ToId="11"/>
+    </ReqLinkInList>
+    <ReqLinkOutList>
+        <ReqLink FromId="3" LastModified="1697466642211" N="0" OtherSide="1" Status="0" ToId="4"/>
+        <ReqLink FromId="11" LastModified="1697466901642" N="4" OtherSide="5" Status="0" ToId="10"/>
+        <ReqLink FromId="12" LastModified="1697466894034" N="2" OtherSide="3" Status="0" ToId="10"/>
+    </ReqLinkOutList>
+</ReqArray>

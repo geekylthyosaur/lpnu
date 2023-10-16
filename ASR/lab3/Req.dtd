@@ -1,0 +1,46 @@
+<!ELEMENT ReqArray (SQ, ReqTypeArray, ReqList, ReqLinkSQ?, ReqLinkInList?, ReqLinkOutList?)>
+<!ELEMENT ReqTypeArray (SQ, ReqAttributeTypeArray, ReqTypeList)>
+<!ELEMENT SQ (#PCDATA)>
+<!ELEMENT ReqAttributeTypeArray (SQ, AttributeTypeListValueSQ, ReqAttributeTypeList)>
+<!ELEMENT AttributeTypeListValueSQ (#PCDATA)>
+<!ELEMENT ReqAttributeTypeList (ReqAttributeType)*>
+<!ELEMENT ReqAttributeType (Name, Dsc?, N, ShowInTable, Type, ValueList?)>
+<!ELEMENT Name (#PCDATA)>
+<!ELEMENT Dsc (#PCDATA)>
+<!ELEMENT Type (#PCDATA)>
+<!ELEMENT N (#PCDATA)>
+<!ELEMENT ShowInTable (#PCDATA)>
+<!ELEMENT ValueList (Value)*>
+<!ELEMENT Value (Val, Dsc?, Icon?, N)>
+<!ELEMENT Val (#PCDATA)>
+<!ELEMENT Icon (#PCDATA)>
+<!ELEMENT ReqTypeList (ReqType)*>
+<!ELEMENT ReqType (N, Name, Dsc?, Prefix?, Icon?, AttrList*)>
+<!ELEMENT Prefix (#PCDATA)>
+<!ELEMENT AttrList (N)*>
+<!ELEMENT ReqList (Req)*>
+<!ELEMENT Req (Name, ReqDsc?, ReqAttrList, ChildList?, ReqFileList?)> 
+<!ATTLIST Req ID CDATA #REQUIRED>
+<!ATTLIST Req TypeID CDATA #REQUIRED>
+<!ATTLIST Req LastModif CDATA #REQUIRED>
+<!ATTLIST Req RowIndex CDATA #REQUIRED>
+<!ELEMENT ChildList (Req)*>
+<!ELEMENT ReqDsc (#PCDATA)>
+<!ATTLIST ReqDsc Pos CDATA #REQUIRED>
+<!ELEMENT ReqAttrList (ReqAttr)*>
+<!ELEMENT ReqAttr (#PCDATA)>
+<!ATTLIST ReqAttr AttrPos CDATA #REQUIRED>
+<!ELEMENT ReqLinkSQ (#PCDATA)>
+<!ELEMENT ReqLinkInList (ReqLink*)>
+<!ELEMENT ReqLinkOutList (ReqLink*)>
+<!ELEMENT ReqLink EMPTY>
+<!ATTLIST ReqLink N CDATA #REQUIRED>
+<!ATTLIST ReqLink FromId CDATA #REQUIRED>
+<!ATTLIST ReqLink ToId CDATA #REQUIRED>
+<!ATTLIST ReqLink Status CDATA #REQUIRED>
+<!ATTLIST ReqLink LastModified CDATA #REQUIRED>
+<!ATTLIST ReqLink OtherSide CDATA #REQUIRED>
+<!ELEMENT ReqFileList (ReqFile)*>
+<!ELEMENT ReqFile (Dsc?)>
+<!ATTLIST ReqFile Name CDATA #REQUIRED>
+<!ATTLIST ReqFile Path CDATA #REQUIRED>

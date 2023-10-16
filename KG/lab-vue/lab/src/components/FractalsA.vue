@@ -139,16 +139,15 @@
             boffset += 2;
           }
         }
-        console.log(this.palette);
       },
       render() {
         window.requestAnimationFrame(this.render);
         this.context.putImageData(this.image, 0, 0);
       },
       saveImage() {
-        const img = new Image();
+        var img = new Image();
         img.src = this.canvas.toDataURL('image/png');
-        const downloadLink = document.createElement('a');
+        var downloadLink = document.createElement('a');
         downloadLink.href = img.src;
         downloadLink.download = 'mandelbrot.png';
         downloadLink.click();
@@ -157,9 +156,9 @@
       hexToRgb(hex) {
         hex = hex.replace(/^#/, '');
 
-        const r = parseInt(hex.slice(0, 2), 16);
-        const g = parseInt(hex.slice(2, 4), 16);
-        const b = parseInt(hex.slice(4, 6), 16);
+        var r = parseInt(hex.slice(0, 2), 16);
+        var g = parseInt(hex.slice(2, 4), 16);
+        var b = parseInt(hex.slice(4, 6), 16);
 
         return { r, g, b };
       }

@@ -88,8 +88,20 @@
         if (this.particle.x < 0 || this.particle.x > this.canvas.width) {
           this.particle.velocity.dx *= -1;
         }
+        if (this.particle.x < 0) {
+          this.particle.x = 0;
+        }
+        if (this.particle.x > this.canvas.width) {
+          this.particle.x = this.canvas.width;
+        }
         if (this.particle.y < 0 || this.particle.y > this.canvas.height) {
           this.particle.velocity.dy *= -1;
+        }
+        if (this.particle.y < 0) {
+          this.particle.y = 0;
+        }
+        if (this.particle.y > this.canvas.height) {
+          this.particle.y = this.canvas.height;
         }
 
         this.traces.push({ x: this.particle.x, y: this.particle.y });

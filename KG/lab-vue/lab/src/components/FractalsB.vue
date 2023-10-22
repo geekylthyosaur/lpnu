@@ -22,7 +22,7 @@
       <div class="row d-flex justify-content-center">
         <div class="btn btn-custom d-flex flex-column align-items-center">
           <span style="margin-top: -8px;">Довжина сліду</span>
-          <input style="margin-top: -8px; width: 200px;" type="range" value="100" min="1" max="1001" step="100" id="traceLength" @change="update">
+          <input style="margin-top: -8px; width: 200px;" type="range" value="1000" min="1" max="10001" step="1000" id="traceLength" @change="update">
         </div>
       </div>
       <div class="row d-flex justify-content-center" style="margin-top: 154px;">
@@ -78,8 +78,8 @@
       },
       updateParticle() {
         if (Math.random() > 1.0 - this.density) {
-          this.particle.velocity.dx += (Math.random() * 2 - 1) / this.massRatio;
-          this.particle.velocity.dy += (Math.random() * 2 - 1) / this.massRatio;
+          this.particle.velocity.dx += ((Math.random() * 2 - 1) / 1) / this.massRatio;
+          this.particle.velocity.dy += ((Math.random() * 2 - 1) / 1) / this.massRatio;
         }
 
         this.particle.x += this.particle.velocity.dx;

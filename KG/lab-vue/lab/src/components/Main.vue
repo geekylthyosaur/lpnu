@@ -29,7 +29,7 @@
     <div class="col align-self-center">
       <div class="row d-flex justify-content-center">
         <div class="text-center" style="font-size: 32px;">
-          ABC
+          
         </div>
       </div>
     </div>

@@ -35,10 +35,10 @@
     name: 'FractalsA',
     data() {
       return {
-        offsetx: -200,
-        offsety: -200,
-        panx: -100,
-        pany: 0,
+        canvasOffsetX: -200,
+        canvasOffsetY: -200,
+        shiftX: -100,
+        shiftY: 0,
         zoom: 150,
         palette: [],
       };
@@ -78,12 +78,12 @@
       zoomFractal(x, y, factor, zoomin) {
         if (zoomin) {
           this.zoom *= factor;
-          this.panx = factor * (x + this.offsetx + this.panx);
-          this.pany = factor * (y + this.offsety + this.pany);
+          this.shiftX = factor * (x + this.canvasOffsetX + this.shiftX);
+          this.shiftY = factor * (y + this.canvasOffsetY + this.shiftY);
         } else {
           this.zoom /= factor;
-          this.panx = (x + this.offsetx + this.panx) / factor;
-          this.pany = (y + this.offsety + this.pany) / factor;
+          this.shiftX = (x + this.canvasOffsetX + this.shiftX) / factor;
+          this.shiftY = (y + this.canvasOffsetY + this.shiftY) / factor;
         }
       },
       generateImage() {
@@ -99,16 +99,22 @@
       iter(x, y) {
         var maxIter = 250;
         
+        // to make julia swap z and c and make cx -0.4 and cy 0.6
+        // can it be ifs fractal? why not?
+        // ifs cannot be used with non-linear fns
+        // geometrycal fractals can be drawn with ifs (linear)
+        // mandelbrot is похідний julia
+
         var zx = 0;
         var zy = 0;
-        var cx = (x + this.offsetx + this.panx) / this.zoom;
-        var cy = (y + this.offsety + this.pany) / this.zoom;
-        
+        var cx = (x + this.canvasOffsetX + this.shiftX) / this.zoom;
+        var cy = (y + this.canvasOffsetY + this.shiftY) / this.zoom;
+
         var i = 0;
         for (;zx * zx + zy * zy < 4 && i < maxIter; ++i) {
           const newZx = zx * zx - zy * zy + cx;
           const newZy = 2 * zx * zy + cy;
-          
+
           zx = newZx;
           zy = newZy;
         }
@@ -131,11 +137,11 @@
         for (var i = 0; i < 256; i++) {
           this.palette[i] = { r:roffset, g:goffset, b:boffset};
 
-          if (i < 64) {
+          if (i < 85) {
             roffset += 2;
-          } else if (i<128) {
+          } else if (i<170) {
             goffset += 2;
-          } else if (i<192) {
+          } else if (i<255) {
             boffset += 2;
           }
         }

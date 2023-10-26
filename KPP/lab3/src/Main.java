@@ -31,6 +31,10 @@ public class Main {
         for (var pair : pairs) {
             System.out.println(pair[0] + " and " + pair[1]);
         }
+
+        for (var pair : data1.count_all().entrySet()) {
+            System.out.println(pair.getKey() + " - " + pair.getValue());
+        }
     }
 }
 
@@ -51,6 +55,16 @@ class Events {
         } catch (IOException e) {
             System.err.println("An error occurred while reading the file: " + e.getMessage());
         }
+    }
+    public Integer count(int year) {
+        return this.data.get(year).size();
+    }
+    public Map<Integer, Integer> count_all() {
+        var map = new HashMap<Integer, Integer>();
+        for (var year : this.data.keySet()) {
+            map.put(year, this.count(year));
+        }
+        return map;
     }
     public void add(Event e) {
         var key = e.date.year;

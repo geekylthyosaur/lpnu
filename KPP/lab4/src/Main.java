@@ -2,27 +2,48 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        var project = new Project("2023-10-01", "TODO", "My todo list");
-        var task1 = new Task(new Deadline("2023-01-11"), Priority.Low, "Complete research report", "Gather data and create the report.");
-        var task2 = new Task(new Deadline("2023-01-09"), Priority.Low, "Call client", "Discuss project updates and follow up.");
-        var task3 = new Task(new Deadline("2023-01-09"), Priority.Low, "Write blog post", "Select a topic and start writing the post.");
-        var task4 = new Task(new Deadline("2023-01-09"), Priority.Low, "Exercise", "Go for a run or hit the gym.");
-        var task5 = new Task(new Deadline("2023-01-09"), Priority.Low, "Grocery shopping", "Buy groceries for the week.");
-        var task6 = new Task(new Deadline("2023-01-17"), Priority.Low, "Plan weekend trip", "Research destinations and make an itinerary.");
-        var task7 = new Task(new Deadline("2023-01-01"), Priority.Low, "Review budget", "Check monthly expenses and savings.");
-        var task8 = new Task(new Deadline("2023-01-09"), Priority.Low, "Study for exam", "Review study materials for upcoming exam.");
-        task1.addInnerTask(task2);
-        task1.addInnerTask(task3);
+        var projects = new ArrayList<>();
+        var help = "addTask/addProject/list/exit";
 
-        task3.addInnerTask(task7);
-        task2.addInnerTask(task4);
-        task2.addInnerTask(task5);
-        task5.addInnerTask(task8);
-        project.addTask(task1);
-        System.out.println(project);
+        Scanner scanner = new Scanner(System.in);
+        System.out.println(help);
+
+        while (true) {
+            var input = scanner.nextLine();
+
+            if (input.equalsIgnoreCase("addTask")) {
+                System.out.println("Creating new task:");
+                System.out.print("\tname: ");
+                var name = scanner.nextLine();
+                System.out.print("\tdescription: ");
+                var description = scanner.nextLine();
+                System.out.print("\tdeadline: ");
+                var deadline = scanner.nextLine();
+                System.out.print("\tpriority: ");
+                var priority = scanner.nextLine();
+                var task = new Task(deadline, priority, name, description);
+                System.out.print(task);
+            } else if (input.equalsIgnoreCase("addProject")) {
+                System.out.println("Creating new project:");
+                System.out.print("\tname: ");
+                var name = scanner.nextLine();
+                System.out.print("\tdescription: ");
+                var description = scanner.nextLine();
+                System.out.print("\tdeadline: ");
+                var deadline = scanner.nextLine();
+                var project = new Project(deadline, name, description);
+                projects.add(project);
+                System.out.print("Added new project: " + project);
+            } else if (input.equalsIgnoreCase("list")) {
+                System.out.print(projects);
+            } else if (input.equalsIgnoreCase("exit")) {
+                break;
+            }
+        }
     }
 }
 
@@ -79,7 +100,7 @@ class Project {
     @Override
     public String toString() {
         StringBuilder format = new StringBuilder();
-        format.append("PROJECT ").append(getName()).append(" - ").append(getDescription()).append("(Due ").append(getDeadline()).append(")\n");
+        format.append("[P] ").append(getName()).append(" - ").append(getDescription()).append(" (Due ").append(getDeadline()).append(")\n");
         for (var task : this.tasks) {
             format.append("\t").append(task).append("\n");
         }
@@ -93,9 +114,15 @@ class Task {
     List<Task> innerTasks;
     String name;
     String description;
-    Task(Deadline deadline, Priority priority, String name, String description) {
-        this.deadline = deadline;
-        this.priority = priority;
+    Task(String deadline, String priority, String name, String description) {
+        this.deadline = new Deadline(deadline);
+        if (priority.equalsIgnoreCase("low")) {
+            this.priority = Priority.Low;
+        } else if (priority.equalsIgnoreCase("medium")) {
+            this.priority = Priority.Medium;
+        } else if (priority.equalsIgnoreCase("high")) {
+            this.priority = Priority.High;
+        }
         this.innerTasks = new ArrayList<>();
         this.name = name;
         this.description = description;
@@ -141,7 +168,7 @@ class Task {
     }
     String toString(Integer i) {
         StringBuilder format = new StringBuilder();
-        format.append("TASK").append(" <").append(getPriority()).append("> ").append(getName()).append(" (Due ").append(getDeadline()).append(")");
+        format.append("[T]").append(" <").append(getPriority()).append("> ").append(getName()).append(" (Due ").append(getDeadline()).append(")");
         if (!getInnerTasks().isEmpty()) {
             for (var task : this.getInnerTasks()) {
                 format.append("\n").append(repeat(i, "\t")).append(task.toString(i + 1));

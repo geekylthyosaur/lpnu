@@ -2,6 +2,7 @@
   <header-bar v-if="currentWindow != 'Головна'" @switchTo="switchTo" :title="currentWindow"/>
   <fractals-a v-if="currentWindow == 'Фрактал Мандельброта'"/>
   <fractals-b v-if="currentWindow == 'Броунівський рух'"/>
+  <colors v-if="currentWindow == 'Колірні схеми'"/>
 
   <main-window v-if="currentWindow == 'Головна'" @switchTo="switchTo"/>
 </template>
@@ -11,6 +12,7 @@ import MainWindow from './components/Main.vue'
 import HeaderBar from './components/Header.vue'
 import FractalsA from './components/FractalsA.vue'
 import FractalsB from './components/FractalsB.vue'
+import ColorS from './components/Colors.vue'
 
 export default {
   name: 'App',
@@ -19,6 +21,7 @@ export default {
     'header-bar': HeaderBar,
     'fractals-a': FractalsA,
     'fractals-b': FractalsB,
+    'colors': ColorS,
   },
   data() {
     return {

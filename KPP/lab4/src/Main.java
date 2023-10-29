@@ -6,11 +6,24 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        var projects = new ArrayList<>();
+        var projects = new ArrayList<Project>();
         var help = "addTask/addProject/list/exit";
 
         Scanner scanner = new Scanner(System.in);
         System.out.println(help);
+
+        var pr = new Project("2012-12-12", "q", "q");
+        var task1 = new Task("2012-12-12", "low", "a", "a");
+        var task2 = new Task("2012-12-12", "low", "b", "b");
+        var task3 = new Task("2012-12-12", "low", "c", "c");
+        var task4 = new Task("2012-12-12", "low", "d", "d");
+        var task5 = new Task("2012-12-12", "low", "e", "e");
+        task1.addInnerTask(task2);
+        task2.addInnerTask(task4);
+        task1.addInnerTask(task3);
+        pr.addTask(task1);
+        pr.addTask(task5);
+        System.out.println(pr);
 
         while (true) {
             var input = scanner.nextLine();
@@ -26,7 +39,19 @@ public class Main {
                 System.out.print("\tpriority: ");
                 var priority = scanner.nextLine();
                 var task = new Task(deadline, priority, name, description);
-                System.out.print(task);
+                System.out.print("\tadd to: ");
+                var taskName = scanner.nextLine();
+                var project = findProject(taskName, projects);
+                var inner = findInnerTask(taskName, projects);
+                if (project != null) {
+                    project.addTask(task);
+                    System.out.println("Added new task: " + task);
+                } else if (inner != null) {
+                    inner.addInnerTask(task);
+                    System.out.println("Added new task: " + task);
+                } else {
+                    System.out.println("Cannot add task");
+                }
             } else if (input.equalsIgnoreCase("addProject")) {
                 System.out.println("Creating new project:");
                 System.out.print("\tname: ");
@@ -37,13 +62,38 @@ public class Main {
                 var deadline = scanner.nextLine();
                 var project = new Project(deadline, name, description);
                 projects.add(project);
-                System.out.print("Added new project: " + project);
+                System.out.println("Added new project: " + project);
             } else if (input.equalsIgnoreCase("list")) {
-                System.out.print(projects);
+                for (var p : projects) {
+                    System.out.println(p);
+                }
             } else if (input.equalsIgnoreCase("exit")) {
                 break;
             }
         }
+    }
+
+    static Project findProject(String name, ArrayList<Project> projects) {
+        for (var p : projects) {
+            if (p.getName().equalsIgnoreCase(name)) {
+                return p;
+            }
+        }
+        return null;
+    }
+    static Task findInnerTask(String name, ArrayList<Project> projects) {
+        for (var p : projects) {
+            for (var t : p.tasks) {
+                if (t.getName().equalsIgnoreCase(name)) {
+                    return t;
+                }
+                var inner = t.findInnerTask(name);
+                if (inner != null) {
+                    return inner;
+                }
+            }
+        }
+        return null;
     }
 }
 
@@ -127,6 +177,18 @@ class Task {
         this.name = name;
         this.description = description;
     }
+    Task findInnerTask(String name) {
+        for (var t : getInnerTasks()) {
+            if (t.getName().equalsIgnoreCase(name)) {
+                return t;
+            }
+            var inner = t.findInnerTask(name);
+            if (inner != null) {
+                return inner;
+            }
+        }
+        return null;
+    }
     Deadline getDeadline() {
         var innerTasksDeadline = this.getInnerTasksDeadline();
         if (this.deadline.compareTo(innerTasksDeadline) > 0) {
@@ -164,7 +226,7 @@ class Task {
     }
     @Override
     public String toString() {
-        return this.toString(1);
+        return this.toString(2);
     }
     String toString(Integer i) {
         StringBuilder format = new StringBuilder();

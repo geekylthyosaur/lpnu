@@ -98,12 +98,6 @@
       },
       iter(x, y) {
         var maxIter = 250;
-        
-        // to make julia swap z and c and make cx -0.4 and cy 0.6
-        // can it be ifs fractal? why not?
-        // ifs cannot be used with non-linear fns
-        // geometrycal fractals can be drawn with ifs (linear)
-        // mandelbrot is похідний julia
 
         var zx = 0;
         var zy = 0;

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isLoaded" class="d-flex justify-content-center align-items-center" style="height: 540px; width: 800px;">
+  <div v-if="!isLoaded" class="d-flex justify-content-center align-items-center" style="height: 540px; width: 800px;">
     <div class="text-center" v-if="!isLoaded">
       <input type="file" @change="openImage" style="display: none" ref="fileInput" accept="image/*">
       <button class="btn btn-custom" @click="selectFile">
@@ -8,7 +8,7 @@
       <p style="color: #bebebe; margin-top: -13px; font-size: small;">Оберіть файл щоб розпочати</p>
     </div>
   </div>
-  <div v-if="!isLoaded" class="d-flex justify-content-center align-items-center" style="height: 540px; width: 800px;">
+  <div v-if="isLoaded" class="d-flex justify-content-center align-items-center" style="height: 540px; width: 800px;">
     <div class="col" style="max-width: 343px;">
       <div class="row d-flex justify-content-center">
         <div class="btn btn-custom d-flex justify-content-center" style="margin-top: 13px;">
@@ -80,6 +80,7 @@ export default {
     },
     stopResize() {
       this.resizing = false;
+      // error after exit
       this.leftCanvasWidth = parseFloat(this.$refs.leftCanvas.style.width);
     },
   }

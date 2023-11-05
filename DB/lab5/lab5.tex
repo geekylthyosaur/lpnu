@@ -199,6 +199,27 @@ limit 5;
 		\includegraphics[scale=0.5]{4}
 		\caption{}
 	\end{figure}
+	
+	Запит, що повертає повідомлення, емайл та ім'я користувача та час створення відгуку, що ймовірно є негативним.
+	
+	\iffalse
+	\begin{lstlisting}
+		select message, email, name, time from feedback
+		where message ilike '%need%'
+			or message ilike '%crash%'
+			or message ilike '%slow%'
+			or message ilike '%could be%'
+			or message ilike '%bad%'
+			and now() - time < interval '30 days'
+		order by time desc
+	\end{lstlisting}
+	\fi
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.5]{5}
+		\caption{}
+	\end{figure}
+	
 	\section*{Висновок}
 	Під час виконання лабораторної роботи я розробив 5 запитів, що виконують вибірку із декількох таблиць предметної області. Врахував актуальність, форму представлення та можливі фільтри. Описав зміст запитів та корисні вхідні умови зафіксував текстом. Деякі запити зберіг як представлення (VIEW).
 	Мої запити використовувють декілька операторів порівняння, базові функції обробки дати, рядків групування, агрегатні функції сортування, обмеження кількості.

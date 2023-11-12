@@ -1,3 +1,4 @@
+using api.Mapping;
 using api.Models;
 using api.Services.DriverService;
 using api.Services.FeedbackService;
@@ -19,6 +20,8 @@ builder.Services.AddScoped<ITicketService, TicketService>();
 builder.Services.AddScoped<IVehicleService, VehicleService>();
 builder.Services.AddScoped<IScheduleService, ScheduleService>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 builder.Services.AddControllers();
 

@@ -11,10 +11,10 @@
   </div>
   <div v-if="isLoaded" class="d-flex justify-content-center align-items-center" style="height: 540px; width: 800px;">
     <div class="col" style="max-width: 343px;">
-      <div class="row d-flex justify-content-center">
-        <div class="btn btn-custom d-flex justify-content-center" style="margin-top: 13px;">
-          Вибрати колір
-          <input style="margin-left: 30px; margin-top: 3px;" type="color" value="#400000" name="" id="color" @change="generatePalette(); generateImage()">
+      <div class="row d-flex justify-content-center" style="margin-top: 13px;">
+        <div class="btn btn-custom d-flex flex-column align-items-center">
+          <span style="margin-top: -8px;">Насиченість зеленого</span>
+          <input v-model="saturation" style="margin-top: -8px; width: 200px;" type="range" min="0.0" max="1.0" step="0.01">
         </div>
       </div>
       <div class="row d-flex justify-content-center" style="margin-top: 367px;">
@@ -25,13 +25,13 @@
     <div class="col align-self-center">
       <div class="row d-flex justify-content-center">
         <div class="d-flex justify-content-center align-items-center" style="width: 400px; height: 400px; position: relative;">
-          <canvas ref="leftCanvas" @mousemove="showPixelInfo" @mouseover="showPixelInfo" @mouseout="this.pixelInfo=null" @mousedown="startResize" width="400" height="400" style="width: 50%; height: 100%; background-color: blue;"></canvas>
-          <canvas ref="rightCanvas" @mousemove="showPixelInfo" @mouseover="showPixelInfo" @mouseout="this.pixelInfo=null" @mousedown="startResize" width="400" height="400" style="width: 50%; height: 100%; background-color: red;"></canvas>
+          <canvas ref="leftCanvas" @mousemove="showPixelInfo" @mouseover="showPixelInfo" @mouseout="this.pixelInfo=null" @mousedown="startResize" width="400" height="400" style="width: 50%; height: 100%; background-color: blue; border-right: 3px solid #bebebe"></canvas>
+          <canvas ref="rightCanvas" style="width: 50%; height: 100%; background-color: red;" @mousemove="showPixelInfo" @mouseover="showPixelInfo" @mouseout="this.pixelInfo=null" @mousedown="startResize" width="400" height="400"></canvas>
         </div>
         <div ref="pixelInfoPopup" v-if="this.pixelInfo" class="pixel-info-popup d-flex col">
-          <div class=" d-flex row align-items-center justify-content-center align-items-center">
+          <div class=" d-flex row align-items-center justify-content-center align-items-center" style="margin-left: 0px;">
             <p style="">RGB: {{ pixelInfo.rgb }}</p>
-            <p style="margin-top: -13px;">HSV: {{ pixelInfo.hsv }}</p>
+            <p style="margin-top: -13px;">HSV: ({{ pixelInfo.hsv.h }}, {{ pixelInfo.hsv.s }}, {{ pixelInfo.hsv.v }})</p>
           </div>
           <canvas ref="colorPreview" class="color-preview" style="width: 25px; height: 25px; margin-right: 13px; margin-top: auto; margin-bottom: auto;" width="25" height="25"></canvas>
         </div>
@@ -45,8 +45,6 @@
 </template>
 
 <script>
-import rgbToHsv from 'rgb-hsv';
-
 export default {
   name: 'ColorS',
   data() {
@@ -59,7 +57,13 @@ export default {
       imgBefore: null,
       imgAfter: null,
       pixelInfo: null,
+      saturation: 0.5,
     }
+  },
+  watch: {
+    saturation: function () {
+      this.drawImage();
+    },
   },
   methods: {
     selectFile() {
@@ -95,7 +99,7 @@ export default {
 
       this.drawImage();
     },
-    openImage(event) {
+    openImage(event) {      
       const selectedFile = event.target.files[0];
 
       if (selectedFile) {
@@ -140,16 +144,23 @@ export default {
     },
     modifyImage(data) {
       for (let i = 0; i < data.length; i += 4) {
-        data[i] = Math.min(255, data[i] + 100);
+        var hsv = this.rgbToHsv(data[i], data[i + 1], data[i + 2]);
+        if (Math.abs(hsv.h - 120) < 40) {
+          hsv.s = this.saturation * 100;
+
+          var rgb = this.hsvToRgb(hsv.h, hsv.s, hsv.v);
+          data[i] = rgb.r;
+          data[i + 1] = rgb.g;
+          data[i + 2] = rgb.b;
+        }
       }
     },
     saveImage() {
-      const canvas = this.$refs.canvas;
+      const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
-      const originalWidth = this.imgBefore.width;
-      const originalHeight = this.imgBefore.height;
-      const canvasWidth = originalWidth;
-      const canvasHeight = originalHeight;
+
+      const canvasWidth = this.imgBefore.width;
+      const canvasHeight = this.imgBefore.height;
 
       canvas.width = canvasWidth;
       canvas.height = canvasHeight;
@@ -196,7 +207,7 @@ export default {
       const pixel = context.getImageData(offsetX, offsetY, 1, 1).data;
 
       const rgb = `(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
-      const hsv = rgbToHsv(pixel[0], pixel[1], pixel[2]);
+      const hsv = this.rgbToHsv(pixel[0], pixel[1], pixel[2]);
 
       this.pixelInfo = { rgb, hsv };
 
@@ -218,6 +229,50 @@ export default {
         colorPreviewContext.fillRect(0, 0, colorPreviewCanvas.width, colorPreviewCanvas.height);
       }
     },
+    rgbToHsv(r, g, b) {
+      r /= 255, g /= 255, b /= 255;
+
+      var max = Math.max(r, g, b), min = Math.min(r, g, b);
+      var h, s, v = max;
+
+      var d = max - min;
+      s = max == 0 ? 0 : d / max;
+
+      if (max == min) {
+        h = 0; // achromatic
+      } else {
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+
+        h /= 6;
+      }
+
+      return { h: Math.floor(h*360), s: Math.floor(s * 100), v: Math.floor(v * 100) };
+    },
+    hsvToRgb(h, s, v) {
+      h /= 360, s /= 100, v /= 100;
+      var r, g, b;
+
+      var i = Math.floor(h * 6);
+      var f = h * 6 - i;
+      var p = v * (1 - s);
+      var q = v * (1 - f * s);
+      var t = v * (1 - (1 - f) * s);
+
+      switch (i % 6) {
+        case 0: r = v, g = t, b = p; break;
+        case 1: r = q, g = v, b = p; break;
+        case 2: r = p, g = v, b = t; break;
+        case 3: r = p, g = q, b = v; break;
+        case 4: r = t, g = p, b = v; break;
+        case 5: r = v, g = p, b = q; break;
+      }
+
+      return { r: Math.floor(r * 255), g: Math.floor(g * 255), b: Math.floor(b * 255) };
+    }
   }
 }
 </script>
@@ -249,6 +304,7 @@ export default {
   max-width: 200px;
   max-height: 50px;
   font-size: small;
+  border-radius: 13px;
 }
 </style>
     

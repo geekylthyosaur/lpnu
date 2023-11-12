@@ -1,12 +1,12 @@
-﻿using api.Models;
+﻿using api.DTO;
 
 namespace api.Services.StopService;
 
 public interface IStopService
 {
-    void AddStop(Stop stop);
-    Stop GetStop(int id);
-    IEnumerable<Stop> GetStops();
-    void UpdateStop(Stop stop);
+    void AddStop(StopDto stop);
+    StopDto GetStop(int id);
+    IEnumerable<StopDto> GetStops();
+    void UpdateStop(StopDto stop);
     void DeleteStop(int id);
 }

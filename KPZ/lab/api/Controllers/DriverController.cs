@@ -1,4 +1,4 @@
-﻿using api.Models;
+﻿using api.DTO;
 using api.Services.DriverService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +16,7 @@ public class DriverController : ControllerBase
     }
     
     [HttpPost(Name = "AddDriver")]
-    public ActionResult AddDriver([FromBody] Driver driver) 
+    public ActionResult AddDriver([FromBody] DriverDto driver) 
     {
         try
         {
@@ -30,7 +30,7 @@ public class DriverController : ControllerBase
     }
     
     [HttpGet("{id:int}", Name = "GetDriver")]
-    public ActionResult<Driver> GetDriver(int id) 
+    public ActionResult<DriverDto> GetDriver(int id) 
     {
         try
         {
@@ -44,7 +44,7 @@ public class DriverController : ControllerBase
     }
     
     [HttpGet(Name = "GetDrivers")]
-    public ActionResult<IEnumerable<Driver>> GetDrivers() 
+    public ActionResult<IEnumerable<DriverDto>> GetDrivers() 
     {
         try
         {
@@ -58,7 +58,7 @@ public class DriverController : ControllerBase
     }
     
     [HttpPut(Name = "UpdateDriver")]
-    public ActionResult UpdateDriver([FromBody] Driver driver) 
+    public ActionResult UpdateDriver([FromBody] DriverDto driver) 
     {
         try
         {

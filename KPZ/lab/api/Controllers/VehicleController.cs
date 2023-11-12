@@ -1,4 +1,4 @@
-﻿using api.Models;
+﻿using api.DTO;
 using api.Services.VehicleService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +16,7 @@ namespace api.Controllers;
         }
 
         [HttpPost(Name = "AddVehicle")]
-        public ActionResult AddVehicle([FromBody] Vehicle vehicle)
+        public ActionResult AddVehicle([FromBody] VehicleDto vehicle)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace api.Controllers;
         }
 
         [HttpGet("{id:int}", Name = "GetVehicle")]
-        public ActionResult<Vehicle> GetVehicle(int id)
+        public ActionResult<VehicleDto> GetVehicle(int id)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace api.Controllers;
         }
 
         [HttpGet(Name = "GetVehicles")]
-        public ActionResult<IEnumerable<Vehicle>> GetVehicles()
+        public ActionResult<IEnumerable<VehicleDto>> GetVehicles()
         {
             try
             {
@@ -58,7 +58,7 @@ namespace api.Controllers;
         }
 
         [HttpPut(Name = "UpdateVehicle")]
-        public ActionResult UpdateVehicle([FromBody] Vehicle vehicle)
+        public ActionResult UpdateVehicle([FromBody] VehicleDto vehicle)
         {
             try
             {

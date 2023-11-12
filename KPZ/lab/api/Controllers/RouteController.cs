@@ -1,6 +1,6 @@
-﻿using api.Services.RouteService;
+﻿using api.DTO;
+using api.Services.RouteService;
 using Microsoft.AspNetCore.Mvc;
-using Route = api.Models.Route;
 
 namespace api.Controllers;
 
@@ -16,7 +16,7 @@ public class RouteController : ControllerBase
     }
 
     [HttpPost(Name = "AddRoute")]
-    public ActionResult AddRoute([FromBody] Route route)
+    public ActionResult AddRoute([FromBody] RouteDto route)
     {
         try
         {
@@ -30,7 +30,7 @@ public class RouteController : ControllerBase
     }
 
     [HttpGet("{id:int}", Name = "GetRoute")]
-    public ActionResult<Route> GetRoute(int id)
+    public ActionResult<RouteDto> GetRoute(int id)
     {
         try
         {
@@ -44,7 +44,7 @@ public class RouteController : ControllerBase
     }
 
     [HttpGet(Name = "GetRoutes")]
-    public ActionResult<IEnumerable<Route>> GetRoutes()
+    public ActionResult<IEnumerable<RouteDto>> GetRoutes()
     {
         try
         {
@@ -58,7 +58,7 @@ public class RouteController : ControllerBase
     }
 
     [HttpPut(Name = "UpdateRoute")]
-    public ActionResult UpdateRoute([FromBody] Route route)
+    public ActionResult UpdateRoute([FromBody] RouteDto route)
     {
         try
         {

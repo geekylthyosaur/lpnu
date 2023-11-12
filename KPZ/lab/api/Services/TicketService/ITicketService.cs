@@ -1,12 +1,12 @@
-﻿using api.Models;
+﻿using api.DTO;
 
 namespace api.Services.TicketService;
 
 public interface ITicketService
 {
-    void AddTicket(Ticket ticket);
-    Ticket GetTicket(int id);
-    IEnumerable<Ticket> GetTickets();
-    void UpdateTicket(Ticket ticket);
+    void AddTicket(TicketDto ticket);
+    TicketDto GetTicket(int id);
+    IEnumerable<TicketDto> GetTickets();
+    void UpdateTicket(TicketDto ticket);
     void DeleteTicket(int id);
 }

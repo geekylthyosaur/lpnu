@@ -1,12 +1,12 @@
-﻿using api.Models;
+﻿using api.DTO;
 
 namespace api.Services.FeedbackService;
 
 public interface IFeedbackService
 {
-    void AddFeedback(Feedback feedback);
-    Feedback GetFeedback(int id);
-    IEnumerable<Feedback> GetFeedbacks();
-    void UpdateFeedback(Feedback feedback);
+    void AddFeedback(FeedbackDto feedback);
+    FeedbackDto GetFeedback(int id);
+    IEnumerable<FeedbackDto> GetFeedbacks();
+    void UpdateFeedback(FeedbackDto feedback);
     void DeleteFeedback(int id);
 }

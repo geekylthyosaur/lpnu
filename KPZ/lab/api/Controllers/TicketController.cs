@@ -1,4 +1,4 @@
-﻿using api.Models;
+﻿using api.DTO;
 using api.Services.TicketService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +16,7 @@ namespace api.Controllers;
         }
 
         [HttpPost(Name = "AddTicket")]
-        public ActionResult AddTicket([FromBody] Ticket ticket)
+        public ActionResult AddTicket([FromBody] TicketDto ticket)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace api.Controllers;
         }
 
         [HttpGet("{id:int}", Name = "GetTicket")]
-        public ActionResult<Ticket> GetTicket(int id)
+        public ActionResult<TicketDto> GetTicket(int id)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace api.Controllers;
         }
 
         [HttpGet(Name = "GetTickets")]
-        public ActionResult<IEnumerable<Ticket>> GetTickets()
+        public ActionResult<IEnumerable<TicketDto>> GetTickets()
         {
             try
             {
@@ -58,7 +58,7 @@ namespace api.Controllers;
         }
 
         [HttpPut(Name = "UpdateTicket")]
-        public ActionResult UpdateTicket([FromBody] Ticket ticket)
+        public ActionResult UpdateTicket([FromBody] TicketDto ticket)
         {
             try
             {

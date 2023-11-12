@@ -1,4 +1,4 @@
-﻿using api.Models;
+﻿using api.DTO;
 using api.Services.ScheduleService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +16,7 @@ namespace api.Controllers;
         }
 
         [HttpPost(Name = "AddSchedule")]
-        public ActionResult AddSchedule([FromBody] Schedule schedule)
+        public ActionResult AddSchedule([FromBody] ScheduleDto schedule)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace api.Controllers;
         }
 
         [HttpGet("{id:int}", Name = "GetSchedule")]
-        public ActionResult<Schedule> GetSchedule(int id)
+        public ActionResult<ScheduleDto> GetSchedule(int id)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace api.Controllers;
         }
 
         [HttpGet(Name = "GetSchedules")]
-        public ActionResult<IEnumerable<Schedule>> GetSchedules()
+        public ActionResult<IEnumerable<ScheduleDto>> GetSchedules()
         {
             try
             {
@@ -58,7 +58,7 @@ namespace api.Controllers;
         }
 
         [HttpPut(Name = "UpdateSchedule")]
-        public ActionResult UpdateSchedule([FromBody] Schedule schedule)
+        public ActionResult UpdateSchedule([FromBody] ScheduleDto schedule)
         {
             try
             {

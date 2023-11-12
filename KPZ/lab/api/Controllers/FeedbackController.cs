@@ -1,4 +1,4 @@
-﻿using api.Models;
+﻿using api.DTO;
 using api.Services.FeedbackService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +16,7 @@ namespace api.Controllers;
         }
 
         [HttpPost(Name = "AddFeedback")]
-        public ActionResult AddFeedback([FromBody] Feedback feedback)
+        public ActionResult AddFeedback([FromBody] FeedbackDto feedback)
         {
             try
             {
@@ -30,7 +30,7 @@ namespace api.Controllers;
         }
 
         [HttpGet("{id:int}", Name = "GetFeedback")]
-        public ActionResult<Feedback> GetFeedback(int id)
+        public ActionResult<FeedbackDto> GetFeedback(int id)
         {
             try
             {
@@ -44,7 +44,7 @@ namespace api.Controllers;
         }
 
         [HttpGet(Name = "GetFeedbacks")]
-        public ActionResult<IEnumerable<Feedback>> GetFeedbacks()
+        public ActionResult<IEnumerable<FeedbackDto>> GetFeedbacks()
         {
             try
             {
@@ -58,7 +58,7 @@ namespace api.Controllers;
         }
 
         [HttpPut(Name = "UpdateFeedback")]
-        public ActionResult UpdateFeedback([FromBody] Feedback feedback)
+        public ActionResult UpdateFeedback([FromBody] FeedbackDto feedback)
         {
             try
             {

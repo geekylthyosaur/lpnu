@@ -1,13 +1,12 @@
-﻿using api.Models;
-using Route = api.Models.Route;
+﻿using api.DTO;
 
 namespace api.Services.RouteService;
 
 public interface IRouteService
 {
-    void AddRoute(Route route);
-    Route GetRoute(int id);
-    IEnumerable<Route> GetRoutes();
-    void UpdateRoute(Route route);
+    void AddRoute(RouteDto route);
+    RouteDto GetRoute(int id);
+    IEnumerable<RouteDto> GetRoutes();
+    void UpdateRoute(RouteDto route);
     void DeleteRoute(int id);
 }

@@ -9,7 +9,6 @@ using api.Services.VehicleService;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddDbContext<MyContext>();
 
 // Add services to the container.

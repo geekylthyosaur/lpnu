@@ -1,4 +1,4 @@
-﻿using api.Models;
+﻿using api.DTO;
 using api.Services.StopService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,7 +16,7 @@ public class StopController : ControllerBase
     }
     
     [HttpPost(Name = "AddStop")]
-    public ActionResult AddStop([FromBody] Stop stop) 
+    public ActionResult AddStop([FromBody] StopDto stop) 
     {
         try
         {
@@ -30,7 +30,7 @@ public class StopController : ControllerBase
     }
     
     [HttpGet("{id:int}", Name = "GetStop")]
-    public ActionResult<Stop> GetStop(int id) 
+    public ActionResult<StopDto> GetStop(int id) 
     {
         try
         {
@@ -44,7 +44,7 @@ public class StopController : ControllerBase
     }
     
     [HttpGet(Name = "GetStops")]
-    public ActionResult<IEnumerable<Stop>> GetStops() 
+    public ActionResult<IEnumerable<StopDto>> GetStops() 
     {
         try
         {
@@ -58,7 +58,7 @@ public class StopController : ControllerBase
     }
     
     [HttpPut(Name = "UpdateStop")]
-    public ActionResult UpdateStop([FromBody] Stop stop) 
+    public ActionResult UpdateStop([FromBody] StopDto stop) 
     {
         try
         {

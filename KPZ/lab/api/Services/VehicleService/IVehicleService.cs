@@ -1,12 +1,12 @@
-﻿using api.Models;
+﻿using api.DTO;
 
 namespace api.Services.VehicleService;
 
 public interface IVehicleService
 {
-    void AddVehicle(Vehicle vehicle);
-    Vehicle GetVehicle(int id);
-    IEnumerable<Vehicle> GetVehicles();
-    void UpdateVehicle(Vehicle vehicle);
+    void AddVehicle(VehicleDto vehicle);
+    VehicleDto GetVehicle(int id);
+    IEnumerable<VehicleDto> GetVehicles();
+    void UpdateVehicle(VehicleDto vehicle);
     void DeleteVehicle(int id);
 }

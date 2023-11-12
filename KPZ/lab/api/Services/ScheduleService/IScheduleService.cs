@@ -1,12 +1,12 @@
-﻿using api.Models;
+﻿using api.DTO;
 
 namespace api.Services.ScheduleService;
 
 public interface IScheduleService
 {
-    void AddSchedule(Schedule schedule);
-    Schedule GetSchedule(int id);
-    IEnumerable<Schedule> GetSchedules();
-    void UpdateSchedule(Schedule schedule);
+    void AddSchedule(ScheduleDto schedule);
+    ScheduleDto GetSchedule(int id);
+    IEnumerable<ScheduleDto> GetSchedules();
+    void UpdateSchedule(ScheduleDto schedule);
     void DeleteSchedule(int id);
 }

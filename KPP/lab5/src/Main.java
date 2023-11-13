@@ -1,10 +1,12 @@
+import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Main {
     public static void main(String[] args) {
-        String text = "This is a comprehensive test text that covers various aspects of language processing. It includes multiple sentences with different structures. Some sentences end with periods, others with question marks, and a few with exclamation marks! The text also contains questions that require answers. For instance, 'What is the meaning of life?' is one such question. It's an intriguing question, isn't it? This text aims to challenge your language processing capabilities. You'll find words starting with 'c' and in the second position of sentences. Additionally, you need to identify unique words of a specific length in the questions. This is a test, and the results will be interesting.";
+        String text = "This is a broad trial text that spans various facets of linguistic handling. It holds multiple lines with varied setups. Some lines end with periods, others with query marks, and a few with exclamatory marks! The text also poses queries that seek replies. For example, 'What is the essence of life?' is one such query. It's a puzzling query, isn't it? This text strives to test your linguistic grasp abilities. You'll spot terms initiating with 'c' and in the second slot of sentences. Furthermore, you must pinpoint exclusive terms of a fixed length in the queries? This is a trial, and the yields will be intriguing.";
         char targetLetter = 'i';
         int targetWordLength = 5;
 
@@ -32,12 +34,12 @@ public class Main {
 
     public static ArrayList<String> findUniqueWordsInQuestions(String text, int wordLength) {
         ArrayList<String> result = new ArrayList<>();
-        Pattern pattern = Pattern.compile("(?=\\b[^.!?]+[?]+)(?<word>\\w{" + wordLength + "})");
+        Pattern pattern = Pattern.compile("(?=\\b[^.!?]+[?]+)(?<word>\\b\\w{" + wordLength + "}\\b)");
         Matcher matcher = pattern.matcher(text);
 
         while (matcher.find()) {
             String word = matcher.group("word");
-            if (word.length() > 1) {
+            if (word.length() > 1 && !result.contains(word)) {
                 result.add(word);
             }
         }

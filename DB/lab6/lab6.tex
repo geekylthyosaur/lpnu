@@ -1,0 +1,193 @@
+\documentclass[14pt]{extreport}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{float}
+\geometry{
+	a4paper,
+	left=20mm,
+	right=20mm,
+	top=20mm,
+	bottom=20mm
+}
+\lstset{
+	columns=fullflexible, 
+	frame=single, 
+	breaklines=true, 
+	tabsize=4,
+	postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookrightarrow\space}},
+	showstringspaces=false,% no symbol for spaces in strings
+}
+\graphicspath{ {./pictures} }
+\setlength{\parindent}{4em}
+
+\newcommand\subject{Бази даних}
+\newcommand\lecturer{асистент кафедри ПЗ\\Білоіваненко М.В.}
+\newcommand\teacher{асистент кафедри ПЗ\\Білоіваненко М.В.}
+\newcommand\mygroup{ПЗ-32}
+\newcommand\lab{6}
+\newcommand\theme{Функції, тригери та процедури}
+\newcommand\purpose{Розробити функції, що виконують обчислення даних по вхідним аргументам. Розробити процедури, що реалізують важливі правила оновлення даних предметної області}
+
+\begin{document}
+\begin{normalsize}
+	\begin{titlepage}
+		\thispagestyle{empty}
+		\begin{center}
+			\textbf{МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\\
+				НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ "ЛЬВІВСЬКА ПОЛІТЕХНІКА"}
+		\end{center}
+		\begin{flushright}
+			Інститут \textbf{КНІТ}\\
+			Кафедра \textbf{ПЗ}
+		\end{flushright}
+		\vspace{200pt}
+		\begin{center}
+			\textbf{ЗВІТ}\\
+			\vspace{10pt}
+			До лабораторної роботи № \lab\\
+			\textbf{На тему}: “\textit{\theme}”\\
+			\textbf{З дисципліни}: “\subject”
+		\end{center}
+		\vspace{40pt}
+		\begin{flushright}
+			
+			\textbf{Лектор}:\\
+			\lecturer\\
+			\vspace{10pt}
+			\textbf{Виконав}:\\
+			
+			студент групи \mygroup\\
+			Коваленко Д.М.\\
+			\vspace{10pt}
+			\textbf{Прийняв}:\\
+			
+			\teacher\\
+			
+			\vspace{28pt}
+			«\rule{1cm}{0.15mm}» \rule{1.5cm}{0.15mm} 2023 р.\\
+			$\sum$ = \rule{1cm}{0.15mm}……………\\
+			
+		\end{flushright}
+		\vspace{\fill}
+		\begin{center}
+			\textbf{Львів — 2023}
+		\end{center}
+	\end{titlepage}
+		
+	\begin{description}
+		\item[Тема.] \theme.
+		\item[Мета.] \purpose.
+	\end{description}
+
+	\section*{Лабораторне завдання}
+	Розробити не менше 2 функцій, що виконують обчислення даних по вхідним аргументам. Розробити не менше 3 процедур, що реалізують важливі правила оновлення даних предметної області. Опис призначення процедур та зміст їх параметрів зафіксувати текстом. Деякі процедури використати як тригери (TRIGGER) до таблиць бази даних
+	
+	Код процедури повинен містити:
+	\begin{enumerate}
+		\item курсор та ітератор по рядкам
+		\item умовні оператори, базові функції 
+		\item команди вибірки, оновлення таблиць
+	\end{enumerate}
+	
+	\section*{Хід роботи}
+	
+	Тригер для валідації географічних координат
+	
+	\begin{small}
+		\begin{lstlisting}[language=sql]
+create or replace procedure validate_coords(
+	in lat decimal(8,2),
+	in lon decimal(9,2)
+)
+language plpgsql
+as $$
+begin
+	begin
+		if lat < -90 or lat > 90 then
+			raise exception 'latitude is invalid';
+		end if;
+		if lon < -180 or lon > 180 then
+			raise exception 'longitude is invalid';
+		end if;
+	end;
+end;
+$$;
+
+create or replace function stop_validate_coords()
+returns trigger as $$
+begin
+	perform validate_coords(new.lat, new.lon);
+	return new;
+end;
+$$ language plpgsql;
+
+create or replace trigger stop_trigger
+before insert or update on stop
+for each row
+execute function tr_validate_coords();
+		\end{lstlisting}
+	\end{small}
+	
+	Функція для знаходження наступної зупинки на маршруті.
+	
+	\begin{small}
+		\begin{lstlisting}[language=sql]
+create or replace function get_next_stop(
+	route_id_param integer,
+	stop_id_param integer
+)
+returns integer as $$
+declare
+	next_stop_id integer;
+begin
+	select s.id
+	from route_stop rs
+	join stop s on rs.stop_id = s.id
+	where rs.route_id = route_id_param and rs.ord_index > (
+		select ord_index 
+		from route_stop 
+		where stop_id = stop_id_param 
+		and rs.route_id = route_id_param
+	)
+	order by rs.ord_index
+	limit 1;
+	
+	return next_stop_id;
+end;
+$$ language plpgsql;
+		\end{lstlisting}
+	\end{small}
+	
+	Процедура, що оновлює наступну зупинку для транспортних засобів, якщо їх географічні координати дорівнюють географічним координатам попередньої зупинки.
+	\begin{small}
+		\begin{lstlisting}
+create or replace procedure update_next_stop_on_coords_change(
+	inout new_row route_vehicle,
+	in old_row route_vehicle
+)
+as $$
+declare
+	current_lat numeric;
+	current_lon numeric;
+begin
+	current_lat := new_row.last_lat;
+	current_lon := new_row.last_lon;
+
+	if current_lat = old_row.last_lat and current_lon = old_row.last_lon then
+	new_row.next_stop := get_next_stop(new_row.route_id, new_row.vehicle_id);
+	end if;
+end;
+$$ language plpgsql;
+		\end{lstlisting}
+	\end{small}
+	
+	\section*{Висновок}
+	Під час виконання лабораторної роботи я розробив 2 функції, що виконують обчислення даних по вхідним аргументам. Розробив 3 процедури, що реалізують важливі правила оновлення даних предметної області. Описав призначення процедур та зміст їх параметрів. Деякі процедури використав як тригери (TRIGGER) до таблиць бази даних.
+	 
+\end{normalsize}
+\end{document}

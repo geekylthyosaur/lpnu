@@ -5,7 +5,7 @@ import os
 db_params = {
     "user": "user",
     "password": "password",
-    "host": "192.168.1.9",
+    "host": "localhost",
     "port": "5432",
 }
 

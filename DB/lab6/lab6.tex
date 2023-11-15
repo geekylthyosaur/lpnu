@@ -165,7 +165,7 @@ $$ language plpgsql;
 	
 	Процедура, що оновлює наступну зупинку для транспортних засобів, якщо їх географічні координати дорівнюють географічним координатам попередньої зупинки.
 	\begin{small}
-		\begin{lstlisting}
+		\begin{lstlisting}[language=sql]
 create or replace procedure update_next_stop_on_coords_change(
 	inout new_row route_vehicle,
 	in old_row route_vehicle
@@ -183,6 +183,64 @@ begin
 	end if;
 end;
 $$ language plpgsql;
+		\end{lstlisting}
+	\end{small}
+	
+	Функція для обчислення часу у хвилинах до прибуття транспортного засобу на вказану зупинку
+	\begin{small}
+		\begin{lstlisting}[language=sql]
+create or replace function calculate_time_to_arrival(stop_id_param integer)
+returns integer as
+$$
+declare
+	curr_time timestamp;
+	arrival_time timestamp;
+	time_to_arrival_minutes integer := -1;
+	
+	schedule_cursor cursor for
+		select s.arrival_time
+		from schedule s
+		where stop_id = stop_id_param
+		order by s.arrival_time;
+begin
+	curr_time := now();
+	open schedule_cursor;
+	fetch schedule_cursor into arrival_time;
+	if arrival_time is not null then
+		time_to_arrival_minutes := extract(epoch from (arrival_time - curr_time)) / 60;
+	end if;
+	close schedule_cursor;
+	return time_to_arrival_minutes;
+end;
+$$ language plpgsql;
+		\end{lstlisting}
+	\end{small}
+	
+	Процедура для збільшення заробітної плати водіям, що мають позитивні відгуки.
+	\begin{small}
+		\begin{lstlisting}[language=sql]
+create or replace procedure update_driver_salary()
+language plpgsql
+as $$
+declare
+	driver_record driver%rowtype;
+	feedback_message text;
+begin
+	for driver_record in select * from driver
+	loop
+		select message into feedback_message
+		from feedback
+		where driver_name = driver_record.first_name || ' ' || driver_record.last_name
+		and message ilike '%positive%';
+		
+		if feedback_message is not null then
+			update driver
+			set salary = salary * 1.1
+			where id = driver_record.id;
+		end if;
+	end loop;
+end;
+$$;
 		\end{lstlisting}
 	\end{small}
 	

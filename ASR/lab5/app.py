@@ -139,7 +139,7 @@ class RiskManagementApp(QMainWindow):
         random.seed("fuckit")
         lrer = [round(random.uniform(0, 1), 2) for _ in range(0, 41)]
         vrer = [round(prer[i] * lrer[i], 2) for i in range(0, 41)]
-        priority = ["Низький" if vrer[i] >= min(er.iloc[i, :]) and vrer[i] < min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Середній" if vrer[i] >= min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 and vrer[i] < min(er.iloc[i, :]) + 2*(max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Високий" for i in range(0, 41)]
+        priority = ["Високий" if vrer[i] >= min(er.iloc[i, :]) and vrer[i] < min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Середній" if vrer[i] >= min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 and vrer[i] < min(er.iloc[i, :]) + 2*(max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Низький" for i in range(0, 41)]
 
         self.insert_col(df, prer, 1)
         self.insert_col(df, lrer, 2)
@@ -177,7 +177,7 @@ class RiskManagementApp(QMainWindow):
         random.seed("fuckit")
         lrer = [round(random.uniform(0, 1), 2) for _ in range(0, 41)]
         vrer = [round(prer[i] * lrer[i], 2) for i in range(0, 41)]
-        priority = ["Низький" if vrer[i] >= min(er.iloc[i, :]) and vrer[i] < min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Середній" if vrer[i] >= min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 and vrer[i] < min(er.iloc[i, :]) + 2*(max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Високий" for i in range(0, 41)]
+        priority = ["Високий" if vrer[i] >= min(er.iloc[i, :]) and vrer[i] < min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Середній" if vrer[i] >= min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 and vrer[i] < min(er.iloc[i, :]) + 2*(max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Низький" for i in range(0, 41)]
 
         mitigations = self.read_data("tdata/data3.csv").values.tolist()
         mitigations = [mitigations[random.randint(0, 18)] for _ in range(0, 41)]
@@ -187,8 +187,10 @@ class RiskManagementApp(QMainWindow):
         self.insert_col(df, vrer, 2)
         self.insert_col(df, priority, 3)
 
-        evrer = [round(prer[i] * lrer[i], 2) for i in range(0, 41)]
-        epriority = ["Низький" if vrer[i] >= min(er.iloc[i, :]) and vrer[i] < min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Середній" if vrer[i] >= min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 and vrer[i] < min(er.iloc[i, :]) + 2*(max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Високий" for i in range(0, 41)]
+        random.seed("fuckit^2")
+        elrer = [round(random.uniform(0, prer[i] * lrer[i]), 2) for i in range(0, 41)]
+        evrer = [round(prer[i] * elrer[i], 2) for i in range(0, 41)]
+        epriority = ["Високий" if evrer[i] >= min(er.iloc[i, :]) and evrer[i] < min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Середній" if evrer[i] >= min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 and evrer[i] < min(er.iloc[i, :]) + 2*(max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Низький" for i in range(0, 41)]
 
         self.insert_col(df, evrer, 4)
         self.insert_col(df, epriority, 5)

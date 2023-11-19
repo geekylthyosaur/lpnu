@@ -36,8 +36,8 @@
           <canvas ref="colorPreview" class="color-preview" style="width: 25px; height: 25px; margin-right: 13px; margin-top: auto; margin-bottom: auto;" width="25" height="25"></canvas>
         </div>
         <div class="d-flex justify-content-center">
-          <div class="align-items-left" style="margin-right: 300px; color: #bebebe; font-size: small;">До</div>
-          <div class="align-items-right" style="color: #bebebe; font-size: small;">Після</div>
+          <div class="align-items-left" style="margin-right: 300px; color: #aaaaaa; font-size: small;">До</div>
+          <div class="align-items-right" style="color: #aaaaaa; font-size: small;">Після</div>
         </div>
       </div>
     </div>
@@ -239,7 +239,7 @@ export default {
       s = max == 0 ? 0 : d / max;
 
       if (max == min) {
-        h = 0; // achromatic
+        h = 0;
       } else {
         switch (max) {
           case r: h = (g - b) / d + (g < b ? 6 : 0); break;

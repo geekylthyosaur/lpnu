@@ -118,7 +118,7 @@ begin
 end;
 $$;
 
-create or replace function stop_validate_coords()
+create or replace function tr_validate_coords()
 returns trigger as $$
 begin
 	perform validate_coords(new.lat, new.lon);
@@ -207,7 +207,7 @@ begin
 	open schedule_cursor;
 	fetch schedule_cursor into arrival_time;
 	if arrival_time is not null then
-		time_to_arrival_minutes := extract(epoch from (arrival_time - curr_time)) / 60;
+		time_to_arrival_minutes := extract(epoch from (arrival_time - curr_time))/60;
 	end if;
 	close schedule_cursor;
 	return time_to_arrival_minutes;
@@ -216,7 +216,7 @@ $$ language plpgsql;
 		\end{lstlisting}
 	\end{small}
 	
-	Процедура для збільшення заробітної плати водіям, що мають позитивні відгуки.
+	Процедура для збільшення на заробітної плати водіям  10 \%, що мають позитивні відгуки.
 	\begin{small}
 		\begin{lstlisting}[language=sql]
 create or replace procedure update_driver_salary()

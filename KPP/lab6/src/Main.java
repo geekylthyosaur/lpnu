@@ -164,16 +164,21 @@ class Library {
         Date currentDate = new Date();
 
         return allReaders.stream()
-                .filter(reader -> reader.actualReturnDate == null || reader.actualReturnDate.after(reader.plannedReturnDate))
+                .filter(reader -> reader.actualReturnDate == null || (reader.actualReturnDate.after(reader.plannedReturnDate) && reader.actualReturnDate.after(currentDate)))
                 .collect(Collectors.toMap(
                         reader -> reader,
                         reader -> reader.borrowedBooks.stream()
                                 .filter(borrowedBook ->
                                         borrowedBook.actualReturnDate == null ||
-                                                borrowedBook.actualReturnDate.after(borrowedBook.plannedReturnDate))
+                                                (borrowedBook.actualReturnDate != null &&
+                                                        borrowedBook.plannedReturnDate != null &&
+                                                        borrowedBook.actualReturnDate.after(borrowedBook.plannedReturnDate) &&
+                                                        borrowedBook.actualReturnDate.after(currentDate)))
                                 .collect(Collectors.toList())
                 ));
     }
+
+
 
     // New method to parse borrowed book data
     private BorrowedBook parseBorrowedBook(String[] data) throws ParseException {

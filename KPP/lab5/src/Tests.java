@@ -65,7 +65,7 @@ public class Tests {
         ArrayList<String> result4 = Main.findUniqueWordsInQuestions(text4, wordLength4);
         assertEquals(2, result4.size());
         assertTrue(result4.contains("What"));
-        assertTrue(result4.contains("life"));
+        assertTrue(result4.contains("lifessssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"));
 
         // Test case 5: Words with one character should be ignored
         String text5 = "Is Java fun?";

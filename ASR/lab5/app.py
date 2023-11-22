@@ -1,5 +1,5 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QTableWidget, QTableWidgetItem, QHeaderView, QComboBox
 from PyQt5.QtGui import QColor
 import pandas as pd
 from statistics import mean
@@ -12,6 +12,7 @@ class RiskManagementApp(QMainWindow):
 
         # Create the outer tab widget
         self.outer_tab_widget = QTabWidget(self)
+        self.selected_mitigations = []
 
         # Create the tabs for the outer tab widget
         self.tab1 = QWidget()
@@ -136,7 +137,7 @@ class RiskManagementApp(QMainWindow):
         prer = [round(mean(er.iloc[i]), 2) for i in range(0, 41)]
 
         df = self.read_data("tdata/data22.csv")
-        random.seed("fuckit")
+        random.seed("0")
         lrer = [round(random.uniform(0, 1), 2) for _ in range(0, 41)]
         vrer = [round(prer[i] * lrer[i], 2) for i in range(0, 41)]
         priority = ["Високий" if vrer[i] >= min(er.iloc[i, :]) and vrer[i] < min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Середній" if vrer[i] >= min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 and vrer[i] < min(er.iloc[i, :]) + 2*(max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Низький" for i in range(0, 41)]
@@ -155,18 +156,54 @@ class RiskManagementApp(QMainWindow):
     def setup_tab_mitigation(self, tab):
         df = self.read_data("tdata/data21.csv")
         df = df.iloc[:, :1]
-        random.seed("fuckit")
         mitigations = self.read_data("tdata/data3.csv").values.tolist()
         mitigations = [mitigations[random.randint(0, 18)] for _ in range(0, 41)]
         mitigations = list(np.concatenate(mitigations))
 
-        self.insert_col(df, mitigations, 1)
-
-        # Add content for "Усунення ризиків"
+        # Create a table with QComboBox for mitigation selection
         title_row = ["Потенційні ризикові події", "Рішення"]
         data = df.values.tolist()
         highlighted_positions = [0]  # Positions to highlight (1-based index)
-        self.setup_table_content(tab, title_row, data, highlighted_positions)
+
+        table_widget = QTableWidget(tab)
+        table_widget.setColumnCount(len(title_row))
+        table_widget.setHorizontalHeaderLabels(title_row)
+
+        for row, (risk_event, mitigation) in enumerate(zip(data, mitigations)):
+            table_widget.insertRow(row)
+
+            # Set up the combo box for the mitigation column
+            combo_box = QComboBox()
+            combo_box.addItems(mitigations)  # You can add specific items to the combo box
+            combo_box.setCurrentText(mitigation)  # Set the current text based on the mitigation value
+            table_widget.setCellWidget(row, 1, combo_box)
+
+            # Set up the risk event in the first column
+            item = QTableWidgetItem(str(risk_event[0]))
+            table_widget.setItem(row, 0, item)
+
+            # Highlight specified positions
+            if row + 1 in highlighted_positions:
+                for col in range(table_widget.columnCount()):
+                    item = table_widget.item(row, col)
+                    item.setBackground(QColor(200, 200, 200))
+
+        # Set the first column width to maximum
+        table_widget.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        # Set the other columns to fit the content
+        for col in range(1, table_widget.columnCount()):
+            table_widget.horizontalHeader().setSectionResizeMode(col, QHeaderView.ResizeToContents)
+
+        # Connect a signal to handle combo box selection changes
+        table_widget.cellWidget(0, 1).currentTextChanged.connect(self.onMitigationSelectionChanged)
+
+        # Add the table widget to the layout of the tab
+        layout = QVBoxLayout(tab)
+        layout.addWidget(table_widget)
+
+    def onMitigationSelectionChanged(self, text):
+        # Update the selected mitigations list when a combo box selection changes
+        self.selected_mitigations.append(text)
 
     def setup_tab_monitoring(self, tab):
         df = self.read_data("tdata/data21.csv")
@@ -174,7 +211,7 @@ class RiskManagementApp(QMainWindow):
         prer = [round(mean(er.iloc[i]), 2) for i in range(0, 41)]
 
         df = self.read_data("tdata/data22.csv")
-        random.seed("fuckit")
+        random.seed("0")
         lrer = [round(random.uniform(0, 1), 2) for _ in range(0, 41)]
         vrer = [round(prer[i] * lrer[i], 2) for i in range(0, 41)]
         priority = ["Високий" if vrer[i] >= min(er.iloc[i, :]) and vrer[i] < min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Середній" if vrer[i] >= min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 and vrer[i] < min(er.iloc[i, :]) + 2*(max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Низький" for i in range(0, 41)]
@@ -187,7 +224,7 @@ class RiskManagementApp(QMainWindow):
         self.insert_col(df, vrer, 2)
         self.insert_col(df, priority, 3)
 
-        random.seed("fuckit^2")
+        random.seed("1")
         elrer = [round(random.uniform(0, prer[i] * lrer[i]), 2) for i in range(0, 41)]
         evrer = [round(prer[i] * elrer[i], 2) for i in range(0, 41)]
         epriority = ["Високий" if evrer[i] >= min(er.iloc[i, :]) and evrer[i] < min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Середній" if evrer[i] >= min(er.iloc[i, :]) + (max(er.iloc[i, :])-min(er.iloc[i, :]))/3 and evrer[i] < min(er.iloc[i, :]) + 2*(max(er.iloc[i, :])-min(er.iloc[i, :]))/3 else "Низький" for i in range(0, 41)]

@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class Book {
     String author;
@@ -169,25 +170,13 @@ class Library {
                         reader -> reader,
                         reader -> reader.borrowedBooks.stream()
                                 .filter(borrowedBook ->
-                                        borrowedBook.actualReturnDate == null ||
-                                                (borrowedBook.actualReturnDate != null &&
-                                                        borrowedBook.plannedReturnDate != null &&
-                                                        borrowedBook.actualReturnDate.after(borrowedBook.plannedReturnDate) &&
-                                                        borrowedBook.actualReturnDate.after(currentDate)))
+                                        borrowedBook.actualReturnDate == null || borrowedBook.plannedReturnDate != null && borrowedBook.actualReturnDate.after(borrowedBook.plannedReturnDate) && borrowedBook.actualReturnDate.after(currentDate))
                                 .collect(Collectors.toList())
                 ));
     }
 
-
-
     // New method to parse borrowed book data
     private BorrowedBook parseBorrowedBook(String[] data) throws ParseException {
-        String readerEmail = data[1];
-        Reader reader = allReaders.stream()
-                .filter(r -> r.subscription.email.equals(readerEmail))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Reader not found for borrowed book entry."));
-
         String author = data[2];
         String title = data[3];
         int year = Integer.parseInt(data[4]);
@@ -200,13 +189,12 @@ class Library {
         return new BorrowedBook(author, title, year, borrowDate, plannedReturnDate, actualReturnDate);
     }
 
-
     // New method to read borrowed book entries from file
-    List<BorrowedBook> readBorrowedBooksFromFile(String filePath) {
+    void readBorrowedBooksFromFile() {
         List<BorrowedBook> borrowedBooks = new ArrayList<>();
         Reader currentReader = null;
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("./src/library_data.txt"))) {
             String line;
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(",");
@@ -229,8 +217,6 @@ class Library {
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
-
-        return borrowedBooks;
     }
 }
 
@@ -256,7 +242,7 @@ public class Main {
 
         Library library = new Library(allBooks, allReaders);
 
-        library.readBorrowedBooksFromFile("./src/library_data.txt");
+        library.readBorrowedBooksFromFile();
 
         Scanner scanner = new Scanner(System.in);
 

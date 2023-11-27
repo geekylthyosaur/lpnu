@@ -98,37 +98,71 @@
 	Створення індексів до колонок із зовнішніми ключами.
 	\begin{small}
 		\begin{lstlisting}[language=sql]
-create index idx_driver_route_driver_id on public.driver_route (driver_id);
-create index idx_driver_route_vehicle_id on public.driver_route (vehicle_id);
-create index idx_driver_route_route_id on public.driver_route (route_id);
-create index idx_route_first_stop_id on public.route (first_stop_id);
-create index idx_route_last_stop_id on public.route (last_stop_id);
-create index idx_route_stop_route_id on public.route_stop (route_id);
-create index idx_route_stop_stop_id on public.route_stop (stop_id);
-create index idx_ticket_route_id on public.ticket (route_id);
-create index idx_ticket_vehicle_id on public.ticket (vehicle_id);
-create index idx_schedule_vehicle_id on public.schedule (vehicle_id);
-create index idx_schedule_route_id on public.schedule (route_id);
-create index idx_schedule_stop_id on public.schedule (stop_id);
-create index idx_vehicle_maintenance_vehicle_id on public.vehicle_maintenance (vehicle_id);
+create index idx_driver_route_driver_id on driver_route (driver_id);
+create index idx_driver_route_vehicle_id on driver_route (vehicle_id);
+create index idx_driver_route_route_id on driver_route (route_id);
+create index idx_route_first_stop_id on route (first_stop_id);
+create index idx_route_last_stop_id on route (last_stop_id);
+create index idx_route_stop_route_id on route_stop (route_id);
+create index idx_route_stop_stop_id on route_stop (stop_id);
+create index idx_ticket_route_id on ticket (route_id);
+create index idx_ticket_vehicle_id on ticket (vehicle_id);
+create index idx_schedule_vehicle_id on schedule (vehicle_id);
+create index idx_schedule_route_id on schedule (route_id);
+create index idx_schedule_stop_id on schedule (stop_id);
+create index idx_vehicle_maintenance_vehicle_id on vehicle_maintenance (vehicle_id);
 		\end{lstlisting}
 	\end{small}
+
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.38]{5}
+		\caption{План виконання складного запиту до створення індексів на зовнішні ключі.}
+	\end{figure}
 	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.35]{6}
+		\caption{План виконання складного запиту після створення індексів на зовнішні ключі.}
+	\end{figure}
 	
 	Створення комплексного індексу та індексу на функцію.
 	\begin{small}
 		\begin{lstlisting}[language=sql]
-create index idx_route_vehicle_route_next_stop on public.route_vehicle (route_id, next_stop);
-create index idx_average_rating on public.feedback (calculate_average_rating(driver_id));
+create index idx_ticket_route_id_vehicle_id on ticket (route_id, vehicle_id)
+create index idx_ticket_fare_amount on ticket ((fare * amount));
 		\end{lstlisting}
 	\end{small}
 	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.7]{1}
+		\caption{План виконання до створення комплексного індекса на колонки.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.5]{2}
+		\caption{План виконання після створення комплексного індекса на колонки.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.65]{3}
+		\caption{План виконання до створення комплексного індекса на функцію.}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.55]{4}
+		\caption{План виконання після створення комплексного індекса на функцію.}
+	\end{figure}
 	Створення 3х індексів на важливі колонки для підвищення ефективності запитів.
 	\begin{small}
 		\begin{lstlisting}[language=sql]
-create index idx_driver_first_name on public.driver (first_name);
-create index idx_route_name on public.route (name);
-create index idx_vehicle_license_plate on public.vehicle (license_plate);
+create index idx_driver_first_name on driver (first_name);
+create index idx_route_name on route (name);
+create index idx_vehicle_license_plate on vehicle (license_plate);
 		\end{lstlisting}
 	\end{small}
 	

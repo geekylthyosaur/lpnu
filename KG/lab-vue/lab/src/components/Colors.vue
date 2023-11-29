@@ -142,19 +142,6 @@ export default {
       this.modifyImage(data);
       rightContext.putImageData(imageData, 0, 0);
     },
-    modifyImage(data) {
-      for (let i = 0; i < data.length; i += 4) {
-        var hsv = this.rgbToHsv(data[i], data[i + 1], data[i + 2]);
-        if (Math.abs(hsv.h - 120) < 40) {
-          hsv.s = this.saturation * 100;
-
-          var rgb = this.hsvToRgb(hsv.h, hsv.s, hsv.v);
-          data[i] = rgb.r;
-          data[i + 1] = rgb.g;
-          data[i + 2] = rgb.b;
-        }
-      }
-    },
     saveImage() {
       const canvas = document.createElement('canvas');
       const context = canvas.getContext('2d');
@@ -227,6 +214,18 @@ export default {
         colorPreviewContext.clearRect(0, 0, colorPreviewCanvas.width, colorPreviewCanvas.height);
         colorPreviewContext.fillStyle = `rgb(${pixel[0]}, ${pixel[1]}, ${pixel[2]})`;
         colorPreviewContext.fillRect(0, 0, colorPreviewCanvas.width, colorPreviewCanvas.height);
+      }
+    },
+    modifyImage(data) {
+      for (let i = 0; i < data.length; i += 4) {
+        var hsv = this.rgbToHsv(data[i], data[i + 1], data[i + 2]);
+        if (Math.abs(hsv.h - 120) < 40) {
+          hsv.s = this.saturation * 100;
+        }
+        var rgb = this.hsvToRgb(hsv.h, hsv.s, hsv.v);
+        data[i] = rgb.r;
+        data[i + 1] = rgb.g;
+        data[i + 2] = rgb.b;
       }
     },
     rgbToHsv(r, g, b) {

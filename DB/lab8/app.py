@@ -1,95 +1,105 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
+from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QPushButton, QLabel, QLineEdit, QTextEdit, QMessageBox
 from PyQt6.QtSql import QSqlDatabase, QSqlQuery
 
-class TransportApp(QWidget):
+class MyApp(QWidget):
     def __init__(self):
         super().__init__()
 
-        # Initialize the database connection
-        self.db = QSqlDatabase.addDatabase("QPSQL")
-        self.db.setDatabaseName("my")
-        self.db.setUserName("user")
-        self.db.setPassword("password")
-        self.db.setHostName("192.168.122.1")
-        self.db.setPort(5432)
-
-        if not self.db.open():
-            QMessageBox.critical(self, "Database Error", "Unable to open the database")
-            sys.exit(1)
-
-        # Set up the GUI
+        # Initialize the UI components
         self.init_ui()
 
+        # Connect to the PostgreSQL database
+        self.db = QSqlDatabase.addDatabase('QPSQL')
+        self.db.setHostName('192.168.122.1')
+        self.db.setPort(5432)
+        self.db.setUserName('user')
+        self.db.setPassword('password')
+        self.db.setDatabaseName('my')
+
+        if not self.db.open():
+            self.show_error("Database Connection Error", self.db.lastError().text())
+            sys.exit(1)
+
     def init_ui(self):
-        # Widgets
-        self.label = QLabel("Enter stop name:")
-        self.stop_name_edit = QLineEdit()
-        self.result_label = QLabel("Query result will be displayed here.")
-        self.query_button = QPushButton("Execute Query")
-        self.query_button.clicked.connect(self.execute_query)
+        self.setGeometry(100, 100, 600, 400)
+        self.setWindowTitle('PyQt6 Database Example')
+
+        # Create UI components
+        self.label_result = QLabel('Result:', self)
+        self.text_result = QTextEdit(self)
+
+        # Input fields
+        self.input_name = QLineEdit(self)
+        self.input_lat = QLineEdit(self)
+        self.input_lon = QLineEdit(self)
+
+        # Buttons
+        self.btn_select_data = QPushButton('Select Data', self)
+        self.btn_select_data.clicked.connect(self.select_data)
+
+        self.btn_insert_data = QPushButton('Insert Data', self)
+        self.btn_insert_data.clicked.connect(self.insert_data)
+
+        self.btn_call_procedure = QPushButton('Call Procedure', self)
+        self.btn_call_procedure.clicked.connect(self.call_procedure)
 
         # Layout
-        layout = QVBoxLayout()
-        layout.addWidget(self.label)
-        layout.addWidget(self.stop_name_edit)
-        layout.addWidget(self.query_button)
-        layout.addWidget(self.result_label)
+        layout = QVBoxLayout(self)
+        layout.addWidget(self.label_result)
+        layout.addWidget(self.text_result)
+        layout.addWidget(self.input_name, placeholderText="Name")
+        layout.addWidget(self.input_lat, placeholderText="Latitude")
+        layout.addWidget(self.input_lon, placeholderText="Longitude")
+        layout.addWidget(self.btn_select_data)
+        layout.addWidget(self.btn_insert_data)
+        layout.addWidget(self.btn_call_procedure)
 
-        self.setLayout(layout)
-        self.setWindowTitle("Transport Application")
-        self.show()
+    def select_data(self):
+        query = QSqlQuery("SELECT * FROM stop")
+        self.display_result(query)
 
-    def execute_query(self):
-        stop_name = self.stop_name_edit.text()
+    def insert_data(self):
+        name = self.input_name.text()
+        lat = float(self.input_lat.text())
+        lon = float(self.input_lon.text())
 
-        # Start a transaction
-        self.db.transaction()
+        query = QSqlQuery()
+        query.prepare("INSERT INTO stop (name, lat, lon) VALUES (?, ?, ?)")
+        query.bindValue(0, name)
+        query.bindValue(1, lat)
+        query.bindValue(2, lon)
 
-        try:
-            # Example query 1: Insert a new stop
-            insert_query_text = "INSERT INTO stop (name, lat, lon) VALUES (:name, 0.0, 0.0)"
-            insert_query = QSqlQuery()
-            insert_query.prepare(insert_query_text)
-            insert_query.bindValue(":name", stop_name)
+        if query.exec():
+            self.display_result("Data inserted successfully.")
+        else:
+            self.show_error("Error", query.lastError().text())
 
-            if not insert_query.exec():
-                raise ValueError(f"Error executing query: {insert_query.lastError().text()}")
+    def call_procedure(self):
+        # Replace this with the actual procedure call
+        query = QSqlQuery("SELECT * FROM vehicle")
+        self.display_result(query)
 
-            # Example query 2: Select the inserted stop
-            select_query_text = "SELECT * FROM stop WHERE name = :name"
-            select_query = QSqlQuery()
-            select_query.prepare(select_query_text)
-            select_query.bindValue(":name", stop_name)
+    def display_result(self, result):
+        if isinstance(result, QSqlQuery):
+            result_str = ""
+            while result.next():
+                result_str += f"{result.value(0)} | {result.value(1)} | {result.value(2)}\n"
+        else:
+            result_str = str(result)
 
-            if not select_query.exec():
-                raise ValueError(f"Error executing query: {select_query.lastError().text()}")
+        self.text_result.setPlainText(result_str)
 
-            # Process query results
-            result_text = ""
-            while select_query.next():
-                result_text += f"Stop ID: {select_query.value(0)}, Name: {select_query.value(1)}, Lat: {select_query.value(2)}, Lon: {select_query.value(3)}\n"
-
-            # Update the interface with the results
-            self.result_label.setText(result_text)
-
-            # Simulate a concurrent transaction that may conflict
-            # (e.g., another process updates the same record)
-            conflicting_update_query_text = f"UPDATE stop SET lat = 1.0 WHERE name = '{stop_name}'"
-            conflicting_update_query = QSqlQuery()
-            if not conflicting_update_query.exec(conflicting_update_query_text):
-                raise ValueError(f"Error executing conflicting query: {conflicting_update_query.lastError().text()}")
-
-            # Commit the transaction
-            self.db.commit()
-
-        except ValueError as e:
-            # Handle errors
-            QMessageBox.critical(self, "Query Error", str(e))
-            # Rollback the transaction
-            self.db.rollback()
+    def show_error(self, title, message):
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Icon.Critical)
+        msg_box.setWindowTitle(title)
+        msg_box.setText(message)
+        msg_box.exec()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = TransportApp()
+    my_app = MyApp()
+    my_app.show()
     sys.exit(app.exec())
+

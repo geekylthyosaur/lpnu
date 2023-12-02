@@ -1,0 +1,15 @@
+{"id": 1, "type": "bus", "capacity": 70, "license_plate": "ABC123"}
+{"id": 2, "type": "bus", "capacity": 70, "license_plate": "XYZ456"}
+{"id": 3, "type": "bus", "capacity": 70, "license_plate": "DEF789"}
+{"id": 4, "type": "bus", "capacity": 65, "license_plate": "GHI101"}
+{"id": 5, "type": "bus", "capacity": 65, "license_plate": "JKL202"}
+{"id": 6, "type": "bus", "capacity": 65, "license_plate": "MNO303"}
+{"id": 7, "type": "bus", "capacity": 75, "license_plate": "PQR404"}
+{"id": 8, "type": "bus", "capacity": 75, "license_plate": "STU505"}
+{"id": 9, "type": "bus", "capacity": 75, "license_plate": "VWX606"}
+{"id": 10, "type": "bus", "capacity": 75, "license_plate": "YZA707"}
+{"id": 11, "type": "bus", "capacity": 75, "license_plate": "BCD808"}
+{"id": 12, "type": "bus", "capacity": 75, "license_plate": "EFG909"}
+{"id": 13, "type": "bus", "capacity": 75, "license_plate": "HIJ010"}
+{"id": 14, "type": "bus", "capacity": 75, "license_plate": "KLM111"}
+{"id": 15, "type": "bus", "capacity": 75, "license_plate": "NOP212"}

@@ -1,0 +1,15 @@
+{"id": 1, "fare": 25.50, "time": "2023-10-21T08:30:00+00:00", "amount": 1, "route_id": 7, "vehicle_id": 10, "transaction_id": "ABC123"}
+{"id": 2, "fare": 15.75, "time": "2023-10-21T09:15:00+00:00", "amount": 1, "route_id": 3, "vehicle_id": 5, "transaction_id": "DEF456"}
+{"id": 3, "fare": 30.00, "time": "2023-10-21T10:00:00+00:00", "amount": 1, "route_id": 6, "vehicle_id": 9, "transaction_id": "GHI789"}
+{"id": 4, "fare": 18.25, "time": "2023-10-21T11:45:00+00:00", "amount": 1, "route_id": 2, "vehicle_id": 4, "transaction_id": "JKL012"}
+{"id": 5, "fare": 21.75, "time": "2023-10-21T13:30:00+00:00", "amount": 1, "route_id": 8, "vehicle_id": 14, "transaction_id": "MNO345"}
+{"id": 6, "fare": 27.50, "time": "2023-10-21T15:15:00+00:00", "amount": 1, "route_id": 1, "vehicle_id": 8, "transaction_id": "PQR678"}
+{"id": 7, "fare": 14.00, "time": "2023-10-21T17:00:00+00:00", "amount": 1, "route_id": 5, "vehicle_id": 13, "transaction_id": "STU901"}
+{"id": 8, "fare": 35.75, "time": "2023-10-21T18:45:00+00:00", "amount": 1, "route_id": 4, "vehicle_id": 7, "transaction_id": "VWX234"}
+{"id": 9, "fare": 20.50, "time": "2023-10-21T20:30:00+00:00", "amount": 1, "route_id": 10, "vehicle_id": 1, "transaction_id": "YZA567"}
+{"id": 10, "fare": 22.25, "time": "2023-10-21T22:15:00+00:00", "amount": 1, "route_id": 9, "vehicle_id": 6, "transaction_id": "BCD890"}
+{"id": 11, "fare": 19.75, "time": "2023-10-22T08:30:00+00:00", "amount": 1, "route_id": 14, "vehicle_id": 11, "transaction_id": "EFG123"}
+{"id": 12, "fare": 28.00, "time": "2023-10-22T09:15:00+00:00", "amount": 1, "route_id": 11, "vehicle_id": 2, "transaction_id": "HIJ456"}
+{"id": 13, "fare": 23.25, "time": "2023-10-22T10:00:00+00:00", "amount": 1, "route_id": 12, "vehicle_id": 3, "transaction_id": "KLM789"}
+{"id": 14, "fare": 26.50, "time": "2023-10-22T11:45:00+00:00", "amount": 1, "route_id": 15, "vehicle_id": 12, "transaction_id": "NOP012"}
+{"id": 15, "fare": 31.75, "time": "2023-10-22T13:30:00+00:00", "amount": 1, "route_id": 13, "vehicle_id": 15, "transaction_id": "QRS345"}

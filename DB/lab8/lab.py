@@ -42,14 +42,12 @@ class DatabaseApp(QMainWindow):
         self.procedure_input.setPlaceholderText('Arguments...')
         self.layout.addWidget(self.procedure_input)
 
-        # Table Widget
         self.table_widget = QTableWidget(self)
         self.layout.addWidget(self.table_widget)
 
         self.central_widget.setLayout(self.layout)
 
     def connect_to_database(self):
-        # Update these values with your PostgreSQL database credentials
         dbname = "my"
         user = "user"
         password = "password"
@@ -113,15 +111,12 @@ class DatabaseApp(QMainWindow):
             print("No results to display.")
             return
 
-        # Set the number of rows and columns in the table widget
         self.table_widget.setRowCount(len(rows))
         self.table_widget.setColumnCount(len(rows[0]))
 
-        # Set headers
         headers = [str(desc[0]) for desc in cursor.description]
         self.table_widget.setHorizontalHeaderLabels(headers)
 
-        # Populate the table widget with data
         for i, row in enumerate(rows):
             for j, value in enumerate(row):
                 item = QTableWidgetItem(str(value))

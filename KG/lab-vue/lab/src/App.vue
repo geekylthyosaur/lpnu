@@ -3,6 +3,7 @@
   <fractals-a v-if="currentWindow == 'Фрактал Мандельброта'"/>
   <fractals-b v-if="currentWindow == 'Броунівський рух'"/>
   <colors v-if="currentWindow == 'Колірні схеми'"/>
+  <moving-images v-if="currentWindow == 'Рухомі зображення'"/>
 
   <main-window v-if="currentWindow == 'Головна'" @switchTo="switchTo"/>
 </template>
@@ -13,6 +14,7 @@ import HeaderBar from './components/Header.vue'
 import FractalsA from './components/FractalsA.vue'
 import FractalsB from './components/FractalsB.vue'
 import ColorS from './components/Colors.vue'
+import MovingImages from './components/MovingImages.vue'
 
 export default {
   name: 'App',
@@ -22,6 +24,7 @@ export default {
     'fractals-a': FractalsA,
     'fractals-b': FractalsB,
     'colors': ColorS,
+    'moving-images': MovingImages,
   },
   data() {
     return {

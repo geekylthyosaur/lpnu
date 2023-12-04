@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.lab7.BankController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+    <HBox alignment="CENTER" prefHeight="68.0" prefWidth="760.0" spacing="36.0">
+        <TextField promptText="Thread amount" fx:id="threadsAmount" prefWidth="100.0" />
+        <TextField promptText="Keep alive time (ms)" fx:id="keepAliveTime" prefWidth="150.0" />
+        <Button mnemonicParsing="false" onMouseClicked="#onCreateButtonClick" text="Create and run threads" />
+        <Button mnemonicParsing="false" onMouseClicked="#onTerminateAllThreadsClick" text="Terminate all threads" />
+    </HBox>
+    <TableView fx:id="threadsTable" prefHeight="430.0" prefWidth="760.0">
+        <columns>
+          <TableColumn fx:id="nameColumn" text="Name" />
+          <TableColumn fx:id="priorityColumn" text="Priority" />
+          <TableColumn fx:id="stateColumn" prefWidth="100.0" text="Status" />
+          <TableColumn fx:id="statusChangeTimeColumn" prefWidth="200.0" text="Change Time" />
+          <TableColumn fx:id="balanceColumn" text="Balance" prefWidth="75.0"/>
+          <TableColumn fx:id="toggleActivenessButton" prefWidth="150.0"/>
+        </columns>
+    </TableView>
+   <Label fx:id="balance" contentDisplay="CENTER" prefHeight="18.0" prefWidth="158.0" textAlignment="CENTER" />
+</VBox>

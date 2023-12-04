@@ -1,24 +1,40 @@
 package com.example.lab7;
 
+import java.math.BigDecimal;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.atomic.AtomicReference;
+
 public class Bank {
+    private final AtomicReference<BigDecimal> totalCash;
+    private final Semaphore mutex;
 
-    private int totalCash;
-
-    public Bank(int totalCash) {
-        this.totalCash = totalCash;
+    public Bank(BigDecimal totalCash) {
+        mutex = new Semaphore(1);
+        this.totalCash = new AtomicReference<>(totalCash);
     }
 
-    public synchronized void withdrawCash(int amount, String threadName) {
-        if (totalCash >= amount) {
-            totalCash -= amount;
-            System.out.println(threadName + " withdrew $" + amount + ". Remaining cash: $" + totalCash);
-        } else {
-            System.out.println(threadName + " tried to withdraw $" + amount + " but insufficient funds.");
-        }
+    public void withdrawCash(BigDecimal amount) throws IllegalArgumentException, InterruptedException {
+        mutex.acquire();
+
+        if (totalCash.get().compareTo(amount) >= 0) {
+                totalCash.getAndUpdate(sum -> sum.subtract(amount));
+        } else throw new IllegalArgumentException("Bank does not have such money!");
+
+        mutex.release();
+    }
+    public void depositCash(BigDecimal amount) throws InterruptedException {
+        mutex.acquire();
+
+        totalCash.getAndUpdate(sum -> sum.add(amount));
+
+        mutex.release();
     }
 
-    public synchronized void depositCash(int amount, String threadName) {
-        totalCash += amount;
-        System.out.println(threadName + " deposited $" + amount + ". Total cash: $" + totalCash);
+    public BigDecimal getBalance()  {
+         return totalCash.get();
+    }
+
+    public void setBalance(BigDecimal totalCash) {
+        this.totalCash.set(totalCash);
     }
 }

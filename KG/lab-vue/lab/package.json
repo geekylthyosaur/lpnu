@@ -13,8 +13,10 @@
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "bootstrap": "^5.3.2",
     "bootstrap-vue": "^2.23.1",
+    "chartjs-plugin-zoom": "^2.0.1",
     "core-js": "^3.8.3",
-    "vue": "^3.3.8"
+    "vue": "^3.3.8",
+    "vue-chartjs": "^5.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

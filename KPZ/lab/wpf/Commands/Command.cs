@@ -43,10 +43,7 @@ namespace wpf.ViewModels
 
         public void Execute(object parameter)
         {
-            if (ExecuteDelegate != null)
-            {
-                ExecuteDelegate(parameter);
-            }
+            ExecuteDelegate?.Invoke(parameter);
         }
 
         #endregion

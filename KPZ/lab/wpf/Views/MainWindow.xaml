@@ -10,7 +10,7 @@
         <TabControl HorizontalAlignment="Left" Height="419" VerticalAlignment="Top" Width="792">
             <TabItem Header="Drivers">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid Grid.Row="0" ItemsSource="{Binding DriverViewModel.Drivers}" SelectedItem="{Binding DriverViewModel.SelectedDriver}" AutoGenerateColumns="True"  HorizontalAlignment="Center" VerticalAlignment="Top"/>
+                    <DataGrid Grid.Row="0" ItemsSource="{Binding DriverViewModel.Drivers}" SelectedItem="{Binding DriverViewModel.SelectedDriver}" AutoGenerateColumns="True"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom">
                         <Button Content="Delete" Command="{Binding DriverViewModel.DeleteCommand}" Background="Red" Height="50" Width="200"/>
                     </StackPanel>
@@ -18,12 +18,18 @@
             </TabItem>
             <TabItem Header="Stops">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid HorizontalAlignment="Left" Height="316" Margin="10,10,0,0" VerticalAlignment="Top" Width="766"/>
+                    <DataGrid Grid.Row="0" ItemsSource="{Binding StopViewModel.Stops}" SelectedItem="{Binding StopViewModel.SelectedStop}" AutoGenerateColumns="True"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                        <Button Content="Delete" Command="{Binding StopViewModel.DeleteCommand}" Background="Red" Height="50" Width="200"/>
+                    </StackPanel>
                 </Grid>
             </TabItem>
             <TabItem Header="Routes">
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid HorizontalAlignment="Left" Height="316" Margin="10,10,0,0" VerticalAlignment="Top" Width="766"/>
+                    <DataGrid Grid.Row="0" ItemsSource="{Binding RouteViewModel.Routes}" SelectedItem="{Binding RouteViewModel.SelectedRoute}" AutoGenerateColumns="True"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                    <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                        <Button Content="Delete" Command="{Binding RouteViewModel.DeleteCommand}" Background="Red" Height="50" Width="200"/>
+                    </StackPanel>
                 </Grid>
             </TabItem>
         </TabControl>

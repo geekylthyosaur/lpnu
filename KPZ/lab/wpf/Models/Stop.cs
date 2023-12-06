@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace wpf.Models
 {
-    class Stop
+    public class Stop
     {
         public int Id { get; set; }
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace wpf.Models
 {
-    class Route
+    public class Route
     {
         public int Id { get; set; }
 

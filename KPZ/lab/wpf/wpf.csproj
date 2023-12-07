@@ -61,6 +61,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\DateTimeToString.cs" />
     <Compile Include="Models\Driver.cs" />
     <Compile Include="Models\Route.cs" />
     <Compile Include="Models\Stop.cs" />

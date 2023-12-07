@@ -15,10 +15,10 @@
     </padding>
     <HBox alignment="CENTER" prefHeight="68.0" prefWidth="760.0" spacing="36.0">
         <TextField promptText="Thread amount" fx:id="threadsAmount" prefWidth="100.0" />
-        <TextField promptText="Keep alive time (ms)" fx:id="keepAliveTime" prefWidth="150.0" />
-        <Button mnemonicParsing="false" onMouseClicked="#onCreateButtonClick" text="Create and run threads" />
-        <Button mnemonicParsing="false" onMouseClicked="#onTerminateAllThreadsClick" text="Terminate all threads" />
+        <Button mnemonicParsing="false" onMouseClicked="#onCreateButtonClick" text="Run" />
+        <Button mnemonicParsing="false" onMouseClicked="#onTerminateAllThreadsClick" text="Stop" />
     </HBox>
+    <Label fx:id="balance" contentDisplay="CENTER" prefHeight="18.0" prefWidth="158.0" textAlignment="CENTER" />
     <TableView fx:id="threadsTable" prefHeight="430.0" prefWidth="760.0">
         <columns>
           <TableColumn fx:id="nameColumn" text="Name" />
@@ -29,5 +29,4 @@
           <TableColumn fx:id="toggleActivenessButton" prefWidth="150.0"/>
         </columns>
     </TableView>
-   <Label fx:id="balance" contentDisplay="CENTER" prefHeight="18.0" prefWidth="158.0" textAlignment="CENTER" />
 </VBox>

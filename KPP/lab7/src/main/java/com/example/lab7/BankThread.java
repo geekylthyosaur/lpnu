@@ -33,15 +33,16 @@ public class BankThread extends Thread {
                     }
                 }
                 try {
+                    var amount = new BigDecimal(random.nextInt(0, 10));
                     if (random.nextInt(0, 2) == 0) {
-                        client.depositCash(new BigDecimal(random.nextInt(0, 10)));
-//                               System.out.println(client.getName() + " deposited money. Current balance is " + client.getBalance());
+                        client.depositCash(amount);
+                        System.out.println(client.getName() + " deposited " + amount + ". Current balance is " + client.getBalance());
                     } else {
-                        client.withdrawCash(new BigDecimal(random.nextInt(0, 10)));
-//                                System.out.println(client.getName() + " withdrew money. Current balance is " + client.getBalance());
+                        client.withdrawCash(amount);
+                        System.out.println(client.getName() + " withdrew " + amount + ". Current balance is " + client.getBalance());
                     }
                 } catch (IllegalArgumentException | InterruptedException e) {
-//                      System.out.println(e.getMessage());
+
                 }
             }
         }
@@ -51,7 +52,7 @@ public class BankThread extends Thread {
         return paused;
     }
 
-    public void togglePauseness() {
+    public void togglePause() {
         paused = !paused;
         if (!paused) {
             synchronized (this) {

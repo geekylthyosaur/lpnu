@@ -31,11 +31,11 @@ public class ThreadManager {
         return threads;
     }
 
-    public TrackedExecutorService createExecutor(int corePoolSize, int keepAliveTime) throws NumberFormatException{
-        if (corePoolSize < 0 || keepAliveTime < 0){
+    public TrackedExecutorService createExecutor(int corePoolSize) throws NumberFormatException{
+        if (corePoolSize < 0){
             throw new NumberFormatException("The number is less than 0");
         }
-        executorService = new TrackedExecutorService(corePoolSize, keepAliveTime);
+        executorService = new TrackedExecutorService(corePoolSize);
         return executorService;
     }
 

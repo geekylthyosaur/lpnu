@@ -60,11 +60,11 @@ public class BankController {
         toggleActivenessButton.setCellFactory(col -> new TableCell<>() {
             private final Button clearButton;
             {
-                clearButton = new Button("Toggle Activeness");
+                clearButton = new Button("Pause");
                 clearButton.setOnAction(event ->  {
                     BankThread thread = getTableView().getItems().get(getIndex());
                     if(!thread.isInterrupted())
-                        thread.togglePauseness();
+                        thread.togglePause();
                 });
             }
             @Override
@@ -83,7 +83,7 @@ public class BankController {
             this.onTerminateAllThreadsClick();
             threads.addAll(threadManager.createThreads(bank, Integer.parseInt(threadsAmount.getText())));
 
-            executor = threadManager.createExecutor(Integer.parseInt(threadsAmount.getText()), Integer.parseInt(keepAliveTime.getText()));
+            executor = threadManager.createExecutor(Integer.parseInt(threadsAmount.getText()));
             threads.forEach(t->executor.submitTask(t));
 
             Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(0.5), e -> update()));

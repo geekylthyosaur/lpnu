@@ -10,9 +10,9 @@ public class TrackedExecutorService {
     private final ThreadPoolExecutor executorService;
     private final List<BankThread> submittedTasks;
 
-    public TrackedExecutorService(int corePoolSize, int keepAliveTime) {
+    public TrackedExecutorService(int corePoolSize) {
         this.executorService = (ThreadPoolExecutor) Executors.newFixedThreadPool(corePoolSize);
-        this.executorService.setKeepAliveTime(keepAliveTime, TimeUnit.MILLISECONDS);
+        this.executorService.setKeepAliveTime(100000, TimeUnit.MILLISECONDS);
         this.submittedTasks = new ArrayList<>();
     }
 

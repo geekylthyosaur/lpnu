@@ -1,6 +1,7 @@
 import sys
 from PyQt6.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QPushButton, QTableWidget, QTableWidgetItem, QLineEdit, QMessageBox
 import psycopg2
+from psycopg2 import DataError
 
 class DatabaseApp(QMainWindow):
     def __init__(self):
@@ -69,6 +70,9 @@ class DatabaseApp(QMainWindow):
         try:
             with self.connection.cursor() as cursor:
                 cursor.execute(query)
+        except DataError as unique_constraint_error:
+            self.show_error_popup("Data error", unique_constraint_error)
+            self.connection.rollback()
         except psycopg2.Error as e:
             self.show_error_popup("Unable to execute query", e)
             self.connection.rollback()

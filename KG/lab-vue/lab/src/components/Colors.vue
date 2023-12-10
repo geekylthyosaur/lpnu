@@ -12,9 +12,10 @@
   <div v-if="isLoaded" class="d-flex justify-content-center align-items-center" style="height: 540px; width: 800px;">
     <div class="col" style="max-width: 343px;">
       <div class="row d-flex justify-content-center" style="margin-top: 13px;">
-        <div class="btn btn-custom d-flex flex-column align-items-center">
-          <span style="margin-top: -8px;">Насиченість зеленого</span>
-          <input v-model="saturation" style="margin-top: -8px; width: 200px;" type="range" min="0.0" max="1.0" step="0.01">
+        <div class="btn-i btn-custom-i d-flex flex-column align-items-center" style="margin-top: 13px; position: relative;">
+          <span style="margin-top: -3px; margin-left: -35px;">Насиченість зеленого</span>
+          <input v-model="saturation" style="margin-top: -8px; margin-left: -35px; width: 200px;" type="range" min="0.0" max="1.0" step="0.01">
+          <span style="font-size: 20px; position: absolute; top: 50%; transform: translateY(-50%); right: 10px;">{{ parseFloat(saturation).toFixed(1) }}</span>
         </div>
       </div>
       <div class="row d-flex justify-content-center" style="margin-top: 367px;">
@@ -304,6 +305,21 @@ export default {
   max-height: 50px;
   font-size: small;
   border-radius: 13px;
+}
+.btn-custom-i {
+  font-size: 22px;
+  margin-bottom: 13px;
+  border-radius: 24px;
+  height: 56px;
+  width: 306px;
+  background-color: #bebebe; 
+  background-image: linear-gradient(to right, #ebebeb 85%, rgba(0,0,0,0) 20%); 
+  border: 3px solid #ebebeb;
+}
+.btn-i:active {
+  border: 3px solid #bebebe;
+  background-color: #bebebe;
+  background-image: linear-gradient(to right, #ebebeb 85%, rgba(0,0,0,0) 20%); 
 }
 </style>
     

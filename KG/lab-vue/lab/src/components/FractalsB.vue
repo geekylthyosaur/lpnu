@@ -8,21 +8,24 @@
         </div>
       </div>
       <div class="row d-flex justify-content-center" style="margin-top: 13px;">
-        <div class="btn btn-custom d-flex flex-column align-items-center">
-          <span style="margin-top: -8px;">Густина</span>
-          <input style="margin-top: -8px; width: 200px;" type="range" value="1.0" min="0.01" max="1.0" step="0.01" id="density" @change="update">
+        <div class="btn-i btn-custom-i d-flex flex-column align-items-center" style="margin-top: 0px; position: relative;">
+          <span style="margin-top: -3px; margin-left: -35px;">Густина</span>
+          <input v-model="density" style="margin-top: -8px; margin-left: -35px; width: 200px;" type="range" id="density" min="0.01" max="1.0" step="0.01" value="0.2">
+          <span style="font-size: 20px; position: absolute; top: 50%; transform: translateY(-50%); right: 10px;">{{ parseFloat(density).toFixed(1) }}</span>
         </div>
       </div>
       <div class="row d-flex justify-content-center">
-        <div class="btn btn-custom d-flex flex-column align-items-center">
-          <span style="margin-top: -8px;">Відношення маси</span>
-          <input style="margin-top: -8px; width: 200px;" type="range" value="0.2" min="0.01" max="1" step="0.1" id="mass-ratio" @change="update">
+        <div class="btn-i btn-custom-i d-flex flex-column align-items-center" style="margin-top: 0px; position: relative;">
+          <span style="margin-top: -3px; margin-left: -35px;">Відношення маси</span>
+          <input v-model="massRatio" style="margin-top: -8px; margin-left: -35px; width: 200px;" type="range" id="mass-ratio"  min="0.01" max="1.01" step="0.01" value="0.2">
+          <span style="font-size: 20px; position: absolute; top: 50%; transform: translateY(-50%); right: 10px;">{{ parseFloat(massRatio).toFixed(1) }}</span>
         </div>
       </div>
       <div class="row d-flex justify-content-center">
-        <div class="btn btn-custom d-flex flex-column align-items-center">
-          <span style="margin-top: -8px;">Довжина сліду</span>
-          <input style="margin-top: -8px; width: 200px;" type="range" value="10000" min="1" max="10001" step="1000" id="traceLength" @change="update">
+        <div class="btn-i btn-custom-i d-flex flex-column align-items-center" style="margin-top: 0px; position: relative;">
+          <span style="margin-top: -3px; margin-left: -35px;">Довжина сліду</span>
+          <input v-model="traceLength" style="margin-top: -8px; margin-left: -35px; width: 200px;" type="range" min="1" max="10001" step="10">
+          <span style="font-size: 20px; position: absolute; top: 50%; transform: translateY(-50%); right: 10px;">{{ parseFloat(traceLength / 1000).toFixed(0) }}</span>
         </div>
       </div>
       <div class="row d-flex justify-content-center" style="margin-top: 154px;">
@@ -184,6 +187,21 @@
 .btn:active {
   border: 3px solid #bebebe;
   background-color: #ebebeb;
+}
+.btn-custom-i {
+  font-size: 22px;
+  margin-bottom: 13px;
+  border-radius: 24px;
+  height: 56px;
+  width: 306px;
+  background-color: #bebebe; 
+  background-image: linear-gradient(to right, #ebebeb 85%, rgba(0,0,0,0) 20%); 
+  border: 3px solid #ebebeb;
+}
+.btn-i:active {
+  border: 3px solid #bebebe;
+  background-color: #bebebe;
+  background-image: linear-gradient(to right, #ebebeb 85%, rgba(0,0,0,0) 20%); 
 }
 </style>
   

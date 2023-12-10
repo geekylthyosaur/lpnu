@@ -59,7 +59,7 @@ export default {
 
 <style scoped>
 .btn-custom {
-  font-size: 22px;
+  font-size: 21px;
   margin-bottom: 13px;
   border-radius: 24px;
   height: 56px;

@@ -1,0 +1,12 @@
+\babel@toc {ukrainian}{}\relax 
+\contentsline {section}{\numberline {1}Завдання}{2}{}%
+\contentsline {subsection}{\numberline {1.1}Індивідуальний варіант}{2}{}%
+\contentsline {section}{\numberline {2}Теоретичні відомості}{3}{}%
+\contentsline {subsection}{\numberline {2.1}Опис функцій програми}{3}{}%
+\contentsline {subsection}{\numberline {2.2}Алгоритми фракталів}{3}{}%
+\contentsline {subsection}{\numberline {2.3}Анотація кольорових моделей}{3}{}%
+\contentsline {subsection}{\numberline {2.4}Оптимальний матричний вираз афінних перетворень}{3}{}%
+\contentsline {subsection}{\numberline {2.5}Реалізація графічного режиму}{3}{}%
+\contentsline {section}{\numberline {3}Результати}{3}{}%
+\contentsline {section}{\numberline {4}Висновки}{3}{}%
+\contentsline {section}{\numberline {5}Список використаних інформаційних джерел}{3}{}%

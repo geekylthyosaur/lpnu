@@ -12,7 +12,7 @@
       <div class="row d-flex justify-content-center">
         <div class="btn-i btn-custom-i d-flex flex-column align-items-center" style="margin-top: 13px; position: relative;">
           <span style="margin-top: -3px; margin-left: -35px;">Масштабування</span>
-          <input v-model="scaleFactor" style="margin-top: -8px; margin-left: -35px; width: 200px;" type="range" min="0.8" max="1.2" step="0.01">
+          <input v-model="scaleFactor" style="margin-top: -8px; margin-left: -35px; width: 200px;" type="range" min="0.9" max="1.1" step="0.05">
           <span style="font-size: 20px; position: absolute; top: 50%; transform: translateY(-50%); right: 10px;">{{ parseFloat(scaleFactor).toFixed(1) }}</span>
         </div>
         <div class="btn-i btn-custom-i d-flex flex-column align-items-center" style="margin-top: 13px; position: relative;">
@@ -212,6 +212,17 @@ export default {
       ]);
 
       return rotatedPoints;
+    },
+    saveImage() {
+      const chart = this.$refs.chart.chart;
+
+      const imageData = chart.toBase64Image();
+
+      const link = document.createElement('a');
+      link.href = imageData;
+      link.download = 'chart_image.png';
+
+      link.click();
     },
   },
   watch: {

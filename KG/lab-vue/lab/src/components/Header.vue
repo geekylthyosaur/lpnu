@@ -10,9 +10,16 @@
       <div class="col d-flex" style="max-width: 30px;">
         <div class="vr" style="height: 100%; width: 3px; border: none; background-color: #bebebe;"></div>
       </div>
-      <div class="col title align-self-center text-center">
-        {{ title }}
+      <div class="col d-flex align-self-center">
+        <span class="title align-self-center">{{ title }}</span>
+        <i class="question fa fa-question" style="margin-left: auto;" @click="isHelp=!isHelp"></i>
       </div>
+      <div class="row">
+        <hr style="min-width: 800px; height: 3px; border: none; background-color: #bebebe;">
+      </div>
+    </div>
+    <div v-if="isHelp" class="row" style="z-index: 10; position: absolute; left: 12px; top: 63px; width: 800px; background-color: white;">
+      <span style="margin: 13px;">{{ help }}</span>
       <div class="row">
         <hr style="min-width: 800px; height: 3px; border: none; background-color: #bebebe;">
       </div>
@@ -25,9 +32,11 @@ export default {
   name: 'HeaderBar',
   props: {
     title: String,
+    help: String,
   },
   data() {
     return {
+      isHelp: false,
     }
   }
 };
@@ -40,7 +49,16 @@ export default {
   height: 60px;
 }
 .title {
+  font-size: 30px;
+
+}
+.question {
   font-size: 32px;
+  color: #aaaaaa;
+  margin-right: -5px;
+  border-radius: 32px;
+  background-color: #ebebeb;
+  padding: 10px;
 }
 .left-arrow {
   color: #bebebe;

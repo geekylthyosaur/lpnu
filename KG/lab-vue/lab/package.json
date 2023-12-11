@@ -15,6 +15,7 @@
     "bootstrap-vue": "^2.23.1",
     "chartjs-plugin-zoom": "^2.0.1",
     "core-js": "^3.8.3",
+    "mathjs": "^12.2.0",
     "vue": "^3.3.8",
     "vue-chartjs": "^5.2.0"
   },

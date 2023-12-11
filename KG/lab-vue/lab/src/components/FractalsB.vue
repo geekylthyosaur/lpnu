@@ -24,7 +24,7 @@
       <div class="row d-flex justify-content-center">
         <div class="btn-i btn-custom-i d-flex flex-column align-items-center" style="margin-top: 0px; position: relative;">
           <span style="margin-top: -3px; margin-left: -35px;">Довжина сліду</span>
-          <input v-model="traceLength" style="margin-top: -8px; margin-left: -35px; width: 200px;" type="range" min="1" max="10001" step="10">
+          <input v-model="traceLength" style="margin-top: -8px; margin-left: -35px; width: 200px;" id="traceLength" type="range" min="1" max="10001" step="10">
           <span style="font-size: 20px; position: absolute; top: 50%; transform: translateY(-50%); right: 10px;">{{ parseFloat(traceLength / 1000).toFixed(0) }}</span>
         </div>
       </div>
@@ -144,6 +144,7 @@
       },
     },
     mounted() {
+      this.$emit('help', 'fractalsB');
       this.render();
     },
   };

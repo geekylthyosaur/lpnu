@@ -47,6 +47,7 @@ import { Line } from 'vue-chartjs'
 import Chart from 'chart.js/auto';
 import zoomPlugin from 'chartjs-plugin-zoom';
 import { getRelativePosition } from 'chart.js/helpers';
+import * as math from 'mathjs';
 
 export default {
   name: 'MovingImages',
@@ -157,6 +158,7 @@ export default {
     Chart.register(zoomPlugin);
   },
   mounted() {
+    this.$emit('help', 'movingimages');
     this.$nextTick(() => {
       const chart = this.$refs.chart.chart;
       chart.zoom(-1000);
@@ -177,41 +179,38 @@ export default {
         this.animation = setInterval(() => {
           const chart = this.$refs.chart.chart;
           
-          this.points = this.scale(this.points, this.scaleFactor, this.points[this.choosedPoint]);
-          this.points = this.rotate(this.points, this.rotationFactor, this.points[this.choosedPoint]);
+          const center = this.points[this.choosedPoint];
+          this.points = this.transform(this.points, this.scaleFactor, this.rotationFactor, center);
 
-          let p1 = this.points[0];
-          let p2 = this.points[1];
-          let p3 = this.points[2];
-          let p4 = this.points[3];
-
-          this.chartData.datasets[0].data[0] = p1;
-          this.chartData.datasets[0].data[1] = p2;
-          this.chartData.datasets[0].data[2] = p3;
-          this.chartData.datasets[0].data[3] = p4;
-          this.chartData.datasets[0].data[4] = p1;
+          this.chartData.datasets[0].data[0] = this.points[0];
+          this.chartData.datasets[0].data[1] = this.points[1];
+          this.chartData.datasets[0].data[2] = this.points[2];
+          this.chartData.datasets[0].data[3] = this.points[3];
+          this.chartData.datasets[0].data[4] = this.points[0];
           chart.update();
         }, 100);
       }
     },
-    scale(points, factor, center) {
-      const scaledPoints = points.map(point => [
-        (point[0] - center[0])*factor + center[0], 
-        (point[1] - center[1])*factor + center[1]
-      ]);
-
-      return scaledPoints;
-    },
-    rotate(points, angle, center) {
+    transform(points, scale, angle, center) {
       const radians = (Math.PI / 180) * angle;
       const cosTheta = Math.cos(radians);
       const sinTheta = Math.sin(radians);
-      const rotatedPoints = points.map(point => [
-        cosTheta * (point[0] - center[0]) + sinTheta * (point[1] - center[1]) + center[0],
-        -sinTheta * (point[0] - center[0]) + cosTheta * (point[1] - center[1]) + center[1],
-      ]);
+      const rotation = [
+        [cosTheta, -sinTheta],
+        [sinTheta, cosTheta],
+      ];
 
-      return rotatedPoints;
+      const result = points.map(point => {
+        return math.add(
+          math.multiply(
+            math.multiply(rotation, scale), 
+            math.subtract(point, center)
+          ), 
+          center
+        )
+      });
+
+      return result;
     },
     saveImage() {
       const chart = this.$refs.chart.chart;

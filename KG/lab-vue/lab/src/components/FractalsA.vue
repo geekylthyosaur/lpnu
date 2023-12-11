@@ -164,6 +164,7 @@
       }
     },
     mounted() {
+      this.$emit('help', 'fractalsA');
       this.generatePalette();
       this.generateImage();
       this.render();

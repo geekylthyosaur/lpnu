@@ -2,7 +2,7 @@
   <canvas hidden ref="canvas"></canvas>
   <div v-if="!isLoaded" class="d-flex justify-content-center align-items-center" style="height: 540px; width: 800px;">
     <div class="text-center" v-if="!isLoaded">
-      <input type="file" @change="openImage" style="display: none" ref="fileInput" accept="image/*">
+      <input type="file" @change="openImage" style="display: none" ref="fileInput" accept=".png">
       <button class="btn btn-custom" @click="selectFile">
         Завантажити файл
       </button>
@@ -65,6 +65,9 @@ export default {
     saturation: function () {
       this.drawImage();
     },
+  },
+  mounted() {
+    this.$emit('help', 'colors');
   },
   methods: {
     selectFile() {

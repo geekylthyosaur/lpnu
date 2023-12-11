@@ -187,23 +187,35 @@
 	
 	Нехай $P (x, y)$ - початкова точка, $R$ - кут повороту, $S$ - коефіцієнт масштабування, і $(C_x, C_y)$ - центр повороту, тоді:
 	
-	\[\begin{bmatrix} 
-		S \cdot \cos(R) & -S \cdot \sin(R) \\
-		S \cdot \sin(R) & S \cdot \cos(R) 
+	\[
+	\begin{bmatrix} 
+		1 & 0 & C_x \\
+		0 & 1 & C_y \\
+		0 & 0 & 1
 	\end{bmatrix} 
 	\cdot
-	\left(
 	\begin{bmatrix} 
-		x \\ 
-		y 
-	\end{bmatrix} -
+		 \cos(R) & -\sin(R) & 0 \\
+		\sin(R) & \cos(R) & 0 \\
+		0 & 0 & 1
+	\end{bmatrix} 
+	\cdot
 	\begin{bmatrix} 
-		Cx \\ 
-		Cy 
-	\end{bmatrix}\right) +
+		S & 0 & 0 \\
+		0 & S & 0 \\
+		0 & 0 & 1
+	\end{bmatrix}
+	\cdot
 	\begin{bmatrix} 
-		Cx \\ 
-		Cy 
+		1 & 0 & -C_x \\
+		0 & 1 & -C_y \\
+		0 & 0 & 1
+	\end{bmatrix}
+	\cdot
+	\begin{bmatrix} 
+		x \\
+		y \\
+		1
 	\end{bmatrix} \]
 	\subsection{Реалізація графічного режиму}
 	

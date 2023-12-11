@@ -191,26 +191,34 @@ export default {
         }, 100);
       }
     },
-    transform(points, scale, angle, center) {
+    transform(points, factor, angle, center) {
       const radians = (Math.PI / 180) * angle;
       const cosTheta = Math.cos(radians);
       const sinTheta = Math.sin(radians);
+      const translate = (dX, dY) => [
+        [1, 0, -dX],
+        [0, 1, -dY],
+        [0, 0, 1],
+      ];
       const rotation = [
-        [cosTheta, -sinTheta],
-        [sinTheta, cosTheta],
+        [cosTheta, -sinTheta, 0],
+        [sinTheta, cosTheta, 0],
+        [0, 0, 1],
+      ];
+      const scale = [
+        [factor, 0, 0],
+        [0, factor, 0],
+        [0, 0, 1],
       ];
 
-      const result = points.map(point => {
-        return math.add(
-          math.multiply(
-            math.multiply(rotation, scale), 
-            math.subtract(point, center)
-          ), 
-          center
-        )
-      });
-
-      return result;
+      return points.map(point => 
+        math.multiply(
+          translate(-center[0], -center[1]),
+          rotation,
+          scale,
+          translate(center[0], center[1]),
+          [point[0], point[1], 1]
+        ));
     },
     saveImage() {
       const chart = this.$refs.chart.chart;

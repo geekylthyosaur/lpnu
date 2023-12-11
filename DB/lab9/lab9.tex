@@ -1,0 +1,151 @@
+\documentclass[14pt]{extreport}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{amsmath}
+\usepackage{float}
+\geometry{
+	a4paper,
+	left=20mm,
+	right=20mm,
+	top=20mm,
+	bottom=20mm
+}
+\lstset{
+	columns=fullflexible, 
+	frame=single, 
+	breaklines=true, 
+	tabsize=4,
+	postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookrightarrow\space}},
+	showstringspaces=false,% no symbol for spaces in strings
+}
+\graphicspath{ {./pictures} }
+\setlength{\parindent}{4em}
+
+\newcommand\subject{Бази даних}
+\newcommand\lecturer{асистент кафедри ПЗ\\Білоіваненко М.В.}
+\newcommand\teacher{асистент кафедри ПЗ\\Білоіваненко М.В.}
+\newcommand\mygroup{ПЗ-32}
+\newcommand\lab{9}
+\newcommand\theme{Виправлення недоліків}
+\newcommand\purpose{Проаналізувати розроблену схему бази даних стосовно її відповідності нормальним формам та з метою підвищення ефективності доступу. Встановити структурні недоліки існуючого опису таблиць (зайві ключі, надлишкові дані, некоректні типи або назви колонок, неповнота встановлених обмежень цілісності, невідповідність особливостям даних предметної області)}
+
+\begin{document}
+\begin{normalsize}
+	\begin{titlepage}
+		\thispagestyle{empty}
+		\begin{center}
+			\textbf{МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\\
+				НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ "ЛЬВІВСЬКА ПОЛІТЕХНІКА"}
+		\end{center}
+		\begin{flushright}
+			Інститут \textbf{КНІТ}\\
+			Кафедра \textbf{ПЗ}
+		\end{flushright}
+		\vspace{200pt}
+		\begin{center}
+			\textbf{ЗВІТ}\\
+			\vspace{10pt}
+			До лабораторної роботи № \lab\\
+			\textbf{На тему}: “\textit{\theme}”\\
+			\textbf{З дисципліни}: “\subject”
+		\end{center}
+		\vspace{40pt}
+		\begin{flushright}
+			
+			\textbf{Лектор}:\\
+			\lecturer\\
+			\vspace{10pt}
+			\textbf{Виконав}:\\
+			
+			студент групи \mygroup\\
+			Коваленко Д.М.\\
+			\vspace{10pt}
+			\textbf{Прийняв}:\\
+			
+			\teacher\\
+			
+			\vspace{28pt}
+			«\rule{1cm}{0.15mm}» \rule{1.5cm}{0.15mm} 2023 р.\\
+			$\sum$ = \rule{1cm}{0.15mm}……………\\
+			
+		\end{flushright}
+		\vspace{\fill}
+		\begin{center}
+			\textbf{Львів — 2023}
+		\end{center}
+	\end{titlepage}
+		
+	\begin{description}
+		\item[Тема.] \theme.
+		\item[Мета.] \purpose.
+	\end{description}
+
+	\section*{Лабораторне завдання}
+
+
+Проаналізувати розроблену схему бази даних стосовно її відповідності нормальним формам та з метою підвищення ефективності доступу. Встановити структурні недоліки існуючого опису таблиць (зайві ключі, надлишкові дані, некоректні типи або назви колонок, неповнота встановлених обмежень цілісності, невідповідність особливостям даних предметної області).
+
+На 4 бали: детально описати якнайменш 3 важливих недоліки схеми та запропонувати обґрунтовані шляхи їх усунення. Використати підходи декомпозиції, денормалізації або інші варіанти зміни таблиць.
+
+На 7 балів: створити послідовний набір SQL-команд, що виправляє в поточній базі даних встановлені структурні недоліки. При модифікації таблиць (застосувати ALTER, DROP, CREATE) слід врахувати існуючі дані, які частково повинні бути трансформовані для зберігання в оновленій схемі (застосувати SELECT, UPDATE, INSERT, DELETE).
+	
+	\section*{Хід роботи}
+	
+	\subsection*{Надлишкова інформація у route\_vehicle}
+	\textbf{Проблема}: В таблиці route\_vehicle зберігається зайве повторюючеся інформація, яка може призвести до неоднозначностей та збільшення обсягу даних.
+	
+	\textbf{Опис змін}: Винести last\_lat, last\_lon, last\_coords\_time, next\_stop в окрему таблицю route\_vehicle\_history. Зберегти існуючі дані в тимчасову таблицю, виконати модифікації та повернути дані назад у відповідні таблиці.
+	\begin{lstlisting}
+CREATE TABLE route_vehicle_temp AS
+SELECT id, route_id, vehicle_id
+FROM route_vehicle;
+
+ALTER TABLE route_vehicle
+DROP COLUMN last_lat,
+DROP COLUMN last_lon,
+DROP COLUMN last_coords_time,
+DROP COLUMN next_stop;
+
+INSERT INTO route_vehicle (id, route_id, vehicle_id)
+SELECT id, route_id, vehicle_id
+FROM route_vehicle_temp;
+
+DROP TABLE route_vehicle_temp;
+
+CREATE TABLE route_vehicle_history (
+id               SERIAL PRIMARY KEY,
+route_vehicle_id INTEGER REFERENCES route_vehicle ON UPDATE CASCADE ON DELETE CASCADE,
+lat              NUMERIC(8, 6),
+lon              NUMERIC(9, 6),
+coords_time      TIMESTAMP WITH TIME ZONE
+);
+	\end{lstlisting}
+	
+	\subsection*{Неповні обмеження цілісності у vehicle}
+	\textbf{Проблема}: В таблиці vehicle відсутній унікальний ключ для поля license\_plate, що може призвести до додавання дублікатів.
+	
+	\textbf{Опис змін}: Додано унікальний ключ для поля license\_plate, щоб гарантувати унікальність номерів автомобілів.
+	\begin{lstlisting}
+ALTER TABLE vehicle
+	ADD CONSTRAINT vehicle_license_plate_unique UNIQUE (license_plate);
+	\end{lstlisting}
+	
+	
+	\subsection*{Недостатня кількість інформації у feedback}
+	\textbf{Проблема}: В таблиці feedback відсутня інформація про маршрут, час та контактні дані, що може призвести до обмеженої можливості аналізу та відповідей.
+	
+	\textbf{Опис змін}: Додано нові стовпці для ідентифікації маршруту (route\_id - зовнішній ключ до таблиці route), контактного email (contact\_email). Залишено їх значення за замовчуванням як NULL.
+	\begin{lstlisting}
+ALTER TABLE feedback
+	ADD COLUMN route_id INTEGER REFERENCES route(id) ON UPDATE CASCADE, 
+	ADD COLUMN contact_email VARCHAR(255);
+	\end{lstlisting}
+	\section*{Висновок}
+	Під час виконання лабораторної роботи я проаналізував розроблену схему бази даних стосовно її відповідності нормальним формам та з метою підвищення ефективності доступу. Встановив структурні недоліки існуючого опису таблиць (зайві ключі, надлишкові дані, некоректні типи або назви колонок, неповнота встановлених обмежень цілісності, невідповідність особливостям даних предметної області).
+	 
+\end{normalsize}
+\end{document}

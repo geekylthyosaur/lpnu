@@ -1,12 +1,27 @@
 \babel@toc {ukrainian}{}\relax 
 \contentsline {section}{\numberline {1}Завдання}{2}{}%
 \contentsline {subsection}{\numberline {1.1}Індивідуальний варіант}{2}{}%
-\contentsline {section}{\numberline {2}Теоретичні відомості}{3}{}%
-\contentsline {subsection}{\numberline {2.1}Опис функцій програми}{3}{}%
-\contentsline {subsection}{\numberline {2.2}Алгоритми фракталів}{3}{}%
+\contentsline {section}{\numberline {2}Теоретичні відомості}{2}{}%
+\contentsline {subsection}{\numberline {2.1}Опис функцій програми}{2}{}%
+\contentsline {subsection}{\numberline {2.2}Алгоритми фракталів}{2}{}%
+\contentsline {subsubsection}{\numberline {2.2.1}Фрактал Мандельброта}{2}{}%
+\contentsline {subsubsection}{\numberline {2.2.2}Броунівський рух}{3}{}%
 \contentsline {subsection}{\numberline {2.3}Анотація кольорових моделей}{3}{}%
-\contentsline {subsection}{\numberline {2.4}Оптимальний матричний вираз афінних перетворень}{3}{}%
-\contentsline {subsection}{\numberline {2.5}Реалізація графічного режиму}{3}{}%
-\contentsline {section}{\numberline {3}Результати}{3}{}%
-\contentsline {section}{\numberline {4}Висновки}{3}{}%
-\contentsline {section}{\numberline {5}Список використаних інформаційних джерел}{3}{}%
+\contentsline {subsubsection}{\numberline {2.3.1}Модель RGB (Red, Green, Blue)}{3}{}%
+\contentsline {paragraph}{Практичне застосування:}{3}{}%
+\contentsline {paragraph}{Переваги:}{4}{}%
+\contentsline {paragraph}{Недоліки:}{4}{}%
+\contentsline {subsubsection}{\numberline {2.3.2}Модель HSV (Hue, Saturation, Value)}{4}{}%
+\contentsline {paragraph}{Практичне застосування:}{4}{}%
+\contentsline {paragraph}{Переваги:}{4}{}%
+\contentsline {paragraph}{Недоліки:}{5}{}%
+\contentsline {subsection}{\numberline {2.4}Оптимальний матричний вираз афінних перетворень}{5}{}%
+\contentsline {subsection}{\numberline {2.5}Реалізація графічного режиму}{6}{}%
+\contentsline {section}{\numberline {3}Результати}{6}{}%
+\contentsline {subsection}{\numberline {3.1}Wireflow}{6}{}%
+\contentsline {subsection}{\numberline {3.2}Вигляд модулю <<Фрактали>>}{7}{}%
+\contentsline {subsection}{\numberline {3.3}Вигляд модулю <<Колірні схеми>>}{8}{}%
+\contentsline {subsection}{\numberline {3.4}Вигляд модулю <<Рухомі зображення>>}{9}{}%
+\contentsline {subsection}{\numberline {3.5}Код програми}{10}{}%
+\contentsline {section}{\numberline {4}Висновки}{29}{}%
+\contentsline {section}{\numberline {5}Список використаних інформаційних джерел}{29}{}%

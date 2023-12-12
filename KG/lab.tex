@@ -6,6 +6,7 @@
 % \setmainfont[Mapping=tex-text]{Times New Roman}
 \usepackage[includehead, headsep=0pt, footskip=0pt, top=2cm, bottom=2cm, left=2cm, right=1cm]{geometry}
 \usepackage{indentfirst}
+\setlength{\parindent}{1cm}
 \usepackage[onehalfspacing]{setspace}
 \usepackage[headings]{fancyhdr}
 \usepackage{etoolbox}
@@ -113,6 +114,16 @@
 
 	\section{Теоретичні відомості}
 	\subsection{Опис функцій програми}
+	\subsubsection{Діаграма прецедентів програми}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[scale=0.43]{d.drawio}
+		\caption{Діаграма прецедентів програми}
+	\end{figure}
+	
+	\subsubsection{Специфікація функцій програми}
+	
+	
 	\subsection{Алгоритми фракталів}
 	\subsubsection{Фрактал Мандельброта}
 	\begin{enumerate}
@@ -218,7 +229,21 @@
 		1
 	\end{bmatrix} \]
 	\subsection{Реалізація графічного режиму}
+	Для реалізації графічного режиму у проекті обрано комбінацію JavaScript та фреймворку Vue.js. Вибір цієї технології обумовлений її гнучкістю, ефективністю та широким спектром можливостей для розробки динамічних та інтерактивних графічних інтерфейсів. Vue.js дозволяє створювати компоненти, які легко інтегруються у графічний інтерфейс, спрощуючи розробку та обслуговування.
 	
+	Vue.js дозволяє зручно налаштовувати графічні параметри через використання директив та змінних стану компонентів. За допомогою Vue.js можна динамічно змінювати роздільну здатність, кольорову гаму, а також інші параметри графічного відображення відповідно до вимог проекту.
+	
+	Використання бібліотеки Chart.js дозволило точно налаштовувати різноманітні аспекти графіків. Здійснюючи контроль над кольорами, стилями, легендами та іншими параметрами, створено візуально привабливі та інформативні графічні представлення даних. Це забезпечує не тільки зручне сприйняття інформації, але й гнучкість для відображення різних аспектів даних.
+	
+	У використанні Vue.js можна створювати реактивні компоненти для керування графічним виведенням. Розробка полотна графічного виведення може здійснюватися за допомогою вбудованих директив та методів Vue.js, що спрощує відображення графічних об'єктів на екрані.
+	
+	Використання Canvas API спрощувало створення графічного виведення. Створено інтерактивні полотна, на яких відображено графічні об'єкти. Це дозволило ефективно малювати та оновлювати графіку, використовуючи можливості Vue.js для реактивного оновлення елементів.
+	
+	Vue.js дозволяє легко створювати та управляти графічними примітивами. Використання компонентів Vue.js для представлення графічних об'єктів, таких як лінії, круги чи прямокутники, надає можливість легко маніпулювати ними, встановлюючи їх розміри, колір та інші атрибути.
+	
+	Використання бібліотек Math.js дозволило проводити розрахунки та операції з числами в складних формулах, що особливо корисно при роботі з математичними аспектами графіків. Bootstrap забезпечив стилізацію та адаптивність інтерфейсу, зробивши його зручним для користувачів на різних пристроях.
+	
+	Використання JavaScript та Vue.js для реалізації графічного режиму дозволяє створювати динамічні та ефективні візуальні інтерфейси, які відповідають потребам проекту.
 	\section{Результати}
 	\subsection{Wireflow}
 	\begin{figure}[H]
@@ -231,42 +256,44 @@
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.6]{11}
-		\caption{}
+		\caption{Фрактал Мандельброта із виглядом за замовчуванням}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.6]{12}
-		\caption{}
+		\caption{Фрактал Мандельброта зі зміненим кольором та наближений}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.6]{21}
-		\caption{}
+		\caption{Фрактал Броунівського руху}
 	\end{figure}
 	
 	\subsection{Вигляд модулю <<Колірні схеми>>}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.6]{31}
-		\caption{}
+		\caption{Зміна насиченості зеленого кольору у зображення}
 	\end{figure}
 	
 	\subsection{Вигляд модулю <<Рухомі зображення>>}
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.6]{41}
-		\caption{}
+		\caption{Екран введення паралелограма}
 	\end{figure}
 	
 	\begin{figure}[H]
 		\centering
 		\includegraphics[scale=0.6]{42}
-		\caption{}
+		\caption{Екран маніпуляції паралелограма}
 	\end{figure}
 	
 	\subsection{Код програми}
+	\paragraph{FractalsA.vue}
+	:
 	\begin{tiny}
 		\begin{lstlisting}
 <template>
@@ -484,6 +511,10 @@ export default {
 }
 </style>
 		\end{lstlisting}
+		\end{tiny}
+		\paragraph{FractalsB.vue}
+		:
+		\begin{tiny}
 		\begin{lstlisting}
 <template>
 <div class="d-flex" style="height: 540px; width: 800px;">
@@ -693,6 +724,10 @@ export default {
 }
 </style>
 		\end{lstlisting}
+		\end{tiny}
+		\paragraph{Colors.vue}
+		:
+		\begin{tiny}
 		\begin{lstlisting}
 <template>
 <canvas hidden ref="canvas"></canvas>
@@ -1022,6 +1057,10 @@ export default {
 }
 </style>
 		\end{lstlisting}
+		\end{tiny}
+		\paragraph{MovingImages.vue}
+		:
+		\begin{tiny}
 		\begin{lstlisting}
 <template>
 <div v-if="start" class="d-flex justify-content-center align-items-center" style="height: 540px; width: 800px;">

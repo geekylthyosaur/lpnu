@@ -172,7 +172,7 @@ export default {
     };
   },
   mounted() {
-    this.$emit('help', 'materials');
+    this.$emit('help', 'Виберіть тему в меню зліва та отримуйте доступ до теоретичних матеріалів');
   },
   methods: {
     

@@ -1,33 +1,33 @@
 \babel@toc {ukrainian}{}\relax 
-\contentsline {section}{\numberline {1}Завдання}{2}{}%
-\contentsline {subsection}{\numberline {1.1}Індивідуальний варіант}{2}{}%
-\contentsline {section}{\numberline {2}Теоретичні відомості}{3}{}%
-\contentsline {subsection}{\numberline {2.1}Опис функцій програми}{3}{}%
-\contentsline {subsubsection}{\numberline {2.1.1}Діаграма прецедентів програми}{3}{}%
-\contentsline {subsubsection}{\numberline {2.1.2}Специфікація функцій програми}{4}{}%
-\contentsline {subsection}{\numberline {2.2}Алгоритми фракталів}{4}{}%
-\contentsline {subsubsection}{\numberline {2.2.1}Фрактал Мандельброта}{4}{}%
-\contentsline {subsubsection}{\numberline {2.2.2}Броунівський рух}{4}{}%
-\contentsline {subsection}{\numberline {2.3}Анотація кольорових моделей}{5}{}%
-\contentsline {subsubsection}{\numberline {2.3.1}Модель RGB (Red, Green, Blue)}{5}{}%
-\contentsline {paragraph}{Практичне застосування:}{5}{}%
-\contentsline {paragraph}{Переваги:}{5}{}%
-\contentsline {paragraph}{Недоліки:}{5}{}%
-\contentsline {subsubsection}{\numberline {2.3.2}Модель HSV (Hue, Saturation, Value)}{5}{}%
-\contentsline {paragraph}{Практичне застосування:}{6}{}%
-\contentsline {paragraph}{Переваги:}{6}{}%
-\contentsline {paragraph}{Недоліки:}{6}{}%
-\contentsline {subsection}{\numberline {2.4}Оптимальний матричний вираз афінних перетворень}{6}{}%
-\contentsline {subsection}{\numberline {2.5}Реалізація графічного режиму}{7}{}%
-\contentsline {section}{\numberline {3}Результати}{8}{}%
-\contentsline {subsection}{\numberline {3.1}Wireflow}{8}{}%
-\contentsline {subsection}{\numberline {3.2}Вигляд модулю <<Фрактали>>}{9}{}%
-\contentsline {subsection}{\numberline {3.3}Вигляд модулю <<Колірні схеми>>}{10}{}%
-\contentsline {subsection}{\numberline {3.4}Вигляд модулю <<Рухомі зображення>>}{11}{}%
-\contentsline {subsection}{\numberline {3.5}Код програми}{12}{}%
-\contentsline {paragraph}{FractalsA.vue}{12}{}%
-\contentsline {paragraph}{FractalsB.vue}{16}{}%
-\contentsline {paragraph}{Colors.vue}{20}{}%
-\contentsline {paragraph}{MovingImages.vue}{26}{}%
-\contentsline {section}{\numberline {4}Висновки}{31}{}%
-\contentsline {section}{\numberline {5}Список використаних інформаційних джерел}{31}{}%
+\contentsline {section}{\numberline {1}Завдання}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Індивідуальний варіант}{2}{subsection.1.1}%
+\contentsline {section}{\numberline {2}Теоретичні відомості}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Опис функцій програми}{3}{subsection.2.1}%
+\contentsline {subsubsection}{\numberline {2.1.1}Діаграма прецедентів програми}{3}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\numberline {2.1.2}Специфікація функцій програми}{3}{subsubsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.2}Алгоритми фракталів}{4}{subsection.2.2}%
+\contentsline {subsubsection}{\numberline {2.2.1}Фрактал Мандельброта}{4}{subsubsection.2.2.1}%
+\contentsline {subsubsection}{\numberline {2.2.2}Броунівський рух}{5}{subsubsection.2.2.2}%
+\contentsline {subsection}{\numberline {2.3}Анотація кольорових моделей}{5}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}Модель RGB (Red, Green, Blue)}{5}{subsubsection.2.3.1}%
+\contentsline {paragraph}{Практичне застосування:}{6}{section*.3}%
+\contentsline {paragraph}{Переваги:}{6}{section*.4}%
+\contentsline {paragraph}{Недоліки:}{6}{section*.5}%
+\contentsline {subsubsection}{\numberline {2.3.2}Модель HSV (Hue, Saturation, Value)}{6}{subsubsection.2.3.2}%
+\contentsline {paragraph}{Практичне застосування:}{6}{section*.6}%
+\contentsline {paragraph}{Переваги:}{7}{section*.7}%
+\contentsline {paragraph}{Недоліки:}{7}{section*.8}%
+\contentsline {subsection}{\numberline {2.4}Оптимальний матричний вираз афінних перетворень}{7}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Реалізація графічного режиму}{7}{subsection.2.5}%
+\contentsline {section}{\numberline {3}Результати}{9}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Wireflow}{9}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Вигляд модулю <<Фрактали>>}{10}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Вигляд модулю <<Колірні схеми>>}{11}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Вигляд модулю <<Рухомі зображення>>}{12}{subsection.3.4}%
+\contentsline {subsection}{\numberline {3.5}Код програми}{13}{subsection.3.5}%
+\contentsline {paragraph}{FractalsA.vue}{13}{section*.16}%
+\contentsline {paragraph}{FractalsB.vue}{17}{section*.17}%
+\contentsline {paragraph}{Colors.vue}{21}{section*.18}%
+\contentsline {paragraph}{MovingImages.vue}{27}{section*.19}%
+\contentsline {section}{\numberline {4}Висновки}{32}{section.4}%
+\contentsline {section}{\numberline {5}Список використаних інформаційних джерел}{33}{section.5}%

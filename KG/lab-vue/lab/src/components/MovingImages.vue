@@ -131,7 +131,7 @@ export default {
           const y = chart.scales.y.getValueForPixel(canvasPosition.y);
           if (this.start) {
             this.chartData.datasets[0].data.push([x, y]);
-            this.points.push([x, y]);
+            this.points.push([x, y, 1]);
             chart.update();
           } else {
             let closestDistance = Number.POSITIVE_INFINITY;
@@ -196,9 +196,9 @@ export default {
       const cosTheta = Math.cos(radians);
       const sinTheta = Math.sin(radians);
       const translate = (dX, dY) => [
-        [1, 0, -dX],
-        [0, 1, -dY],
-        [0, 0, 1],
+        [1, 0, 0],
+        [0, 1, 0],
+        [dX, dY, 1],
       ];
       const rotation = [
         [cosTheta, -sinTheta, 0],
@@ -211,14 +211,13 @@ export default {
         [0, 0, 1],
       ];
 
-      return points.map(point => 
-        math.multiply(
-          translate(-center[0], -center[1]),
-          rotation,
-          scale,
-          translate(center[0], center[1]),
-          [point[0], point[1], 1]
-        ));
+      return math.multiply(
+        points,
+        translate(-center[0], -center[1]),
+        rotation,
+        scale,
+        translate(center[0], center[1]),
+      );
     },
     saveImage() {
       const chart = this.$refs.chart.chart;
@@ -241,7 +240,7 @@ export default {
           const p2 = this.points[1];
           const p3 = this.points[2];
           const o = [p1[0]/2 + p3[0]/2, p1[1]/2 + p3[1]/2];
-          const p4 = [o[0]*2 - p2[0], o[1]*2 - p2[1]];
+          const p4 = [o[0]*2 - p2[0], o[1]*2 - p2[1], 1];
           this.chartData.datasets[0].data.push(p4);
           this.chartData.datasets[0].data.push(p1);
           this.points.push(p4);

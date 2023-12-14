@@ -55,12 +55,12 @@ export default {
       quizData: {
         1: [
             {
-                q: 'Що таке фрактал?',
+                q: 'Що визначає фрактальна розмірність?',
                 a: [
-                    { t: 'Математична множина з повторюваним візерунком', isCorrect: true, status: 'none' },
-                    { t: 'Тип овоча', isCorrect: false, status: 'none' },
-                    { t: 'Нова мова програмування', isCorrect: false, status: 'none' },
-                    { t: 'Вид птаха', isCorrect: false, status: 'none' },
+                    { t: 'Кількість пікселів у зображенні', isCorrect: false, status: 'none' },
+                    { t: 'Складність форми, яка змінюється з масштабом', isCorrect: true, status: 'none' },
+                    { t: 'Кількість кольорів у зображенні', isCorrect: false, status: 'none' },
+                    { t: 'Глибина зображення', isCorrect: false, status: 'none' },
                 ],
             },
             {
@@ -79,15 +79,6 @@ export default {
                     { t: 'Бенуа Мандельброт', isCorrect: true, status: 'none' },
                     { t: 'Пєр Ферма', isCorrect: false, status: 'none' },
                     { t: 'Софія Ковалевськая', isCorrect: false, status: 'none' },
-                ],
-            },
-            {
-                q: 'Що визначає фрактальна розмірність?',
-                a: [
-                    { t: 'Кількість пікселів у зображенні', isCorrect: false, status: 'none' },
-                    { t: 'Складність форми, яка змінюється з масштабом', isCorrect: true, status: 'none' },
-                    { t: 'Кількість кольорів у зображенні', isCorrect: false, status: 'none' },
-                    { t: 'Глибина зображення', isCorrect: false, status: 'none' },
                 ],
             },
             {
@@ -148,15 +139,6 @@ export default {
             },
         ],
         3: [
-            {
-                q: 'Що таке афінні перетворення?',
-                a: [
-                    { t: 'Перетворення, які зберігають колінеарність та відношення відстаней', isCorrect: true, status: 'none' },
-                    { t: 'Тип танцю', isCorrect: false, status: 'none' },
-                    { t: 'Техніка приготування їжі', isCorrect: false, status: 'none' },
-                    { t: 'Давньомовна', isCorrect: false, status: 'none' },
-                ],
-            },
             {
                 q: 'Які афінні перетворення використовуються в графіці?',
                 a: [

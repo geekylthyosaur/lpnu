@@ -8,6 +8,7 @@ build*
 *lock*
 *.pdf
 !task.pdf
+!kpp.pdf
 bin/
 obj/
 .vs

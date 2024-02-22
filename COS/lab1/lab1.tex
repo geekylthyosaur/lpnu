@@ -1,0 +1,146 @@
+\documentclass[oneside,14pt]{extarticle}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{subfig}
+\usepackage{enumitem}
+\geometry{
+	a4paper,
+	left=20mm,
+	right=20mm,
+	top=15mm,
+	bottom=15mm,
+}
+\lstset{
+	language=c,
+	tabsize=4,
+	keepspaces,
+	showstringspaces=false,
+	frame=single,
+	language=python,
+}
+\graphicspath{ {./pictures} }
+\setlength{\parindent}{4em}
+
+\newcommand\subject{Основи програмування вбудованих систем}
+\newcommand\lecturer{професор кафедри ПЗ\\Гавриш В.І.}
+\newcommand\teacher{доцент кафедри ПЗ\\Крук О.Г.}
+\newcommand\mygroup{ПЗ-32}
+\newcommand\lab{1}
+\newcommand\theme{Моделювання аналогових $2\pi$- періодичних сигналів рядом Фур’є}
+\newcommand\purpose{Наблизити рядом Фур’є аналоговий $2\pi$- періодичний
+	сигнал, виконати геометричне зображення функції, якою описано цей сигнал, та
+	кривої, яку подано рядом Фур’є. Визначити середню абсолютну похибку
+	наближення}
+
+\begin{document}
+\begin{normalsize}
+	\begin{titlepage}
+		\thispagestyle{empty}
+		\begin{center}
+			\textbf{МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\\
+				НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ "ЛЬВІВСЬКА ПОЛІТЕХНІКА"}
+		\end{center}
+		\begin{flushright}
+			\textbf{ІКНІ}\\
+			Кафедра \textbf{ПЗ}
+		\end{flushright}
+		\vspace{80pt}
+		\begin{center}
+			\textbf{ЗВІТ}\\
+			\vspace{10pt}
+			до лабораторної роботи № \lab\\
+			\textbf{на тему}: <<\textit{\theme}>>\\
+			\textbf{з дисципліни}: <<\subject>>
+		\end{center}
+		\vspace{80pt}
+		\begin{flushright}
+			
+			\textbf{Лектор}:\\
+			\lecturer\\
+			\vspace{28pt}
+			\textbf{Виконав}:\\
+			
+			студент групи \mygroup\\
+			Коваленко Д.М.\\
+			\vspace{28pt}
+			\textbf{Прийняв}:\\
+			
+			\teacher\\
+			
+			\vspace{28pt}
+			«\rule{1cm}{0.15mm}» \rule{1.5cm}{0.15mm} 2024 р.\\
+			$\sum$ = \rule{1cm}{0.15mm}……………\\
+			
+		\end{flushright}
+		\vspace{\fill}
+		\begin{center}
+			\textbf{Львів — 2024}
+		\end{center}
+	\end{titlepage}
+		
+	\begin{description}
+		\item[Тема.] \theme.
+		\item[Мета.] \purpose.
+	\end{description}
+
+	\section*{Індивідуальне завдання}
+	Реалізувати довільною мовою програмування:
+	\begin{enumerate}[label=\arabic*)]
+		\item підпрограму (процедуру чи функцію), яка дає змогу визначати значення
+		потужності сигналу за аналітичним виразом функції та за
+		співвідношенням, отриманим у результатом розкладу її в ряд Фур’є;
+		\item підпрограми (процедури чи функції), які дають змогу визначити значення
+		коефіцієнтів ряду Фур’є;
+		\item підпрограму (процедуру чи функцію), яка дає змогу наблизити $2\pi$-
+		періодичний сигнал рядом Фур’є з певною точністю, яка пов’язана з
+		кількістю доданків N ряду;
+		\item підпрограму (процедуру чи функцію) для обчислення середньої
+		абсолютної похибки отриманого наближення;
+		\item підпрограму (процедуру чи функцію) для зберігання у файлі:
+		\begin{enumerate}[label=\alph*)]
+			\item параметра N;
+			\item визначених коефіцієнтів тригонометричного ряду Фур’є;
+			\item середню абсолютну похибку наближення;
+		\end{enumerate}
+		\item основну програму для виконання наближення заданого $2\pi$ - періодичного
+		сигналу тригонометричним рядом Фур'є, яка дає змогу виконати
+		геометричне відображення аналогового $2\pi$- періодичного сигналу та його
+		наближення кривою, описаною рядом Фур'є.
+	\end{enumerate}
+	
+	\subsection*{Варіант №6}
+	
+	\begin{equation}
+		f(t) = 
+		\begin{cases}
+			t, & \hspace{-12pt} -\pi < t \leq 0,\\
+			2t, & 0 < t < \pi
+		\end{cases}\nonumber
+	\end{equation}
+
+	\section*{Теоретичні відомості}
+	
+	\section*{Хід роботи}	
+
+	\subsection*{Код програми}
+	Файл \textit{main.py}:
+	{\small
+		\begin{lstlisting}
+#
+		\end{lstlisting}
+	}
+	
+	\section*{Висновки}
+	Під час виконання лабораторної роботи я наблизив рядом Фур’є аналоговий $2\pi$- періодичний
+	сигнал, виконав геометричне зображення функції, якою описано цей сигнал, та
+	кривої, яку подано рядом Фур’є. Визначив середню абсолютну похибку
+	наближення.
+	    
+\end{normalsize}
+\end{document}

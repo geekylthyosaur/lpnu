@@ -43,7 +43,7 @@ def save_results(N, coefficients, error):
         json.dump(results, file, indent=2)
         
 # Main program
-def main(start=-4*np.pi, end=4*np.pi, N=10):
+def main(start=-4*np.pi, end=4*np.pi, N=20):
     t_values = np.linspace(start, end, 1000)
     original_signal = [f(t) for t in t_values]
     coefficients = fourier_coefficients(f, N)

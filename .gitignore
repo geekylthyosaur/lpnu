@@ -11,4 +11,5 @@ build*
 !kpp.pdf
 bin/
 obj/
+venv/
 .vs

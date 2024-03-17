@@ -1,0 +1,164 @@
+\documentclass[oneside,14pt]{extarticle}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{subfig}
+\geometry{
+	a4paper,
+	left=20mm,
+	right=20mm,
+	top=15mm,
+	bottom=15mm,
+}
+\lstset{
+	language=c,
+	tabsize=4,
+	keepspaces,
+	showstringspaces=false,
+	frame=single,
+	breaklines,
+	language=C,
+}
+\graphicspath{ {./pictures} }
+\setlength{\parindent}{4em}
+
+\newcommand\subject{Основи програмування вбудованих систем}
+\newcommand\lecturer{доцентка кафедри ПЗ\\Марусенкова Т.А.}
+\newcommand\teacher{доцент кафедри ПЗ\\Крук О.Г.}
+\newcommand\mygroup{ПЗ-32}
+\newcommand\lab{6}
+\newcommand\theme{Робота з АЦП}
+\newcommand\purpose{Ознайомитися на практиці з параметрами АЦП у Keil uVision}
+
+\begin{document}
+\begin{normalsize}
+	\begin{titlepage}
+		\thispagestyle{empty}
+		\begin{center}
+			\textbf{МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\\
+				НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ "ЛЬВІВСЬКА ПОЛІТЕХНІКА"}
+		\end{center}
+		\begin{flushright}
+			\textbf{ІКНІ}\\
+			Кафедра \textbf{ПЗ}
+		\end{flushright}
+		\vspace{80pt}
+		\begin{center}
+			\textbf{ЗВІТ}\\
+			\vspace{10pt}
+			до лабораторної роботи № \lab\\
+			\textbf{на тему}: <<\textit{\theme}>>\\
+			\textbf{з дисципліни}: <<\subject>>
+		\end{center}
+		\vspace{80pt}
+		\begin{flushright}
+			
+			\textbf{Лекторка}:\\
+			\lecturer\\
+			\vspace{28pt}
+			\textbf{Виконав}:\\
+			
+			студент групи \mygroup\\
+			Коваленко Д.М.\\
+			\vspace{28pt}
+			\textbf{Прийняв}:\\
+			
+			\teacher\\
+			
+			\vspace{28pt}
+			«\rule{1cm}{0.15mm}» \rule{1.5cm}{0.15mm} 2024 р.\\
+			$\sum$ = \rule{1cm}{0.15mm}……………\\
+			
+		\end{flushright}
+		\vspace{\fill}
+		\begin{center}
+			\textbf{Львів — 2024}
+		\end{center}
+	\end{titlepage}
+		
+	\begin{description}
+		\item[Тема.] \theme.
+		\item[Мета.] \purpose.
+	\end{description}
+
+    \section*{Лабораторне завдання}
+    \begin{enumerate}
+        \item Створити у Keil uVision проект, в якому при температурі 15С і вище засвічується червоний світлодіод, інакше – синій. Створити різні температурні умови і перевірити роботу проекту.
+        \item З’ясувати значення кожного рядка коду у проекті. 
+    \end{enumerate}
+
+	\section*{Хід роботи}
+	
+	\subsection*{Код програми}
+	Файл \textit{main.c}:
+	{\small
+		\begin{lstlisting}
+#include "stm32f4xx_rcc.h"
+#include "stm32f4xx_adc.h"
+
+void gpio_init(void);
+void adc_init(void); 
+uint16_t readADC1(uint8_t channel); 
+
+int main(void) {
+	unsigned int result; 
+	adc_init(); 
+	
+	result = readADC1(ADC_Channel_1); 
+	if(((result - 0.76)/0.0025 + 25)<15){ 
+		GPIOD->ODR = 0x4000; 
+	} 
+	else { 
+		GPIOD->ODR = 0x8000; 
+	} 
+		
+	while (1); 
+		
+	return 0;
+}
+
+void gpio_init(void){ 
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN; 
+	GPIOD->MODER = 0x55000000; 
+	GPIOD->OTYPER = 0;
+	GPIOD->OSPEEDR = 0; 
+}
+
+void adc_init() { 
+	ADC_InitTypeDef ADC_InitStructure; 
+	ADC_CommonInitTypeDef adc_init; 
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE); 
+	ADC_DeInit(); 
+	ADC_StructInit(&ADC_InitStructure); 
+	adc_init.ADC_Mode = ADC_Mode_Independent; 
+	adc_init.ADC_Prescaler = ADC_Prescaler_Div2; 
+	ADC_InitStructure.ADC_ScanConvMode = DISABLE; 
+	ADC_InitStructure.ADC_ContinuousConvMode = DISABLE; 
+	ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConvEdge_None;
+	ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right; 
+	ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b; 
+	ADC_CommonInit(&adc_init); 
+	ADC_Init(ADC1, &ADC_InitStructure); 
+	ADC_Cmd(ADC1, ENABLE); 
+} 
+
+uint16_t readADC1(uint8_t channel) { 
+	ADC_RegularChannelConfig(ADC1, channel, 1, ADC_SampleTime_3Cycles);
+	ADC_SoftwareStartConv(ADC1); 
+	while (ADC_GetFlagStatus(ADC1, ADC_FLAG_EOC) == RESET); 
+	return ADC_GetConversionValue(ADC1); 
+} 
+
+		\end{lstlisting}
+	}
+	
+	\section*{Висновки}
+	Під час виконання лабораторної роботи я ознайомився на практиці з параметрами АЦП у Keil uVision. Розробив проект в якому при температурі 15С і вище засвічується червоний світлодіод, інакше – синій. Створив різні температурні умови і перевірив роботу проекту.
+	    
+\end{normalsize}
+\end{document}

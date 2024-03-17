@@ -1,0 +1,339 @@
+\documentclass[oneside,14pt]{extarticle}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{subfig}
+\geometry{
+	a4paper,
+	left=20mm,
+	right=20mm,
+	top=15mm,
+	bottom=15mm,
+}
+\lstset{
+	language=c,
+	tabsize=4,
+	keepspaces,
+	showstringspaces=false,
+	frame=single,
+	breaklines,
+	language=C,
+}
+\graphicspath{ {./pictures} }
+\setlength{\parindent}{4em}
+
+\newcommand\subject{Основи програмування вбудованих систем}
+\newcommand\lecturer{доцентка кафедри ПЗ\\Марусенкова Т.А.}
+\newcommand\teacher{доцент кафедри ПЗ\\Крук О.Г.}
+\newcommand\mygroup{ПЗ-32}
+\newcommand\lab{4-5}
+\newcommand\theme{Дослідження протоколу SPI на прикладі акселерометра у складі STM32F4-Discovery та LCD-дисплею}
+\newcommand\purpose{Засвоїти принципи роботи інтерфейсу SPI та здобути практичні навички організації взаємодії мікроконтролера з периферійними пристроями через SPI за допомогою бібліотек CMSIS, SPL та HAL, акселерометра LIS302DL у складі оціночної плати stm32f4Discovery та дисплею моделі ET-NOKIA LCD 5110}
+
+\begin{document}
+\begin{normalsize}
+	\begin{titlepage}
+		\thispagestyle{empty}
+		\begin{center}
+			\textbf{МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\\
+				НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ "ЛЬВІВСЬКА ПОЛІТЕХНІКА"}
+		\end{center}
+		\begin{flushright}
+			\textbf{ІКНІ}\\
+			Кафедра \textbf{ПЗ}
+		\end{flushright}
+		\vspace{80pt}
+		\begin{center}
+			\textbf{ЗВІТ}\\
+			\vspace{10pt}
+			до лабораторних робіт № \lab\\
+			\textbf{на тему}: <<\textit{\theme}>>\\
+			\textbf{з дисципліни}: <<\subject>>
+		\end{center}
+		\vspace{80pt}
+		\begin{flushright}
+			
+			\textbf{Лекторка}:\\
+			\lecturer\\
+			\vspace{28pt}
+			\textbf{Виконав}:\\
+			
+			студент групи \mygroup\\
+			Коваленко Д.М.\\
+			\vspace{28pt}
+			\textbf{Прийняв}:\\
+			
+			\teacher\\
+			
+			\vspace{28pt}
+			«\rule{1cm}{0.15mm}» \rule{1.5cm}{0.15mm} 2024 р.\\
+			$\sum$ = \rule{1cm}{0.15mm}……………\\
+			
+		\end{flushright}
+		\vspace{\fill}
+		\begin{center}
+			\textbf{Львів — 2024}
+		\end{center}
+	\end{titlepage}
+		
+	\begin{description}
+		\item[Тема.] \theme.
+		\item[Мета.] \purpose.
+	\end{description}
+
+    \section*{Лабораторне завдання}
+    \begin{enumerate}
+        \item Ознайомитися з викладеним вище теоретичним матеріалом.
+        \item Написати функцію ініціалізації GPIO та SPI для обміну даними з акселерометром за допомогою CMSIS SPI Driver, SPL або HAL. Студент з порядковим номером N  у журналі вибирає CMSIS SPI Driver, якщо N\%3 = 1, SPL – якщо N\%3 = 2, HAL – якщо N\%3 = 0.
+        \item Розробити функції для обміну даними (читання та запису) за допомогою  CMSIS SPI Driver, SPL або HAL. Бібліотеку вибрати з тих же міркувань, що й у пункті 2.
+        Зчитати модель акселерометра. За допомогою вікна Watch у середовищі Keil uVision перевірити покази акселерометра. Злегка обертаючи плату, приблизно оцінити правильність показів. Продемонструвати результати роботи.
+        \item Додати у проект функції для ініціалізації дисплею ET-NOKIA LCD 5110. Визначити за наданими кодами, які з виводів GPIO задіяні для обміну даними з дисплеєм і за що відповідає кожен вивід.
+        \item Підключити макетну плату з дисплеєм до визначених виводів (усі виводи дисплею промарковані). Вивід «Живлення» дисплею необхідно підключити до 3 В, як показано на рис. 9.
+        \item Написати додаткові функції для роботи з дисплеєм у відповідності до індивідуального завдання.
+        \item Підготувати та здати звіт про виконання лабораторної роботи. 
+    \end{enumerate}
+
+	\section*{Індивідуальне завдання}
+	6. Написати функцію для відображення на дисплеї парних рядків зображення.
+
+	\section*{Теоретичні відомості}
+	6. Які є режими роботи SPI? Що означає CPOL? CPHA?
+	
+	SPI працює в чотирьох режимах, визначених комбінацією двох параметрів: CPOL (Polarity of the Clock) та CPHA (Phase of the Clock). CPOL визначає базовий рівень годинникового сигналу: 0 - низький, 1 - високий. CPHA визначає, коли дані мають бути зчитані: на першому (0) або другому (1) фронті сигналу годинника.
+	
+	\section*{Хід роботи}
+	
+	\subsection*{Код програми}
+	Файл \textit{main.c}:
+	{\small
+		\begin{lstlisting}
+#include "main.h"
+
+extern SPI_HandleTypeDef LCD_SPI_Handle;
+extern uint8_t LCD_Buffer[LCD_WIDTH*LCD_HEIGHT/8];
+
+int main(void) {
+	HAL_Init();
+	GPIO_Init();
+	SPI_Init();
+	LCD_Init();
+	
+	LCD_ClearOddRows();
+	LCD_Update();
+	
+	while (1);
+	
+	return 0;
+}
+
+void GPIO_Init(void) {
+	GPIO_InitTypeDef GPIO_InitStruct = {0};
+
+	__GPIOC_CLK_ENABLE();
+
+    /*
+     * GPIO:
+     * PC7 - CS
+     * PC8 - RST
+     * PC8 - DC
+    */
+	GPIO_InitStruct.Pin = LCD_CS_PIN | LCD_RST_PIN | LCD_DC_PIN;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(LCD_PORT, &GPIO_InitStruct);
+}
+
+void SPI_Init(void) {
+	__HAL_RCC_SPI3_CLK_ENABLE();
+
+    /* SPI3:
+     * PC10 - SCK
+     * PC11 - MISO
+     * PC12 - MOSI
+    */
+	LCD_SPI_Handle.Instance = SPI3;
+	LCD_SPI_Handle.Init.Mode = SPI_MODE_MASTER;
+	LCD_SPI_Handle.Init.Direction = SPI_DIRECTION_2LINES;
+	LCD_SPI_Handle.Init.DataSize = SPI_DATASIZE_8BIT;
+	LCD_SPI_Handle.Init.CLKPolarity = SPI_POLARITY_HIGH;
+	LCD_SPI_Handle.Init.CLKPhase = SPI_PHASE_2EDGE;
+	LCD_SPI_Handle.Init.NSS = SPI_NSS_SOFT;
+	LCD_SPI_Handle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
+	LCD_SPI_Handle.Init.FirstBit = SPI_FIRSTBIT_MSB;
+	LCD_SPI_Handle.Init.TIMode = SPI_TIMODE_DISABLED;
+	LCD_SPI_Handle.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLED;
+	LCD_SPI_Handle.Init.CRCPolynomial = 10;
+	HAL_SPI_Init(&LCD_SPI_Handle);
+}
+
+void LCD_Init(void) {
+	RST0;
+	Delay(10);
+	RST1;
+	LCD_Command(0x21);
+	LCD_Command(0xC0);
+	LCD_Command(0x07);
+	LCD_Command(0x13);
+	LCD_Command(0x20);
+	LCD_Command(0x0C);
+}
+
+void LCD_Command(uint8_t cmd) {
+	CS0;
+	LCD_COMMAND;
+	LCD_Write(cmd);
+	CS1;
+}
+
+void LCD_Data(uint8_t data) {
+	CS0;
+	LCD_DATA;
+	LCD_Write(data);
+	CS1;
+}
+
+void LCD_Write(uint8_t byte) {
+	HAL_SPI_Transmit(&LCD_SPI_Handle, &byte, 1, HAL_MAX_DELAY);
+}
+
+void LCD_Clear(void) {
+	memset(LCD_Buffer, 0, sizeof(LCD_Buffer));
+	LCD_Update();
+}
+
+void LCD_Update(void) {
+	LCD_Goto(0, 0);
+    for (int i = 0; i < (LCD_WIDTH * LCD_HEIGHT / 8); i++)
+        LCD_Data(LCD_Buffer[i]);
+}
+
+void LCD_Goto(uint8_t x, uint8_t y) {
+  LCD_Command(0x80 | x);
+  LCD_Command(0x40 | y);
+}
+
+void LCD_ClearOddRows(void) {
+	const int bytesPerRow = LCD_WIDTH / 8;
+	const int totalRows = LCD_HEIGHT / 8;
+
+	for (int row = 0; row < totalRows; row++) {
+		if (row % 2 == 0) continue;
+
+		int startIndex = row * bytesPerRow * 8;
+		
+		for (int i = 0; i < bytesPerRow * 8; i++) 
+			LCD_Buffer[startIndex + i] = 0;
+	}
+}
+
+void Delay(int ms) {
+	SysTick->LOAD = 16000-1;
+	SysTick->VAL = 0;
+	SysTick->CTRL = 0x5;
+		for (int i = 0; i < ms; i++)
+			while (!(SysTick->CTRL & 0x10000));
+	SysTick->CTRL=0;
+}
+		\end{lstlisting}
+	}
+	
+	Файл \textit{main.h}:
+	{\small
+		\begin{lstlisting}
+#include <stdbool.h>
+#include <string.h>
+#include <stm32f4xx_hal.h>
+#include <stm32f4xx_hal_gpio.h>
+#include <stm32f4xx_hal_spi.h>
+
+#define LCD_PORT GPIOC
+
+#define LCD_CS_PIN GPIO_PIN_7
+#define CS0 HAL_GPIO_WritePin(LCD_PORT, LCD_CS_PIN, GPIO_PIN_RESET)
+#define CS1 HAL_GPIO_WritePin(LCD_PORT, LCD_CS_PIN, GPIO_PIN_SET)
+
+#define LCD_RST_PIN GPIO_PIN_8
+#define RST0 HAL_GPIO_WritePin(LCD_PORT, LCD_RST_PIN, GPIO_PIN_RESET)
+#define RST1 HAL_GPIO_WritePin(LCD_PORT, LCD_RST_PIN, GPIO_PIN_SET)
+
+#define LCD_DC_PIN GPIO_PIN_9
+#define LCD_COMMAND HAL_GPIO_WritePin(LCD_PORT, LCD_DC_PIN, GPIO_PIN_RESET)
+#define LCD_DATA 		HAL_GPIO_WritePin(LCD_PORT, LCD_DC_PIN, GPIO_PIN_SET)
+
+#define LCD_WIDTH 84
+#define LCD_HEIGHT 48
+#define WHITE 0
+#define BLACK 1
+
+void GPIO_Init(void);
+void SPI_Init(void);
+void LCD_Init(void);
+void LCD_Command(uint8_t cmd);
+void LCD_Data(uint8_t data);
+void LCD_Write(uint8_t byte);
+void LCD_Clear(void);
+void LCD_Update(void);
+void LCD_Goto(uint8_t x, uint8_t y);
+void LCD_ClearOddRows(void);
+
+void Delay(int ms);
+
+static SPI_HandleTypeDef LCD_SPI_Handle;
+static uint8_t LCD_Buffer[LCD_WIDTH*LCD_HEIGHT/8] = {
+	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (0,0)->(11,7)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (12,0)->(23,7)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE0, // (24,0)->(35,7)
+  0xF0, 0xF8, 0xFC, 0xFC, 0xFE, 0xFE, 0xFE, 0xFE, 0x1E, 0x0E, 0x02, 0x00, // (36,0)->(47,7)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (48,0)->(59,7)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (60,0)->(71,7)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (72,0)->(83,7)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (0,8)->(11,15)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (12,8)->(23,15)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x03, // (24,8)->(35,15)
+  0x0F, 0x1F, 0x3F, 0x7F, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0xFC, 0xF8, // (36,8)->(47,15)
+  0xF8, 0xF0, 0xF8, 0xFE, 0xFE, 0xFC, 0xF8, 0xE0, 0x00, 0x00, 0x00, 0x00, // (48,8)->(59,15)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (60,8)->(71,15)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (72,8)->(83,15)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (0,16)->(11,23)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (12,16)->(23,23)
+  0x00, 0x00, 0xF8, 0xFC, 0xFE, 0xFE, 0xFF, 0xFF, 0xF3, 0xE0, 0xE0, 0xC0, // (24,16)->(35,23)
+  0xC0, 0xC0, 0xE0, 0xE0, 0xF1, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // (36,16)->(47,23)
+  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x3E, 0x00, 0x00, 0x00, // (48,16)->(59,23)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (60,16)->(71,23)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (72,16)->(83,23)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (0,24)->(11,31)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (12,24)->(23,31)
+  0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // (24,24)->(35,31)
+  0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, // (36,24)->(47,31)
+  0xFF, 0xFF, 0xFF, 0x7F, 0x3F, 0x1F, 0x07, 0x01, 0x00, 0x00, 0x00, 0x00, // (48,24)->(59,31)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (60,24)->(71,31)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (72,24)->(83,31)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (0,32)->(11,39)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (12,32)->(23,39)
+  0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x7F, 0x3F, 0x1F, // (24,32)->(35,39)
+  0x0F, 0x0F, 0x0F, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x03, 0x03, // (36,32)->(47,39)
+  0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (48,32)->(59,39)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (60,32)->(71,39)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (72,32)->(83,39)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (0,40)->(11,47)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (12,40)->(23,47)
+  0x00, 0x00, 0x3F, 0x1F, 0x0F, 0x07, 0x03, 0x01, 0x00, 0x00, 0x00, 0x00, // (24,40)->(35,47)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (36,40)->(47,47)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (48,40)->(59,47)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (60,40)->(71,47)
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (72,40)->(83,47)
+};
+		\end{lstlisting}
+	}
+	
+	\section*{Висновки}
+	Під час виконання лабораторної роботи я засвоїв принципи роботи інтерфейсу SPI та здобув практичні навички організації взаємодії мікроконтролера з периферійними пристроями через SPI за допомогою бібліотек CMSIS, SPL та HAL, акселерометра LIS302DL у складі оціночної плати stm32f4Discovery та дисплею моделі ET-NOKIA LCD 5110. Розробив функцію для відображення на дисплеї парних рядків зображення.
+	    
+\end{normalsize}
+\end{document}

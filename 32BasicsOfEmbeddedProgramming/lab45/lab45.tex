@@ -114,7 +114,7 @@
 		\begin{lstlisting}
 #include "main.h"
 
-extern SPI_HandleTypeDef LCD_SPI_Handle;
+extern SPI_HandleTypeDef SPI_Handle;
 extern uint8_t LCD_Buffer[LCD_WIDTH*LCD_HEIGHT/8];
 
 int main(void) {
@@ -122,60 +122,62 @@ int main(void) {
 	GPIO_Init();
 	SPI_Init();
 	LCD_Init();
+	LIS3DSH_Init(TM_LIS3DSH_Sensitivity_6G, TM_LIS3DSH_Filter_200Hz);
 	
 	LCD_ClearOddRows();
 	LCD_Update();
 	
-	while (1);
+	TM_LIS302DL_LIS3DSH_t axesData;
+	
+	while (1) {
+		LIS3DSH_ReadAxes(&axesData);
+	}
 	
 	return 0;
+}
+
+void SPI_Init(void) {
+	__HAL_RCC_SPI3_CLK_ENABLE();
+
+	SPI_Handle.Instance = SPI3;
+	SPI_Handle.Init.Mode = SPI_MODE_MASTER;
+	SPI_Handle.Init.Direction = SPI_DIRECTION_2LINES;
+	SPI_Handle.Init.DataSize = SPI_DATASIZE_8BIT;
+	SPI_Handle.Init.CLKPolarity = SPI_POLARITY_HIGH;
+	SPI_Handle.Init.CLKPhase = SPI_PHASE_2EDGE;
+	SPI_Handle.Init.NSS = SPI_NSS_SOFT;
+	SPI_Handle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
+	SPI_Handle.Init.FirstBit = SPI_FIRSTBIT_MSB;
+	SPI_Handle.Init.TIMode = SPI_TIMODE_DISABLED;
+	SPI_Handle.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLED;
+	SPI_Handle.Init.CRCPolynomial = 10;
+	HAL_SPI_Init(&SPI_Handle);
 }
 
 void GPIO_Init(void) {
 	GPIO_InitTypeDef GPIO_InitStruct = {0};
 
 	__GPIOC_CLK_ENABLE();
+	__GPIOE_CLK_ENABLE();
 
-    /*
-     * GPIO:
-     * PC7 - CS
-     * PC8 - RST
-     * PC8 - DC
-    */
 	GPIO_InitStruct.Pin = LCD_CS_PIN | LCD_RST_PIN | LCD_DC_PIN;
+	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+	HAL_GPIO_Init(LCD_PORT, &GPIO_InitStruct);
+	
+	memset(&GPIO_InitStruct, 0, sizeof(GPIO_InitTypeDef));
+	GPIO_InitStruct.Pin = LIS3DSH_CS_PIN;
 	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
 	GPIO_InitStruct.Pull = GPIO_NOPULL;
 	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
 	HAL_GPIO_Init(LCD_PORT, &GPIO_InitStruct);
 }
 
-void SPI_Init(void) {
-	__HAL_RCC_SPI3_CLK_ENABLE();
-
-    /* SPI3:
-     * PC10 - SCK
-     * PC11 - MISO
-     * PC12 - MOSI
-    */
-	LCD_SPI_Handle.Instance = SPI3;
-	LCD_SPI_Handle.Init.Mode = SPI_MODE_MASTER;
-	LCD_SPI_Handle.Init.Direction = SPI_DIRECTION_2LINES;
-	LCD_SPI_Handle.Init.DataSize = SPI_DATASIZE_8BIT;
-	LCD_SPI_Handle.Init.CLKPolarity = SPI_POLARITY_HIGH;
-	LCD_SPI_Handle.Init.CLKPhase = SPI_PHASE_2EDGE;
-	LCD_SPI_Handle.Init.NSS = SPI_NSS_SOFT;
-	LCD_SPI_Handle.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_128;
-	LCD_SPI_Handle.Init.FirstBit = SPI_FIRSTBIT_MSB;
-	LCD_SPI_Handle.Init.TIMode = SPI_TIMODE_DISABLED;
-	LCD_SPI_Handle.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLED;
-	LCD_SPI_Handle.Init.CRCPolynomial = 10;
-	HAL_SPI_Init(&LCD_SPI_Handle);
-}
-
 void LCD_Init(void) {
-	RST0;
+	LCD_RST0;
 	Delay(10);
-	RST1;
+	LCD_RST1;
 	LCD_Command(0x21);
 	LCD_Command(0xC0);
 	LCD_Command(0x07);
@@ -185,21 +187,21 @@ void LCD_Init(void) {
 }
 
 void LCD_Command(uint8_t cmd) {
-	CS0;
+	LCD_CS0;
 	LCD_COMMAND;
 	LCD_Write(cmd);
-	CS1;
+	LCD_CS1;
 }
 
 void LCD_Data(uint8_t data) {
-	CS0;
+	LCD_CS0;
 	LCD_DATA;
 	LCD_Write(data);
-	CS1;
+	LCD_CS1;
 }
 
 void LCD_Write(uint8_t byte) {
-	HAL_SPI_Transmit(&LCD_SPI_Handle, &byte, 1, HAL_MAX_DELAY);
+	HAL_SPI_Transmit(&SPI_Handle, &byte, 1, HAL_MAX_DELAY);
 }
 
 void LCD_Clear(void) {
@@ -209,8 +211,8 @@ void LCD_Clear(void) {
 
 void LCD_Update(void) {
 	LCD_Goto(0, 0);
-    for (int i = 0; i < (LCD_WIDTH * LCD_HEIGHT / 8); i++)
-        LCD_Data(LCD_Buffer[i]);
+  for (int i = 0; i < (LCD_WIDTH * LCD_HEIGHT / 8); i++)
+    LCD_Data(LCD_Buffer[i]);
 }
 
 void LCD_Goto(uint8_t x, uint8_t y) {
@@ -240,6 +242,82 @@ void Delay(int ms) {
 			while (!(SysTick->CTRL & 0x10000));
 	SysTick->CTRL=0;
 }
+
+void LIS3DSH_Read(uint8_t reg, uint8_t* val) {
+	LIS3DSH_CS0;
+	reg = reg | 0x80;
+	HAL_SPI_TransmitReceive(&SPI_Handle, &reg, val, 1, 10000);
+	reg = 0;
+	HAL_SPI_TransmitReceive(&SPI_Handle, &reg, val, 1, 10000);
+	LIS3DSH_CS1;
+}
+
+void LIS3DSH_Write(uint8_t reg, uint8_t val) {
+  uint8_t data[1];
+	LIS3DSH_CS0;
+	HAL_SPI_TransmitReceive(&SPI_Handle, &reg, data, 1, 10000);
+	HAL_SPI_TransmitReceive(&SPI_Handle, &val, data, 1, 10000);
+	LIS3DSH_CS1;
+}
+
+void LIS3DSH_ReadAxes(TM_LIS302DL_LIS3DSH_t* axesData) {
+	uint8_t buffer[6];
+
+	LIS3DSH_Read(LIS3DSH_OUT_X_L_ADDR, &buffer[0]);
+	LIS3DSH_Read(LIS3DSH_OUT_X_H_ADDR, &buffer[1]);
+	LIS3DSH_Read(LIS3DSH_OUT_Y_L_ADDR, &buffer[2]);
+	LIS3DSH_Read(LIS3DSH_OUT_Y_H_ADDR, &buffer[3]);
+	LIS3DSH_Read(LIS3DSH_OUT_Z_L_ADDR, &buffer[4]);
+	LIS3DSH_Read(LIS3DSH_OUT_Z_H_ADDR, &buffer[5]);
+	
+	axesData->X = (int16_t)((buffer[1] << 8) + buffer[0]) * 0.06;
+	axesData->Y = (int16_t)((buffer[3] << 8) + buffer[2]) * 0.06;
+	axesData->Z = (int16_t)((buffer[5] << 8) + buffer[4]) * 0.06;
+}
+
+void LIS3DSH_Init(TM_LIS302DL_LIS3DSH_Sensitivity_t Sensitivity, TM_LIS302DL_LIS3DSH_Filter_t Filter) {
+	uint8_t tmpreg;
+	uint16_t temp;
+
+	temp = (uint16_t) (LIS3DSH_DATARATE_100 | LIS3DSH_XYZ_ENABLE);
+	temp |= (uint16_t) (LIS3DSH_SERIALINTERFACE_4WIRE | LIS3DSH_SELFTEST_NORMAL);
+	
+	if (Sensitivity == TM_LIS3DSH_Sensitivity_2G) {
+		temp |= (uint16_t) (LIS3DSH_FULLSCALE_2);
+		LIS3DSH_Sensitivity = LIS3DSH_SENSITIVITY_0_06G;
+	} else if (Sensitivity == TM_LIS3DSH_Sensitivity_4G) {
+		temp |= (uint16_t) (LIS3DSH_FULLSCALE_4);
+		LIS3DSH_Sensitivity = LIS3DSH_SENSITIVITY_0_12G;
+	} else if (Sensitivity == TM_LIS3DSH_Sensitivity_6G) {
+		temp |= (uint16_t) (LIS3DSH_FULLSCALE_6);
+		LIS3DSH_Sensitivity = LIS3DSH_SENSITIVITY_0_18G;
+	} else if (Sensitivity == TM_LIS3DSH_Sensitivity_8G) {
+		temp |= (uint16_t) (LIS3DSH_FULLSCALE_8);
+		LIS3DSH_Sensitivity = LIS3DSH_SENSITIVITY_0_24G;
+	} else if (Sensitivity == TM_LIS3DSH_Sensitivity_16G) {
+		temp |= (uint16_t) (LIS3DSH_FULLSCALE_16);
+		LIS3DSH_Sensitivity = LIS3DSH_SENSITIVITY_0_73G;
+	} else {
+		return;
+	}
+	
+	if (Filter == TM_LIS3DSH_Filter_800Hz) {
+		temp |= (uint16_t) (LIS3DSH_FILTER_BW_800 << 8);
+	} else if (Filter == TM_LIS3DSH_Filter_400Hz) {
+		temp |= (uint16_t) (LIS3DSH_FILTER_BW_400 << 8);
+	} else if (Filter == TM_LIS3DSH_Filter_200Hz) {
+		temp |= (uint16_t) (LIS3DSH_FILTER_BW_200 << 8);
+	} else if (Filter == TM_LIS3DSH_Filter_50Hz) {
+		temp |= (uint16_t) (LIS3DSH_FILTER_BW_50 << 8);
+	} else {
+		return;
+	}
+	
+	tmpreg = (uint8_t) (temp);
+	LIS3DSH_Write(LIS3DSH_CTRL_REG4_ADDR, tmpreg);
+	tmpreg = (uint8_t) (temp >> 8);
+	LIS3DSH_Write(LIS3DSH_CTRL_REG5_ADDR, tmpreg);
+}
 		\end{lstlisting}
 	}
 	
@@ -251,25 +329,30 @@ void Delay(int ms) {
 #include <stm32f4xx_hal.h>
 #include <stm32f4xx_hal_gpio.h>
 #include <stm32f4xx_hal_spi.h>
+#include <tm_stm32_lis302dl_lis3dsh.h>
 
 #define LCD_PORT GPIOC
 
 #define LCD_CS_PIN GPIO_PIN_7
-#define CS0 HAL_GPIO_WritePin(LCD_PORT, LCD_CS_PIN, GPIO_PIN_RESET)
-#define CS1 HAL_GPIO_WritePin(LCD_PORT, LCD_CS_PIN, GPIO_PIN_SET)
+#define LCD_CS0 HAL_GPIO_WritePin(LCD_PORT, LCD_CS_PIN, GPIO_PIN_RESET)
+#define LCD_CS1 HAL_GPIO_WritePin(LCD_PORT, LCD_CS_PIN, GPIO_PIN_SET)
 
 #define LCD_RST_PIN GPIO_PIN_8
-#define RST0 HAL_GPIO_WritePin(LCD_PORT, LCD_RST_PIN, GPIO_PIN_RESET)
-#define RST1 HAL_GPIO_WritePin(LCD_PORT, LCD_RST_PIN, GPIO_PIN_SET)
+#define LCD_RST0 HAL_GPIO_WritePin(LCD_PORT, LCD_RST_PIN, GPIO_PIN_RESET)
+#define LCD_RST1 HAL_GPIO_WritePin(LCD_PORT, LCD_RST_PIN, GPIO_PIN_SET)
 
 #define LCD_DC_PIN GPIO_PIN_9
 #define LCD_COMMAND HAL_GPIO_WritePin(LCD_PORT, LCD_DC_PIN, GPIO_PIN_RESET)
 #define LCD_DATA 		HAL_GPIO_WritePin(LCD_PORT, LCD_DC_PIN, GPIO_PIN_SET)
 
+#define LIS3DSH_PORT GPIOE
+
+#define LIS3DSH_CS_PIN GPIO_PIN_3
+#define LIS3DSH_CS0 HAL_GPIO_WritePin(LIS3DSH_PORT, LIS3DSH_CS_PIN, GPIO_PIN_RESET)
+#define LIS3DSH_CS1 HAL_GPIO_WritePin(LIS3DSH_PORT, LIS3DSH_CS_PIN, GPIO_PIN_SET)
+
 #define LCD_WIDTH 84
 #define LCD_HEIGHT 48
-#define WHITE 0
-#define BLACK 1
 
 void GPIO_Init(void);
 void SPI_Init(void);
@@ -282,9 +365,14 @@ void LCD_Update(void);
 void LCD_Goto(uint8_t x, uint8_t y);
 void LCD_ClearOddRows(void);
 
+void LIS3DSH_Read(uint8_t reg, uint8_t* val);
+void LIS3DSH_Write(uint8_t reg, uint8_t val);
+void LIS3DSH_ReadAxes(TM_LIS302DL_LIS3DSH_t* axesData);
+void LIS3DSH_Init(TM_LIS302DL_LIS3DSH_Sensitivity_t Sensitivity, TM_LIS302DL_LIS3DSH_Filter_t Filter);
+
 void Delay(int ms);
 
-static SPI_HandleTypeDef LCD_SPI_Handle;
+static SPI_HandleTypeDef SPI_Handle;
 static uint8_t LCD_Buffer[LCD_WIDTH*LCD_HEIGHT/8] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (0,0)->(11,7)
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (12,0)->(23,7)
@@ -329,6 +417,8 @@ static uint8_t LCD_Buffer[LCD_WIDTH*LCD_HEIGHT/8] = {
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (60,40)->(71,47)
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // (72,40)->(83,47)
 };
+
+static float LIS3DSH_Sensitivity;
 		\end{lstlisting}
 	}
 	

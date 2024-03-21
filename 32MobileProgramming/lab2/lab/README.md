@@ -1,6 +1,6 @@
 # lab
 
-A new Flutter project.
+Lab.
 
 ## Getting Started
 

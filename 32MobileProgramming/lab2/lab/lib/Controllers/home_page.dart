@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lab/Controllers/add_note_page.dart';
+import 'package:lab/Controllers/edit_note_page.dart';
+import 'package:lab/Models/note.dart';
+import 'package:lab/Views/staggered_tile.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({super.key});
@@ -12,6 +14,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  late List<Note> notes;
+
+  @override
+  void initState() {
+    _loadNotes();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +34,10 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: _addButton(),
       resizeToAvoidBottomInset: false,
     );
+  }
+
+  void _loadNotes() async {
+    notes = [];
   }
 
   PreferredSizeWidget _topBar() {
@@ -44,12 +57,36 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _body() {
-    return const Center(/* TODO: Items. */);
+    return Center(
+      child: Column(
+        children: notes
+            .where((e) => !e.isArchived && !e.isDeleted)
+            .map((note) => StaggeredTile(
+                  note: note,
+                  onPress: () async {
+                    final result = await Navigator.push<EditNoteResult?>(
+                      context,
+                      MaterialPageRoute(
+                          builder: (ctx) => EditNotePage(note: note)),
+                    );
+                    if (result is EditNote) {
+                      setState(() {
+                        note = result.note;
+                      });
+                    } else if (result is DeleteNote) {
+                      // Trigger redraw.
+                      setState(() {});
+                    }
+                  },
+                ))
+            .toList(),
+      ),
+    );
   }
 
   Widget _bottomBar() {
     return BottomAppBar(
-        height: 200,
+        height: 160,
         child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
           IconButton(icon: const Icon(Icons.arrow_upward), onPressed: () {}),
           Row(
@@ -95,12 +132,12 @@ class _HomePageState extends State<HomePage> {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.inversePrimary,
+              color: Theme.of(context).colorScheme.secondary,
             ),
-            child: const Text(
+            child: Text(
               'Drawer Header',
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onSecondary,
                 fontSize: 24,
               ),
             ),
@@ -137,14 +174,6 @@ class _HomePageState extends State<HomePage> {
               Navigator.pop(context);
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('About'),
-            onTap: () {
-              // TODO: Open about.
-              Navigator.pop(context);
-            },
-          ),
         ],
       ),
     );
@@ -157,12 +186,12 @@ class _HomePageState extends State<HomePage> {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.inversePrimary,
+              color: Theme.of(context).colorScheme.secondary,
             ),
-            child: const Text(
+            child: Text(
               'Drawer Header',
               style: TextStyle(
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onSecondary,
                 fontSize: 24,
               ),
             ),
@@ -203,8 +232,8 @@ class _HomePageState extends State<HomePage> {
             leading: const Icon(Icons.info),
             title: const Text('About'),
             onTap: () {
-              // TODO: Open about.
               Navigator.pop(context);
+              showAboutDialog(context: context);
             },
           ),
         ],
@@ -214,8 +243,17 @@ class _HomePageState extends State<HomePage> {
 
   Widget _addButton() {
     return FloatingActionButton(
-      onPressed: () => Navigator.push(
-          context, MaterialPageRoute(builder: (ctx) => AddNotePage())),
+      onPressed: () async {
+        final result = await Navigator.push<EditNoteResult?>(
+          context,
+          MaterialPageRoute(builder: (ctx) => EditNotePage(note: Note())),
+        );
+        if (result is EditNote) {
+          setState(() {
+            notes = List.from(notes)..add(result.note);
+          });
+        }
+      },
       child: const Icon(Icons.add),
     );
   }

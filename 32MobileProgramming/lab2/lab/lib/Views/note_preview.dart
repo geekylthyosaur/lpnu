@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:lab/Models/note.dart';
 
 class NotePreview extends StatefulWidget {
@@ -51,6 +52,31 @@ class _NotePreviewState extends State<NotePreview> {
                     height: 8,
                   ),
                   _content(),
+                ],
+                if (widget.note.alarm != null) ...[
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    // Ensures the Row takes only as much width as needed
+                    children: <Widget>[
+                      Icon(
+                        Icons.alarm, // The icon you want to use
+                        color: widget.note.colorScheme.onPrimary, // Icon color
+                        size: 24, // Icon size, adjust as needed
+                      ),
+                      const SizedBox(width: 4),
+                      // Provides spacing between the icon and text
+                      Text(
+                        DateFormat('EEE dd MMMM').format(widget.note.alarm!),
+                        style: TextStyle(
+                          color: widget.note.colorScheme.onPrimary,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ],
+                  )
                 ],
               ],
             ),

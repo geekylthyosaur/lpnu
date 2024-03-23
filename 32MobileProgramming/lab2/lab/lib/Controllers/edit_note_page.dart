@@ -112,7 +112,7 @@ class _EditNotePageState extends State<EditNotePage> {
               "Last edited ${formatDateTimeRoughly(widget.note.lastEdited)}",
               style: TextStyle(color: onPrimary),
             ),
-            _dateTimePicker(),
+            _datePicker(),
             _moreMenu(),
           ],
         ),
@@ -127,7 +127,7 @@ class _EditNotePageState extends State<EditNotePage> {
         onPressed: () {}, icon: Icon(Icons.add_box_outlined, color: onPrimary));
   }
 
-  Widget _colorPickerDialog() {
+  IconButton _colorPickerDialog() {
     Color primary = widget.note.colorScheme.primary;
     Color onPrimary = widget.note.colorScheme.onPrimary;
 
@@ -140,46 +140,68 @@ class _EditNotePageState extends State<EditNotePage> {
         showDialog(
             context: context,
             builder: (context) {
-              return AlertDialog(
-                title: const Text('Pick a color'),
-                content: SingleChildScrollView(
-                  child: MaterialColorPicker(
-                    allowShades: false,
-                    colors: Colors.primaries,
-                    onMainColorChange: (ColorSwatch? c) {
-                      if (c != null) {
-                        setState(() {
-                          widget.note.setColorScheme(c);
-                        });
-                      }
-                    },
-                    selectedColor: primary,
-                  ),
+              return Theme(
+                data: Theme.of(context).copyWith(
+                  colorScheme: widget.note.colorScheme,
                 ),
-                actions: <Widget>[
-                  ElevatedButton(
-                    child: const Text('Close'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
+                child: AlertDialog(
+                  title: const Text('Pick a color'),
+                  content: SingleChildScrollView(
+                    child: MaterialColorPicker(
+                      allowShades: false,
+                      colors: Colors.primaries,
+                      onMainColorChange: (ColorSwatch? c) {
+                        if (c != null) {
+                          setState(() {
+                            widget.note.setColorScheme(c);
+                            // Force rebuild of the dialog to apply the new theme immediately.
+                            // This can be inefficient; consider a more global state management solution for larger apps.
+                            Navigator.of(context)
+                                .pop(); // Close the current dialog
+                            _colorPickerDialog()
+                                .onPressed!(); // Immediately reopen the dialog
+                          });
+                        }
+                      },
+                      selectedColor: primary,
+                    ),
                   ),
-                ],
+                  actions: <Widget>[
+                    ElevatedButton(
+                      child: const Text('Close'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                ),
               );
             })
       },
     );
   }
 
-  Widget _dateTimePicker() {
+  Widget _datePicker() {
     Color onPrimary = widget.note.colorScheme.onPrimary;
 
     return IconButton(
-      onPressed: () => {
-        showDatePicker(
+      onPressed: () async {
+        final result = await showDatePicker(
+          builder: (context, child) {
+            return Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: widget.note.colorScheme,
+              ),
+              child: child!,
+            );
+          },
           context: context,
           firstDate: DateTime.now(),
-          lastDate: DateTime.now().add(const Duration(days: 1000)),
-        )
+          lastDate: DateTime.now().add(const Duration(days: 10000)),
+          initialDate: widget.note.alarm,
+          cancelText: widget.note.alarm != null ? 'Remove' : 'Cancel',
+        );
+        widget.note.alarm = result;
       },
       icon: const Icon(Icons.alarm),
       color: onPrimary,

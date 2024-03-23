@@ -12,6 +12,7 @@ class Note {
   String title = "";
   String content = "";
   DateTime lastEdited = DateTime.now();
+  DateTime? alarm;
   bool isArchived = false;
   bool isDeleted = false;
 
@@ -21,6 +22,7 @@ class Note {
     this.title = "",
     this.content = "",
     DateTime? lastEdited,
+    this.alarm,
     this.isArchived = false,
     this.isDeleted = false,
   }) {
@@ -57,6 +59,7 @@ class Note {
       'title': title,
       'content': content,
       'lastEdited': lastEdited.toIso8601String(),
+      'alarm': alarm?.toIso8601String(),
       'isArchived': isArchived ? 1 : 0,
       'isDeleted': isDeleted ? 1 : 0,
     };
@@ -71,6 +74,7 @@ class Note {
       title: map['title'],
       content: map['content'],
       lastEdited: DateTime.parse(map['lastEdited']),
+      alarm: DateTime.parse(map['alarm']),
       isArchived: map['isArchived'] == 1,
       isDeleted: map['isDeleted'] == 1,
     );
@@ -116,6 +120,7 @@ class DatabaseHelper {
         title TEXT NOT NULL,
         content TEXT NOT NULL,
         lastEdited TEXT NOT NULL,
+        alarm TEXT NOT NULL,
         isArchived INTEGER NOT NULL,
         isDeleted INTEGER NOT NULL
       )

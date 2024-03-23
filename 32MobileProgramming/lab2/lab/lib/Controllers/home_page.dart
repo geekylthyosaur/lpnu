@@ -5,6 +5,7 @@ import 'package:lab/Controllers/edit_note_page.dart';
 import 'package:lab/Models/note.dart';
 import 'package:lab/Views/calendar.dart';
 import 'package:lab/Views/note_preview_list.dart';
+import 'package:lab/Views/snack_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,7 +17,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late List<Note> notes;
-  double bottomBarHeight = 160;
+  double bottomBarHeight = 170;
 
   @override
   void initState() {
@@ -106,8 +107,8 @@ class _HomePageState extends State<HomePage> {
                                 _openCalendar();
                               }),
                       _isCalendarOpen()
-                          ? const Calendar(len: 5)
-                          : const Calendar(len: 1),
+                          ? Calendar(notes: notes, len: 5)
+                          : Calendar(notes: notes, len: 1),
                     ]),
               ),
             ),
@@ -255,6 +256,8 @@ class _HomePageState extends State<HomePage> {
           setState(() {
             notes.add(result);
           });
+        } else if (mounted) {
+          snackBar(context, 'Discarded');
         }
       },
       child: const Icon(Icons.add),
@@ -269,7 +272,7 @@ class _HomePageState extends State<HomePage> {
 
   void _closeCalendar() {
     setState(() {
-      bottomBarHeight = 160;
+      bottomBarHeight = 170;
     });
   }
 

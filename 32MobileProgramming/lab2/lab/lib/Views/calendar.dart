@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:lab/Models/note.dart';
+import 'package:lab/Views/upcoming_notes_list.dart';
 
 class Calendar extends StatefulWidget {
   final int len;
+  final List<Note> notes;
 
-  const Calendar({super.key, required this.len});
+  const Calendar({super.key, required this.notes, required this.len});
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -20,20 +24,30 @@ class _CalendarState extends State<Calendar> {
 
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: List.generate(
-                7,
-                (idx) => Column(children: [
-                      _dayCell(days[idx]),
-                      const SizedBox(height: 8),
-                      ...getNextWeekdays(
-                              getCurrentWeekDates()[idx], idx + 1, len)
-                          .map((date) => Column(children: [
-                                _dateCell(date),
-                                const SizedBox(height: 8)
-                              ]))
-                    ]))));
+        child: Column(children: [
+          if (len == 5)
+            Center(
+                child: Text(
+              DateFormat('dd MMMM, yyyy').format(DateTime.now()),
+              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+            )),
+          const SizedBox(height: 8),
+          Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: List.generate(
+                  7,
+                  (idx) => Column(children: [
+                        _dayCell(days[idx]),
+                        const SizedBox(height: 8),
+                        ...getNextWeekdays(
+                                getCurrentWeekDates()[idx], idx + 1, len)
+                            .map((date) => Column(children: [
+                                  _dateCell(date),
+                                  const SizedBox(height: 8)
+                                ]))
+                      ]))),
+          if (len == 5) UpcomingNotesList(notes: widget.notes),
+        ]));
   }
 
   Widget _dayCell(String day) {

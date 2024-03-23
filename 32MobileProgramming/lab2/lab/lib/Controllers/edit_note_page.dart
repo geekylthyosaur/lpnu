@@ -2,25 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:lab/Models/note.dart';
 
-abstract class EditNoteResult {
-  const EditNoteResult._();
-
-  factory EditNoteResult.create(Note note) = EditNote;
-
-  factory EditNoteResult.delete(Note note) = DeleteNote;
-}
-
-class EditNote extends EditNoteResult {
-  final Note note;
-
-  const EditNote(this.note) : super._();
-}
-
-class DeleteNote extends EditNoteResult {
-  final Note note;
-
-  const DeleteNote(this.note) : super._();
-}
+import '../Views/bool_dialog.dart';
 
 class EditNotePage extends StatefulWidget {
   final Note note;
@@ -54,19 +36,21 @@ class _EditNotePageState extends State<EditNotePage> {
       toolbarHeight: 80,
       leading: BackButton(
           color: onPrimary,
-          onPressed: () => Navigator.of(context).pop(EditNote(widget.note))),
-      actions: [
-        IconButton(
-            onPressed: () {
-              setState(() {
-                widget.note.isArchived = !widget.note.isArchived;
-              });
-            },
-            icon: Icon(
-              widget.note.isArchived ? Icons.unarchive : Icons.archive,
-              color: onPrimary,
-            ))
-      ],
+          onPressed: () => Navigator.of(context).pop(widget.note)),
+      actions: !widget.note.isDeleted
+          ? [
+              IconButton(
+                  onPressed: () {
+                    setState(() {
+                      widget.note.isArchived = !widget.note.isArchived;
+                    });
+                  },
+                  icon: Icon(
+                    widget.note.isArchived ? Icons.unarchive : Icons.archive,
+                    color: onPrimary,
+                  ))
+            ]
+          : [],
     );
   }
 
@@ -81,7 +65,7 @@ class _EditNotePageState extends State<EditNotePage> {
       child: Column(
         children: [
           TextField(
-            autofocus: true,
+            autofocus: false,
             cursorColor: Colors.black,
             minLines: 1,
             maxLines: 4,
@@ -89,6 +73,10 @@ class _EditNotePageState extends State<EditNotePage> {
             decoration: const InputDecoration.collapsed(hintText: 'Title'),
             onChanged: (s) => widget.note.setTitle(s),
             controller: titleCtrl,
+          ),
+          const Divider(
+            color: Colors.transparent,
+            height: 20,
           ),
           TextField(
             cursorColor: Colors.black,
@@ -108,113 +96,142 @@ class _EditNotePageState extends State<EditNotePage> {
     Color primary = widget.note.colorScheme.primary;
     Color onPrimary = widget.note.colorScheme.onPrimary;
 
-    return BottomAppBar(
-      color: primary,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.color_lens,
-              color: onPrimary,
+    return Padding(
+      padding: MediaQuery.of(context).viewInsets,
+      child: BottomAppBar(
+        color: primary,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            _colorPickerDialog(),
+            Text(
+              "Last edited ${formatDateTimeRoughly(widget.note.lastEdited)}",
+              style: TextStyle(color: onPrimary),
             ),
-            onPressed: _colorPickerDialog,
+            _moreMenu(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _colorPickerDialog() {
+    Color primary = widget.note.colorScheme.primary;
+    Color onPrimary = widget.note.colorScheme.onPrimary;
+
+    return IconButton(
+      icon: Icon(
+        Icons.color_lens,
+        color: onPrimary,
+      ),
+      onPressed: () => {
+        showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: const Text('Pick a color'),
+                content: SingleChildScrollView(
+                  child: MaterialColorPicker(
+                    allowShades: false,
+                    colors: Colors.primaries,
+                    onMainColorChange: (ColorSwatch? c) {
+                      if (c != null) {
+                        setState(() {
+                          widget.note.setColorScheme(c);
+                        });
+                      }
+                    },
+                    selectedColor: primary,
+                  ),
+                ),
+                actions: <Widget>[
+                  ElevatedButton(
+                    child: const Text('Close'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            })
+      },
+    );
+  }
+
+  Widget _moreMenu() {
+    Color onPrimary = widget.note.colorScheme.onPrimary;
+
+    return PopupMenuButton(
+      offset: const Offset(0, -70),
+      icon: Icon(
+        Icons.more_vert,
+        color: onPrimary,
+      ),
+      itemBuilder: (context) => <PopupMenuEntry>[
+        widget.note.isDeleted
+            ? _restoreMenuEntry(context)
+            : _deleteMenuEntry(context),
+      ],
+    );
+  }
+
+  PopupMenuEntry _deleteMenuEntry(BuildContext context) {
+    confirmDeleteDialog() => boolDialog(context, 'Delete note?',
+        'Are you sure you want to delete this note?', 'Delete', 'Cancel');
+
+    return PopupMenuItem(
+      value: "delete",
+      onTap: () async {
+        if (await confirmDeleteDialog()) {
+          widget.note.isDeleted = true;
+          if (context.mounted) {
+            Navigator.of(context).pop(widget.note);
+          }
+        }
+      },
+      child: const Row(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(right: 8.0),
+            child: Icon(Icons.delete),
           ),
           Text(
-            "Last edited ${formatDateTimeRoughly(widget.note.lastEdited)}",
-            style: TextStyle(color: onPrimary),
+            'Delete',
+            style: TextStyle(fontSize: 15),
           ),
-          PopupMenuButton(
-            offset: const Offset(0, -70),
-            icon: Icon(
-              Icons.more_vert,
-              color: onPrimary,
-            ),
-            itemBuilder: (context) => <PopupMenuEntry>[
-              PopupMenuItem(
-                value: "delete",
-                onTap: () async {
-                  if (await _confirmDeleteDialog()) {
-                    widget.note.isDeleted = true;
-                    if (context.mounted) {
-                      Navigator.of(context).pop(DeleteNote(widget.note));
-                    }
-                  }
-                },
-                child: const Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(right: 8.0),
-                      child: Icon(Icons.delete),
-                    ),
-                    Text(
-                      'Delete',
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          )
         ],
       ),
     );
   }
 
-  void _colorPickerDialog() {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: const Text('Pick a color'),
-            content: SingleChildScrollView(
-              child: MaterialColorPicker(
-                allowShades: false,
-                colors: Colors.primaries,
-                onMainColorChange: (ColorSwatch? c) {
-                  if (c != null) {
-                    setState(() {
-                      widget.note.setColorScheme(c);
-                    });
-                  }
-                },
-                selectedColor: widget.note.colorScheme.primary,
-              ),
-            ),
-            actions: <Widget>[
-              ElevatedButton(
-                child: const Text('Close'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        });
-  }
+  PopupMenuEntry _restoreMenuEntry(BuildContext context) {
+    confirmRestoreDialog() => boolDialog(context, 'Restore note?',
+        'Are you sure you want to restore this note?', 'Restore', 'Cancel');
 
-  Future<bool> _confirmDeleteDialog() async {
-    final result = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Delete note?'),
-          content: const Text('Are you sure you want to delete this note?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancel'),
-              onPressed: () => Navigator.of(context).pop(false),
-            ),
-            ElevatedButton(
-              child: const Text('Delete'),
-              onPressed: () => Navigator.of(context).pop(true),
-            ),
-          ],
-        );
+    return PopupMenuItem(
+      value: "restore",
+      onTap: () async {
+        if (await confirmRestoreDialog()) {
+          widget.note.isDeleted = false;
+          widget.note.isArchived = false;
+          if (context.mounted) {
+            Navigator.of(context).pop(widget.note);
+          }
+        }
       },
+      child: const Row(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(right: 8.0),
+            child: Icon(Icons.restore),
+          ),
+          Text(
+            'Restore',
+            style: TextStyle(fontSize: 15),
+          ),
+        ],
+      ),
     );
-
-    return result ?? false;
   }
 }
 

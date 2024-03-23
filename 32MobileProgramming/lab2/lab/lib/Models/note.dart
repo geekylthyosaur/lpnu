@@ -5,7 +5,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class Note {
-  int? id;
+  late int id;
   ColorScheme colorScheme = ColorScheme.fromSwatch(
       primarySwatch: Colors.primaries
           .elementAt(Random().nextInt(Colors.primaries.length)));
@@ -16,7 +16,7 @@ class Note {
   bool isDeleted = false;
 
   Note({
-    this.id,
+    int? id,
     ColorScheme? colorScheme,
     this.title = "",
     this.content = "",
@@ -24,6 +24,7 @@ class Note {
     this.isArchived = false,
     this.isDeleted = false,
   }) {
+    this.id = id ?? Id.next();
     this.lastEdited = lastEdited ?? DateTime.now();
     this.colorScheme = ColorScheme.fromSwatch(
         primarySwatch: Colors.primaries
@@ -195,5 +196,13 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+}
+
+class Id {
+  static int id = 0;
+
+  static int next() {
+    return id++;
   }
 }

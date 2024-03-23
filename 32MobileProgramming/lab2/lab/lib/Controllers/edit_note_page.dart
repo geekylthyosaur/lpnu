@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:lab/Models/note.dart';
-
-import '../Views/bool_dialog.dart';
+import 'package:lab/Views/bool_dialog.dart';
+import 'package:lab/Views/snack_bar.dart';
 
 class EditNotePage extends StatefulWidget {
   final Note note;
@@ -41,6 +41,8 @@ class _EditNotePageState extends State<EditNotePage> {
           ? [
               IconButton(
                   onPressed: () {
+                    snackBar(context,
+                        widget.note.isArchived ? 'Unarchived' : 'Archived');
                     setState(() {
                       widget.note.isArchived = !widget.note.isArchived;
                     });
@@ -97,22 +99,32 @@ class _EditNotePageState extends State<EditNotePage> {
     Color onPrimary = widget.note.colorScheme.onPrimary;
 
     return Padding(
-      padding: MediaQuery.of(context).viewInsets,
+      // padding: MediaQuery.of(context).viewInsets,
+      padding: EdgeInsets.zero,
       child: BottomAppBar(
         color: primary,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
+            _insertCustom(),
             _colorPickerDialog(),
             Text(
               "Last edited ${formatDateTimeRoughly(widget.note.lastEdited)}",
               style: TextStyle(color: onPrimary),
             ),
+            _dateTimePicker(),
             _moreMenu(),
           ],
         ),
       ),
     );
+  }
+
+  Widget _insertCustom() {
+    Color onPrimary = widget.note.colorScheme.onPrimary;
+
+    return IconButton(
+        onPressed: () {}, icon: Icon(Icons.add_box_outlined, color: onPrimary));
   }
 
   Widget _colorPickerDialog() {
@@ -158,6 +170,22 @@ class _EditNotePageState extends State<EditNotePage> {
     );
   }
 
+  Widget _dateTimePicker() {
+    Color onPrimary = widget.note.colorScheme.onPrimary;
+
+    return IconButton(
+      onPressed: () => {
+        showDatePicker(
+          context: context,
+          firstDate: DateTime.now(),
+          lastDate: DateTime.now().add(const Duration(days: 1000)),
+        )
+      },
+      icon: const Icon(Icons.alarm),
+      color: onPrimary,
+    );
+  }
+
   Widget _moreMenu() {
     Color onPrimary = widget.note.colorScheme.onPrimary;
 
@@ -178,6 +206,7 @@ class _EditNotePageState extends State<EditNotePage> {
   PopupMenuEntry _deleteMenuEntry(BuildContext context) {
     confirmDeleteDialog() => boolDialog(context, 'Delete note?',
         'Are you sure you want to delete this note?', 'Delete', 'Cancel');
+    msg() => snackBar(context, 'Deleted');
 
     return PopupMenuItem(
       value: "delete",
@@ -186,6 +215,7 @@ class _EditNotePageState extends State<EditNotePage> {
           widget.note.isDeleted = true;
           if (context.mounted) {
             Navigator.of(context).pop(widget.note);
+            msg();
           }
         }
       },
@@ -207,6 +237,7 @@ class _EditNotePageState extends State<EditNotePage> {
   PopupMenuEntry _restoreMenuEntry(BuildContext context) {
     confirmRestoreDialog() => boolDialog(context, 'Restore note?',
         'Are you sure you want to restore this note?', 'Restore', 'Cancel');
+    msg() => snackBar(context, 'Restored');
 
     return PopupMenuItem(
       value: "restore",
@@ -216,6 +247,7 @@ class _EditNotePageState extends State<EditNotePage> {
           widget.note.isArchived = false;
           if (context.mounted) {
             Navigator.of(context).pop(widget.note);
+            msg();
           }
         }
       },

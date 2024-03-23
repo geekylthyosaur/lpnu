@@ -3,12 +3,11 @@ import 'package:lab/Controllers/archived_notes_page.dart';
 import 'package:lab/Controllers/deleted_notes_page.dart';
 import 'package:lab/Controllers/edit_note_page.dart';
 import 'package:lab/Models/note.dart';
+import 'package:lab/Views/calendar.dart';
 import 'package:lab/Views/note_preview_list.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({super.key});
-
-  final List<DateTime> thisWeek = getWeekDates();
+  const HomePage({super.key});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -17,6 +16,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late List<Note> notes;
+  double bottomBarHeight = 160;
 
   @override
   void initState() {
@@ -49,11 +49,17 @@ class _HomePageState extends State<HomePage> {
       toolbarHeight: 80,
       leading: IconButton(
           icon: const Icon(Icons.menu),
-          onPressed: () => scaffoldKey.currentState?.openDrawer()),
+          onPressed: () {
+            _closeCalendar();
+            scaffoldKey.currentState?.openDrawer();
+          }),
       actions: [
         IconButton(
             icon: const Icon(Icons.person),
-            onPressed: () => scaffoldKey.currentState?.openEndDrawer()),
+            onPressed: () {
+              _closeCalendar();
+              scaffoldKey.currentState?.openEndDrawer();
+            }),
       ],
     );
   }
@@ -68,64 +74,44 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _bottomBar() {
-    return BottomAppBar(
-      height: 160,
-      child: SizedBox(
-        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-          IconButton(icon: const Icon(Icons.arrow_upward), onPressed: () {}),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: widget.thisWeek.asMap().entries.map((entry) {
-                int idx = entry.key;
-                DateTime day = entry.value;
-                List<String> weekdays = [
-                  "Mon",
-                  "Tue",
-                  "Wed",
-                  "Thu",
-                  "Fri",
-                  "Sat",
-                  "Sun"
-                ];
-                return Column(mainAxisSize: MainAxisSize.min, children: [
-                  Text(
-                    weekdays[idx],
-                    style: TextStyle(
-                        color:
-                            Theme.of(context).colorScheme.onSecondaryContainer),
-                    textAlign: TextAlign.center,
-                  ),
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                    margin: const EdgeInsets.only(top: 4),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(10),
-                      border: DateTime.now().day == day.day &&
-                              DateTime.now().month == day.month &&
-                              DateTime.now().year == day.year
-                          ? Border.all(
-                              color: Theme.of(context).colorScheme.outline,
-                              width: 4)
-                          : null,
-                    ),
-                    child: Text(
-                      day.day.toString(),
-                      style: TextStyle(
-                          color:
-                              Theme.of(context).colorScheme.onPrimaryContainer),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ]);
-              }).toList(),
-            ),
-          ),
-        ]),
+    return AnimatedContainer(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(spreadRadius: -5, blurRadius: _isCalendarOpen() ? 40 : 0),
+        ],
       ),
+      duration: const Duration(milliseconds: 250),
+      height: bottomBarHeight,
+      child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(_isCalendarOpen() ? 20.0 : 0),
+            topRight: Radius.circular(_isCalendarOpen() ? 20.0 : 0),
+          ),
+          child: BottomAppBar(
+            child: SizedBox(
+              height: bottomBarHeight,
+              child: SingleChildScrollView(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      _isCalendarOpen()
+                          ? IconButton(
+                              icon: const Icon(Icons.arrow_downward),
+                              onPressed: () {
+                                _closeCalendar();
+                              })
+                          : IconButton(
+                              icon: const Icon(Icons.arrow_upward),
+                              onPressed: () {
+                                _openCalendar();
+                              }),
+                      _isCalendarOpen()
+                          ? const Calendar(len: 5)
+                          : const Calendar(len: 1),
+                    ]),
+              ),
+            ),
+          )),
     );
   }
 
@@ -260,6 +246,7 @@ class _HomePageState extends State<HomePage> {
   Widget _addButton() {
     return FloatingActionButton(
       onPressed: () async {
+        _closeCalendar();
         Note result = await Navigator.push(
           context,
           MaterialPageRoute(builder: (ctx) => EditNotePage(note: Note())),
@@ -273,16 +260,20 @@ class _HomePageState extends State<HomePage> {
       child: const Icon(Icons.add),
     );
   }
-}
 
-List<DateTime> getWeekDates() {
-  final now = DateTime.now();
-  final sunday = now.subtract(Duration(days: now.weekday - DateTime.monday));
-
-  List<DateTime> weekDates = [];
-  for (int i = 0; i < 7; i++) {
-    weekDates.add(sunday.add(Duration(days: i)));
+  void _openCalendar() {
+    setState(() {
+      bottomBarHeight = 700;
+    });
   }
 
-  return weekDates;
+  void _closeCalendar() {
+    setState(() {
+      bottomBarHeight = 160;
+    });
+  }
+
+  bool _isCalendarOpen() {
+    return bottomBarHeight == 700;
+  }
 }

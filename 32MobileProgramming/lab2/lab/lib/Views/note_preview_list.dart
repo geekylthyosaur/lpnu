@@ -37,20 +37,21 @@ class _NotePreviewListState extends State<NotePreviewList> {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(8),
       child: Column(
         children: notes
             .where(filter)
             .map((note) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
+                  padding: const EdgeInsets.only(bottom: 8),
                   child: NotePreview(
                     note: note,
                     onPress: () async {
-                      Note result = await Navigator.push(
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (ctx) => EditNotePage(note: note)),
                       );
+                      // Trigger redraw.
                       setState(() {});
                     },
                   ),

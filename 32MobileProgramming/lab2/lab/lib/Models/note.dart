@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -26,11 +27,40 @@ class Note {
     this.isArchived = false,
     this.isDeleted = false,
   }) {
-    this.id = id ?? Id.next();
+    this.id = id ?? 0;
     this.lastEdited = lastEdited ?? DateTime.now();
-    this.colorScheme = ColorScheme.fromSwatch(
-        primarySwatch: Colors.primaries
-            .elementAt(Random().nextInt(Colors.primaries.length)));
+    this.colorScheme = colorScheme ??
+        ColorScheme.fromSwatch(
+            primarySwatch: Colors.primaries
+                .elementAt(Random().nextInt(Colors.primaries.length)));
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'content': content,
+      'lastEdited': lastEdited.toString(),
+      'colorScheme': colorScheme.primary.value,
+      'alarm': alarm?.toString(),
+      'isArchived': isArchived ? 1 : 0,
+      'isDeleted': isDeleted ? 1 : 0,
+    };
+  }
+
+  static Note fromMap(Map<String, dynamic> map) {
+    return Note(
+      id: map['id'],
+      title: map['title'],
+      content: map['content'],
+      lastEdited: DateTime.parse(map['lastEdited']),
+      colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.primaries
+              .firstWhere((e) => e.value == map['colorScheme'])),
+      alarm: map['alarm'] != null ? DateTime.parse(map['alarm']) : null,
+      isArchived: map['isArchived'] == 1,
+      isDeleted: map['isDeleted'] == 1,
+    );
   }
 
   bool isEmpty() {
@@ -51,163 +81,86 @@ class Note {
     content = s;
     lastEdited = DateTime.now();
   }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'colorScheme': colorScheme.primary.value,
-      'title': title,
-      'content': content,
-      'lastEdited': lastEdited.toIso8601String(),
-      'alarm': alarm?.toIso8601String(),
-      'isArchived': isArchived ? 1 : 0,
-      'isDeleted': isDeleted ? 1 : 0,
-    };
-  }
-
-  static Note fromMap(Map<String, dynamic> map) {
-    return Note(
-      id: map['id'],
-      colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.primaries
-              .firstWhere((e) => e == Color(map['colorScheme']))),
-      title: map['title'],
-      content: map['content'],
-      lastEdited: DateTime.parse(map['lastEdited']),
-      alarm: DateTime.parse(map['alarm']),
-      isArchived: map['isArchived'] == 1,
-      isDeleted: map['isDeleted'] == 1,
-    );
-  }
-
-  void persist() {
-    () async {
-      return await DatabaseHelper.addNote(this);
-    };
-  }
-
-  static Future<List<Note>> all() {
-    return DatabaseHelper.getNotes();
-  }
 }
 
 class DatabaseHelper {
-  static final DatabaseHelper instance = DatabaseHelper._init();
-
   static Database? _database;
+  static final DatabaseHelper instance = DatabaseHelper._instance();
 
-  DatabaseHelper._init();
+  DatabaseHelper._instance();
 
   Future<Database> get database async {
     if (_database != null) return _database!;
-
-    _database = await _initDB('notes.db');
+    _database = await _initDb();
     return _database!;
   }
 
-  Future<Database> _initDB(String filePath) async {
-    final dbPath = await getDatabasesPath();
-    final path = join(dbPath, filePath);
-
-    return await openDatabase(path, version: 1, onCreate: _createDB);
+  Future<Database> _initDb() async {
+    String path = join(await getDatabasesPath(), 'database.db');
+    return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
-  Future _createDB(Database db, int version) async {
+  Future _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE notes(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        colorScheme TEXT NOT NULL,
-        title TEXT NOT NULL,
-        content TEXT NOT NULL,
-        lastEdited TEXT NOT NULL,
-        alarm TEXT NOT NULL,
-        isArchived INTEGER NOT NULL,
-        isDeleted INTEGER NOT NULL
+        title TEXT,
+        content TEXT,
+        lastEdited TEXT,
+        colorScheme INTEGER,
+        alarm TEXT,
+        isArchived INTEGER,
+        isDeleted INTEGER
       )
     ''');
   }
 
-  static Future<int> addNote(Note note) async {
-    final db = await instance.database;
-    final id = await db.insert('notes', note.toMap());
-    return id;
+  Future<int> insertNote(Note note) async {
+    Database db = await database;
+    var table = await db.rawQuery('SELECT MAX(id) as max_id FROM notes');
+    int currentMaxId = table.first["max_id"] as int? ?? 0;
+    note.id = currentMaxId + 1;
+    return await db.insert('notes', note.toMap());
   }
 
-  static Future<List<Note>> getNotes() async {
-    final db = await instance.database;
-    final maps = await db.query(
-      'notes',
-      where: 'isArchived = ? AND isDeleted = ?',
-      whereArgs: [0, 0],
-    );
-    return List.generate(maps.length, (i) {
-      return Note.fromMap(maps[i]);
-    });
+  Future<List<Note>> fetchNotes() async {
+    Database db = await database;
+    List<Map<String, dynamic>> notes = await db.query('notes');
+    return notes.map((e) => Note.fromMap(e)).toList();
   }
 
-  static Future<Note?> getNote(int id) async {
-    final db = await instance.database;
-    final maps = await db.query(
-      'notes',
-      where: 'id = ?',
-      whereArgs: [id],
-      limit: 1,
-    );
+  Future<Note?> fetchNote(Note note) async {
+    Database db = await database;
+    List<Map<String, dynamic>> maps =
+        await db.query('notes', where: 'id = ?', whereArgs: [note.id]);
+
     if (maps.isNotEmpty) {
       return Note.fromMap(maps.first);
     }
     return null;
   }
 
-  static Future<List<Note>> getDeletedNotes() async {
-    final db = await instance.database;
-    final maps = await db.query(
-      'notes',
-      where: 'isDeleted = ?',
-      whereArgs: [1],
-    );
-    return List.generate(maps.length, (i) {
-      return Note.fromMap(maps[i]);
-    });
-  }
-
-  static Future<List<Note>> getArchivedNotes() async {
-    final db = await instance.database;
-    final maps = await db.query(
-      'notes',
-      where: 'isArchived = ? AND isDeleted = ?',
-      whereArgs: [1, 0],
-    );
-    return List.generate(maps.length, (i) {
-      return Note.fromMap(maps[i]);
-    });
-  }
-
-  static Future<int> deleteNote(int id) async {
-    final db = await instance.database;
+  Future<int> updateNote(Note note) async {
+    Database db = await database;
     return await db.update(
       'notes',
-      {'isDeleted': 1},
+      note.toMap(),
       where: 'id = ?',
-      whereArgs: [id],
+      whereArgs: [note.id],
     );
   }
 
-  static Future<int> archiveNote(int id) async {
-    final db = await instance.database;
-    return await db.update(
+  Future<int> deleteNote(Note note) async {
+    Database db = await database;
+    return await db.delete(
       'notes',
-      {'isArchived': 1},
       where: 'id = ?',
-      whereArgs: [id],
+      whereArgs: [note.id],
     );
   }
-}
 
-class Id {
-  static int id = 0;
-
-  static int next() {
-    return id++;
+  Future<int> deleteAllNotes() async {
+    Database db = await database;
+    return await db.delete('notes');
   }
 }

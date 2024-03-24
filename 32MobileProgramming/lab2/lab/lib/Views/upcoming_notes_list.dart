@@ -14,7 +14,8 @@ class UpcomingNotesList extends StatefulWidget {
 class _UpcomingNotesListState extends State<UpcomingNotesList> {
   @override
   Widget build(BuildContext context) {
-    filter(e) => e.alarm != null;
+    filter(e) =>
+        e.alarm != null && e.alarm!.isAfter(DateTime.now()) && !e.isDeleted;
     int comparator(a, b) => a.alarm.compareTo(b.alarm);
 
     return Column(

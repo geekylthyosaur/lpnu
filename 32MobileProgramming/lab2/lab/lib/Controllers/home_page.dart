@@ -5,7 +5,6 @@ import 'package:lab/Controllers/edit_note_page.dart';
 import 'package:lab/Models/note.dart';
 import 'package:lab/Views/calendar.dart';
 import 'package:lab/Views/note_preview_list.dart';
-import 'package:lab/Views/snack_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,16 +16,26 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late List<Note> notes;
+  bool isLoading = true;
   double bottomBarHeight = 170;
 
   @override
   void initState() {
-    _loadNotes();
     super.initState();
+    DatabaseHelper.instance.fetchNotes().then((result) {
+      setState(() {
+        notes = result;
+        isLoading = false;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const CircularProgressIndicator();
+    }
+
     return Scaffold(
       key: scaffoldKey,
       appBar: _topBar(),
@@ -37,10 +46,6 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: _addButton(),
       resizeToAvoidBottomInset: false,
     );
-  }
-
-  void _loadNotes() async {
-    notes = [];
   }
 
   PreferredSizeWidget _topBar() {
@@ -253,11 +258,27 @@ class _HomePageState extends State<HomePage> {
           MaterialPageRoute(builder: (ctx) => EditNotePage(note: Note())),
         );
         if (!result.isEmpty()) {
-          setState(() {
-            notes.add(result);
-          });
-        } else if (mounted) {
-          snackBar(context, 'Discarded');
+          if (notes.any((note) => note.id == result.id)) {
+            await DatabaseHelper.instance.updateNote(result);
+            setState(() {
+              int index = notes.indexWhere((note) => note.id == result.id);
+              if (index != -1) {
+                notes[index] = result;
+              }
+            });
+          } else {
+            await DatabaseHelper.instance.insertNote(result);
+            setState(() {
+              notes.add(result);
+            });
+          }
+        } else {
+          if (notes.any((note) => note.id == result.id)) {
+            await DatabaseHelper.instance.deleteNote(result);
+            setState(() {
+              notes.removeWhere((note) => note.id == result.id);
+            });
+          }
         }
       },
       child: const Icon(Icons.add),

@@ -40,12 +40,13 @@ class _EditNotePageState extends State<EditNotePage> {
       actions: !widget.note.isDeleted
           ? [
               IconButton(
-                  onPressed: () {
+                  onPressed: () async {
                     snackBar(context,
                         widget.note.isArchived ? 'Unarchived' : 'Archived');
                     setState(() {
                       widget.note.isArchived = !widget.note.isArchived;
                     });
+                    await DatabaseHelper.instance.updateNote(widget.note);
                   },
                   icon: Icon(
                     widget.note.isArchived ? Icons.unarchive : Icons.archive,
@@ -150,17 +151,14 @@ class _EditNotePageState extends State<EditNotePage> {
                     child: MaterialColorPicker(
                       allowShades: false,
                       colors: Colors.primaries,
-                      onMainColorChange: (ColorSwatch? c) {
+                      onMainColorChange: (ColorSwatch? c) async {
                         if (c != null) {
                           setState(() {
                             widget.note.setColorScheme(c);
-                            // Force rebuild of the dialog to apply the new theme immediately.
-                            // This can be inefficient; consider a more global state management solution for larger apps.
-                            Navigator.of(context)
-                                .pop(); // Close the current dialog
-                            _colorPickerDialog()
-                                .onPressed!(); // Immediately reopen the dialog
+                            Navigator.of(context).pop();
+                            _colorPickerDialog().onPressed!();
                           });
+                          await DatabaseHelper.instance.updateNote(widget.note);
                         }
                       },
                       selectedColor: primary,
@@ -202,6 +200,7 @@ class _EditNotePageState extends State<EditNotePage> {
           cancelText: widget.note.alarm != null ? 'Remove' : 'Cancel',
         );
         widget.note.alarm = result;
+        await DatabaseHelper.instance.updateNote(widget.note);
       },
       icon: const Icon(Icons.alarm),
       color: onPrimary,
@@ -235,6 +234,7 @@ class _EditNotePageState extends State<EditNotePage> {
       onTap: () async {
         if (await confirmDeleteDialog()) {
           widget.note.isDeleted = true;
+          await DatabaseHelper.instance.updateNote(widget.note);
           if (context.mounted) {
             Navigator.of(context).pop(widget.note);
             msg();
@@ -267,6 +267,7 @@ class _EditNotePageState extends State<EditNotePage> {
         if (await confirmRestoreDialog()) {
           widget.note.isDeleted = false;
           widget.note.isArchived = false;
+          await DatabaseHelper.instance.updateNote(widget.note);
           if (context.mounted) {
             Navigator.of(context).pop(widget.note);
             msg();

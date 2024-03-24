@@ -52,13 +52,35 @@ class _NotePreviewListState extends State<NotePreviewList> {
                   child: NotePreview(
                     note: note,
                     onPress: () async {
-                      await Navigator.push(
+                      Note result = await Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (ctx) => EditNotePage(note: note)),
                       );
-                      // Trigger redraw.
-                      setState(() {});
+                      if (!result.isEmpty()) {
+                        if (notes.any((note) => note.id == result.id)) {
+                          await DatabaseHelper.instance.updateNote(result);
+                          setState(() {
+                            int index = notes
+                                .indexWhere((note) => note.id == result.id);
+                            if (index != -1) {
+                              notes[index] = result;
+                            }
+                          });
+                        } else {
+                          await DatabaseHelper.instance.insertNote(result);
+                          setState(() {
+                            notes.add(result);
+                          });
+                        }
+                      } else {
+                        if (notes.any((note) => note.id == result.id)) {
+                          await DatabaseHelper.instance.deleteNote(result);
+                          setState(() {
+                            notes.removeWhere((note) => note.id == result.id);
+                          });
+                        }
+                      }
                     },
                   ),
                 ))

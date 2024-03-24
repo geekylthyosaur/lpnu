@@ -59,12 +59,17 @@ class _NotePreviewState extends State<NotePreview> {
                   ),
                   Row(
                     mainAxisSize: MainAxisSize.min,
-                    // Ensures the Row takes only as much width as needed
                     children: <Widget>[
+                      if (widget.note.isArchived)
+                        Icon(
+                          Icons.archive_outlined,
+                          color: widget.note.colorScheme.onPrimary,
+                          size: 24,
+                        ),
                       Icon(
-                        Icons.alarm, // The icon you want to use
-                        color: widget.note.colorScheme.onPrimary, // Icon color
-                        size: 24, // Icon size, adjust as needed
+                        Icons.alarm,
+                        color: widget.note.colorScheme.onPrimary,
+                        size: 24,
                       ),
                       const SizedBox(width: 4),
                       // Provides spacing between the icon and text

@@ -1,28 +1,36 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.linalg import lstsq
 from numpy.fft import fft, ifft
 
 y = np.array([2.80, 2.94, 3.20, 3.38, 3.53, 3.75])
 x = np.linspace(0, 2 * np.pi, len(y), endpoint=False)
 
 A = np.vstack([x**2, x, np.ones(len(x))]).T
-coeffs = np.linalg.lstsq(A, y, rcond=None)[0]
-quad_approx = np.polyval(coeffs[::-1], x)
+coefficients = np.linalg.lstsq(A, y, rcond=None)[0]
 
-y_fft = fft(y)
-N = len(y)
-y_fft_approx = ifft(y_fft[:3], N)
+poly_approx = A @ coefficients
+
+n = len(y) // 2  # Number of harmonics
+c = fft(y) / len(y)  # Fourier coefficients
+c[n] = c[n] / 2  # Adjust the middle coefficient if the length is even
+fourier_approx = np.real(ifft(c * len(y)))
+
+mae_poly = np.mean(np.abs(y - poly_approx))
+mse_poly = np.mean((y - poly_approx)**2)
+mae_fourier = np.mean(np.abs(y - fourier_approx))
+mse_fourier = np.mean((y - fourier_approx)**2)
 
 plt.figure(figsize=(10, 6))
-plt.plot(x, y, 'o', label='Original Signal')
-plt.plot(x, quad_approx, label='Quadratic Polynomial Approximation')
-plt.plot(x, y_fft_approx, label='Fourier Series Approximation')
+plt.scatter(x, y, color='red', label='Original Discrete Signal')
+plt.plot(x, poly_approx, label='Quadratic Polynomial Approximation', color='blue')
+plt.plot(x, fourier_approx, label='Fourier Series Approximation', color='green')
 plt.legend()
+plt.xlabel('x')
+plt.ylabel('Signal Value')
+plt.title('Discrete Signal Approximation')
 plt.show()
 
-quad_error = np.mean(np.abs(y - quad_approx))
-fourier_error = np.mean(np.abs(y - y_fft_approx))
-
-print(f"Quadratic Polynomial Approximation Error: {quad_error}")
-print(f"Fourier Series Approximation Error: {fourier_error}")
+print(f"Quadratic Polynomial Approximation - MAE: {mae_poly:.4f}, MSE: {mse_poly:.4f}")
+print(f"Fourier Series Approximation - MAE: {mae_fourier:.4f}, MSE: {mse_fourier:.4f}")
 

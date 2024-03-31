@@ -1,6 +1,7 @@
 \documentclass[oneside,14pt]{extarticle}
 \usepackage[utf8]{inputenc}
 \usepackage[english,ukrainian]{babel}
+\usepackage[T1]{fontenc}
 \usepackage{amssymb,amsfonts,amsmath,amsthm,mathtext,textcomp}
 
 \usepackage[includehead, headsep=0pt, footskip=0pt, top=2cm, bottom=2cm, left=2.5cm, right=1cm]{geometry}
@@ -13,7 +14,6 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage[center]{titlesec}
-\titlelabel{\thetitle.\quad}
 \usepackage{array}
 \fancyhf{}
 \renewcommand{\headrulewidth}{0pt}
@@ -22,6 +22,11 @@
 \lstset{breaklines=true,}
 \graphicspath{ {./pictures} }
 \counterwithin{figure}{section}
+\titlelabel{\thetitle.\quad}
+\renewcommand*{\thesection}{Розділ~\arabic{section}}
+\renewcommand*{\thesubsection}{\roman{subsection}}
+\usepackage{tocloft}
+\setlength{\cftsecnumwidth}{5em}
 
 \begin{document}
 \begin{titlepage}
@@ -72,6 +77,63 @@
 \tableofcontents
 \newpage
 
-asd
+\section{Аналіз предметної області та постановка завдання}
+\subsection{Опис предметної області}
+\subsection{Вимоги до обробки даних}
+
+\subsection{Постановка завдання}
+\begin{list}{•}{Функції інформаційної системи:}
+    \item Структуроване зберігання даних в реляційній СУБД відповідно до потреб предметної області.
+    \item Зчитування та завантаження даних для 3-5 таблиць із зовнішнього файлу, первинне заповнення тестовими даними решти таблиць шляхом випадкової генерації за правилами.
+    \item Зручні функції внесення, отримання та пошуку, фільтрації даних через візуальний інтерфейс користувача (мінімально для 3 сутностей предметної області).
+    \item Реалізація моделі обмеження доступу користувачів на основі ролей СУБД (мінімальна кількість ролей – 3).
+    \item Розробка API-інтерфейсу для інтеграції із зовнішніми системами (мінімально 1 запит на додавання, 1 на отримання інформації).
+    \item Збереження протоколу дій користувачів при управлінні даними, інструмент отримання зрізу протоколу за обраний період часу.
+    \item Реалізація одного засобу візуалізації, моніторингу даних, формування зведених звітів (можливість обрати діапазони виведення або інші фільтри).
+    \item Експорт накопичених даних, що відповідають декільком сутностям, у файл CSV, XML, JSON або RDF-формату.
+\end{list}
+\newpage
+
+\section{Розробка моделей зберігання даних}
+\subsection{Концептуальне проектування}
+\subsection{Вимоги до системи накопичення даних}
+\subsection{Логічне проектування схеми бази даних}
+\subsection{Реалізація процедур бізнес-логіки}
+\newpage
+
+\section{Розробка програмного коду}
+\subsection{Обґрунтування обраної архітектури}
+\subsection{Структурна модель інформаційної системи}
+\subsection{Призначення модулів та компонентів системи}
+\subsection{Особливості реалізації та елементи інтерфейсу}
+\newpage
+
+\section{Наповнення бази даних}
+\subsection{Опис джерела історичних даних}
+\subsection{Опис процесів генерації тестових даних}
+\subsection{Трансформація та первинне завантаження даних}
+\newpage
+
+\section{Функціональні можливості для користувача}
+\subsection{Опис інтерфейсу у відповідності до бізнес-процесів}
+\subsection{Засоби аналітичного представлення даних}
+\subsection{Засоби експорту даних (обмеження, формат файлу)}
+\subsection{Засоби програмного інтерфейсу (якщо реалізовано)}
+\newpage
+
+\section{Висновки}
+\subsection{Встановлені недоліки}
+\subsection{Перспективи покращення}
+\newpage
+
+\section{Список літератури}
+\newpage
+
+\section{Додатки}
+\subsection{Скирпт створення бази даних}
+\subsection{Скрипт завантаження історичних даних}
+\subsection{Інший програмний код}
+\subsection{Інший код створених моделей}
+\newpage
 
 \end{document}

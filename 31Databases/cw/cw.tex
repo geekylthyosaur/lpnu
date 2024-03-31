@@ -1,0 +1,77 @@
+\documentclass[oneside,14pt]{extarticle}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+\usepackage{amssymb,amsfonts,amsmath,amsthm,mathtext,textcomp}
+
+\usepackage[includehead, headsep=0pt, footskip=0pt, top=2cm, bottom=2cm, left=2.5cm, right=1cm]{geometry}
+\usepackage{indentfirst}
+\usepackage[onehalfspacing]{setspace}
+\usepackage[headings]{fancyhdr}
+\usepackage{etoolbox}
+\usepackage{flafter}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[center]{titlesec}
+\titlelabel{\thetitle.\quad}
+\usepackage{array}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhead[R]{\thepage}
+\pagestyle{fancy}
+\lstset{breaklines=true,}
+\graphicspath{ {./pictures} }
+\counterwithin{figure}{section}
+
+\begin{document}
+\begin{titlepage}
+	\begin{center}
+		Національний університет <<Львівська політехніка>>\\
+		Кафедра програмного забезпечення
+		
+		\vspace{40pt}
+		\textbf{\LARGE КУРСОВА РОБОТА}\\
+		{\large
+		\textbf{з дисципліни <<Бази даних>>}\\
+		на тему:\\
+		<<Інформаційна система для ...>>
+		}
+		\vspace*{40pt}
+		
+		\begin{flushright}
+		    \begin{minipage}{0.6\textwidth}
+		        \underline{Виконав}:\\
+                Стедент спеціальності 121\\
+			    <<Інженерія програмного забезпечення>>\\
+			    групи ПЗ-32\\
+			    Коваленко Д.М.
+			    \bigbreak
+			    
+			    \underline{Керівник}:\\
+			    асистент кафедри програмного забезпечення\\
+			    Білоіваненко М.В.
+			    \bigbreak
+			    
+			    \underline{Оцінка}:\\
+			    Національна шкала \rule{6.35cm}{0.15mm}\\			
+			    Кількість балів \rule{2cm}{0.15mm} Оцінка ECTS \rule{2cm}{0.15mm}
+			    \bigbreak
+            \end{minipage}
+		\end{flushright}
+		\vspace{40pt}
+		Члени комісії \hspace{1.9cm} \rule{3cm}{0.15mm} \hspace{1cm} Білоіваненко М.В.\\
+		{\small\vspace{-5pt}(підпис)}\\
+		\hspace{2.65cm}\hspace{1.9cm}  \rule{3cm}{0.15mm} \hspace{1cm} Цимбалюк Т.М.\\
+		{\small\vspace{-5pt}(підпис)}\\
+		
+		\vspace{\fill}
+		Львів — 2024
+	\end{center}
+\end{titlepage}
+\setcounter{page}{2}
+\tableofcontents
+\newpage
+
+asd
+
+\end{document}

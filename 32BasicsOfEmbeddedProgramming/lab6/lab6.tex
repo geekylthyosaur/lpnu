@@ -109,7 +109,7 @@ int main(void) {
 	unsigned int result; 
 	adc_init(); 
 	
-	result = readADC1(ADC_Channel_1); 
+	result = readADC1(ADC_Channel_1)*3.3/0xFFF; 
 	if(((result - 0.76)/0.0025 + 25)<15){ 
 		GPIOD->ODR = 0x4000; 
 	} 

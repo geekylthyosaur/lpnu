@@ -14,3 +14,4 @@ obj/
 venv/
 .vs
 *.toc
+target

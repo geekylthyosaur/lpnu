@@ -1,0 +1,8 @@
+[package]
+name = "cw"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+geojson = { version = "0.24.1", default-features = false }
+tokio = { version = "1.37.0", default-features = false, features = ["rt", "macros"] }

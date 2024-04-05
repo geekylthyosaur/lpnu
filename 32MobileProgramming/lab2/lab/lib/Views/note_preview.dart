@@ -53,7 +53,8 @@ class _NotePreviewState extends State<NotePreview> {
                   ),
                   _content(),
                 ],
-                if (widget.note.alarm != null) ...[
+                if (widget.note.alarm != null &&
+                    widget.note.alarm!.compareTo(DateTime.now()) > 0) ...[
                   const SizedBox(
                     height: 8,
                   ),
@@ -72,7 +73,6 @@ class _NotePreviewState extends State<NotePreview> {
                         size: 24,
                       ),
                       const SizedBox(width: 4),
-                      // Provides spacing between the icon and text
                       Text(
                         DateFormat('EEE dd MMMM').format(widget.note.alarm!),
                         style: TextStyle(

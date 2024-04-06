@@ -123,6 +123,18 @@ class DatabaseHelper {
     return await db.insert('notes', note.toMap());
   }
 
+  Future<void> insertNotes(List<Note> notes) async {
+    Database db = await database;
+    Batch batch = db.batch();
+    var table = await db.rawQuery('SELECT MAX(id) as max_id FROM notes');
+    int currentMaxId = table.first["max_id"] as int? ?? 0;
+    for (Note note in notes) {
+      note.id = ++currentMaxId;
+      batch.insert('notes', note.toMap());
+    }
+    await batch.commit();
+  }
+
   Future<List<Note>> fetchNotes() async {
     Database db = await database;
     List<Map<String, dynamic>> notes = await db.query('notes');

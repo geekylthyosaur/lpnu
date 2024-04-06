@@ -1,12 +1,13 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lab/Controllers/archived_notes_page.dart';
 import 'package:lab/Controllers/deleted_notes_page.dart';
 import 'package:lab/Controllers/edit_note_page.dart';
-import 'package:lab/Controllers/log_in_page.dart';
 import 'package:lab/Models/note.dart';
+import 'package:lab/Services/firebase_auth.dart';
+import 'package:lab/Services/google_calendar.dart';
 import 'package:lab/Views/calendar.dart';
 import 'package:lab/Views/note_preview_list.dart';
+import 'package:lab/Views/snack_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,21 +20,11 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late List<Note> notes;
   bool isLoading = true;
-  bool isLoggedIn = false;
   double bottomBarHeight = 170;
 
   @override
   void initState() {
     super.initState();
-    Firebase.initializeApp(
-            options: const FirebaseOptions(
-                apiKey: "current_key",
-                appId: "mobilesdk_app_id",
-                messagingSenderId: "project_number",
-                projectId: "project_id"))
-        .whenComplete(() {
-      setState(() {});
-    });
     DatabaseHelper.instance.fetchNotes().then((result) {
       setState(() {
         notes = result;
@@ -66,17 +57,31 @@ class _HomePageState extends State<HomePage> {
       centerTitle: true,
       toolbarHeight: 80,
       leading: IconButton(
-          icon: const Icon(Icons.menu),
+          icon: const Icon(
+            Icons.menu,
+            size: 25,
+          ),
           onPressed: () {
             _closeCalendar();
             scaffoldKey.currentState?.openDrawer();
           }),
       actions: [
         IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () {
-              _closeCalendar();
-              scaffoldKey.currentState?.openEndDrawer();
+            icon: Auth.userIcon(),
+            onPressed: () async {
+              if (Auth.isLoggedIn) {
+                _closeCalendar();
+                scaffoldKey.currentState?.openEndDrawer();
+              } else {
+                try {
+                  await Auth.signInWithGoogle();
+                  setState(() {});
+                } catch (e) {
+                  if (mounted) {
+                    snackBar(context, e.toString(), durationSec: 10);
+                  }
+                }
+              }
             }),
       ],
     );
@@ -235,36 +240,32 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             leading: const Icon(Icons.sync),
             title: const Text('Sync'),
-            onTap: () {
-              // TODO: Open sync.
+            onTap: () async {
               Navigator.pop(context);
+              List<Note> result = await GoogleCalendar.load();
+              await DatabaseHelper.instance.insertNotes(result);
+              setState(() {
+                notes.addAll(result);
+              });
             },
           ),
-          isLoggedIn
-              ? ListTile(
-                  leading: const Icon(Icons.logout),
-                  title: const Text('Log out'),
-                  onTap: () async {
-                    // TODO: Open log out.
-                    Navigator.pop(context);
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (ctx) => const LogInPage()),
-                    );
-                  },
-                )
-              : ListTile(
-                  leading: const Icon(Icons.logout),
-                  title: const Text('Log in'),
-                  onTap: () async {
-                    // TODO: Open log in.
-                    Navigator.pop(context);
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (ctx) => const LogInPage()),
-                    );
-                  },
-                ),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Log out'),
+            onTap: () async {
+              try {
+                await Auth.signOutFromGoogle();
+                setState(() {});
+              } catch (e) {
+                if (mounted) {
+                  snackBar(context, e.toString(), durationSec: 10);
+                }
+              }
+              if (mounted) {
+                Navigator.pop(context);
+              }
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.privacy_tip),
             title: const Text('Privacy'),

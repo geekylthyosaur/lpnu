@@ -13,15 +13,15 @@ class GoogleCalendar {
       return [];
     }
 
-    List<Note> notes = events.items!
-        .map((event) => Note(
-              googleId: event.id,
-              title: event.summary ?? "",
-              content: event.description ?? "",
-              lastEdited: event.updated ?? DateTime.now(),
-              alarm: event.start?.dateTime,
-            ))
-        .toList();
+    List<Note> notes = events.items!.map((event) {
+      return Note(
+        googleId: event.id,
+        title: event.summary ?? "",
+        content: event.description ?? "",
+        lastEdited: event.updated ?? DateTime.now(),
+        alarm: event.start?.dateTime,
+      );
+    }).toList();
 
     return notes;
   }

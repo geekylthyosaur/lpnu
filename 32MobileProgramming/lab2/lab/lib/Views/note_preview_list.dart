@@ -31,7 +31,8 @@ class _NotePreviewListState extends State<NotePreviewList> {
   void initState() {
     notes = widget.notes;
     filter = widget.filter;
-    comparator = widget.comparator ?? (a, b) => a.id.compareTo(b.id);
+    comparator = widget.comparator ??
+        (a, b) => a.lastEdited.compareTo(b.lastEdited) * (-1);
     super.initState();
   }
 

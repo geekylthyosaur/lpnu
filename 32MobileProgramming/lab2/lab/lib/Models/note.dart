@@ -40,6 +40,7 @@ class Note {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'googleId': googleId,
       'title': title,
       'content': content,
       'lastEdited': lastEdited.toString(),
@@ -53,6 +54,7 @@ class Note {
   static Note fromMap(Map<String, dynamic> map) {
     return Note(
       id: map['id'],
+      googleId: map['googleId'],
       title: map['title'],
       content: map['content'],
       lastEdited: DateTime.parse(map['lastEdited']),
@@ -106,6 +108,7 @@ class DatabaseHelper {
     await db.execute('''
       CREATE TABLE notes(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        googleId TEXT,
         title TEXT,
         content TEXT,
         lastEdited TEXT,

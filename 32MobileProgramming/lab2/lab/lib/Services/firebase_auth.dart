@@ -18,9 +18,11 @@ class Auth {
   }
 
   static Future<void> signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser =
-        await GoogleSignIn(scopes: ["https://www.googleapis.com/auth/calendar"])
-            .signIn();
+    final GoogleSignInAccount? googleUser = await GoogleSignIn(scopes: [
+      "email",
+      "https://www.googleapis.com/auth/userinfo.profile",
+      "https://www.googleapis.com/auth/calendar"
+    ]).signIn();
 
     final GoogleSignInAuthentication? googleAuth =
         await googleUser?.authentication;

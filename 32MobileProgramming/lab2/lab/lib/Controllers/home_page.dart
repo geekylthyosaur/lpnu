@@ -20,7 +20,7 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late List<Note> notes;
   bool isLoading = true;
-  double bottomBarHeight = 170;
+  double bottomBarHeight = 185;
 
   @override
   void initState() {
@@ -97,6 +97,24 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _bottomBar() {
+    Widget inner =
+        Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+      _isCalendarOpen()
+          ? IconButton(
+              icon: const Icon(Icons.arrow_downward),
+              onPressed: () {
+                _closeCalendar();
+              })
+          : IconButton(
+              icon: const Icon(Icons.arrow_upward),
+              onPressed: () {
+                _openCalendar();
+              }),
+      _isCalendarOpen()
+          ? Calendar(notes: notes, len: 5)
+          : Calendar(notes: notes, len: 1),
+    ]);
+
     return AnimatedContainer(
       decoration: BoxDecoration(
         boxShadow: [
@@ -113,26 +131,11 @@ class _HomePageState extends State<HomePage> {
           child: BottomAppBar(
             child: SizedBox(
               height: bottomBarHeight,
-              child: SingleChildScrollView(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      _isCalendarOpen()
-                          ? IconButton(
-                              icon: const Icon(Icons.arrow_downward),
-                              onPressed: () {
-                                _closeCalendar();
-                              })
-                          : IconButton(
-                              icon: const Icon(Icons.arrow_upward),
-                              onPressed: () {
-                                _openCalendar();
-                              }),
-                      _isCalendarOpen()
-                          ? Calendar(notes: notes, len: 5)
-                          : Calendar(notes: notes, len: 1),
-                    ]),
-              ),
+              child: _isCalendarOpen()
+                  ? SingleChildScrollView(
+                      child: inner,
+                    )
+                  : inner,
             ),
           )),
     );
@@ -335,7 +338,7 @@ class _HomePageState extends State<HomePage> {
 
   void _closeCalendar() {
     setState(() {
-      bottomBarHeight = 170;
+      bottomBarHeight = 185;
     });
   }
 

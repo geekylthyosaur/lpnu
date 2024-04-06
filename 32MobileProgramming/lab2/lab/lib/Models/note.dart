@@ -7,6 +7,7 @@ import 'package:sqflite/sqflite.dart';
 
 class Note {
   late int id;
+  String? googleId;
   ColorScheme colorScheme = ColorScheme.fromSwatch(
       primarySwatch: Colors.primaries
           .elementAt(Random().nextInt(Colors.primaries.length)));
@@ -19,6 +20,7 @@ class Note {
 
   Note({
     int? id,
+    this.googleId,
     ColorScheme? colorScheme,
     this.title = "",
     this.content = "",

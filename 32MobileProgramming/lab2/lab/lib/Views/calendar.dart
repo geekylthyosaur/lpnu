@@ -42,7 +42,7 @@ class _CalendarState extends State<Calendar> {
                         ...getNextWeekdays(
                                 getCurrentWeekDates()[idx], idx + 1, len)
                             .map((date) => Column(children: [
-                                  _dateCell(date),
+                                  _dateCell(date, widget.notes),
                                   const SizedBox(height: 8)
                                 ]))
                       ]))),
@@ -54,10 +54,33 @@ class _CalendarState extends State<Calendar> {
     return Text(day);
   }
 
-  Widget _dateCell(DateTime date) {
+  Widget _dateCell(DateTime date, List<Note> notes) {
+    List<Note> todayNotes = notes.where((note) {
+      return note.alarm != null &&
+          note.alarm!.day == date.day &&
+          note.alarm!.month == date.month &&
+          note.alarm!.year == date.year;
+    }).toList();
+
+    todayNotes =
+        todayNotes.sublist(0, todayNotes.length > 2 ? 2 : todayNotes.length);
+
+    List<Widget> indicators = todayNotes.map((note) {
+      return Container(
+        width: 8,
+        height: 8,
+        margin: const EdgeInsets.only(right: 4, left: 4),
+        decoration: BoxDecoration(
+          color: note.colorScheme.primary,
+          shape: BoxShape.circle,
+        ),
+      );
+    }).toList();
+
     return Container(
+      height: 50,
+      width: 50,
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-      width: 40,
       decoration: BoxDecoration(
         color: DateTime.now().day == date.day &&
                 DateTime.now().month == date.month &&
@@ -66,11 +89,22 @@ class _CalendarState extends State<Calendar> {
             : Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Text(
-        date.day.toString(),
-        style:
-            TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
-        textAlign: TextAlign.center,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            date.day.toString(),
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onPrimaryContainer,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 4),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: indicators,
+          ),
+        ],
       ),
     );
   }

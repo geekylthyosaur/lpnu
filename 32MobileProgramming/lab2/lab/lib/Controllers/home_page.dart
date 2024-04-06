@@ -242,11 +242,19 @@ class _HomePageState extends State<HomePage> {
             title: const Text('Sync'),
             onTap: () async {
               Navigator.pop(context);
-              List<Note> result = await GoogleCalendar.load();
-              await DatabaseHelper.instance.insertNotes(result);
-              setState(() {
-                notes.addAll(result);
-              });
+              try {
+                List<Note> result = (await GoogleCalendar.load())
+                    .where((gn) => !notes.any((n) => gn.googleId == n.googleId))
+                    .toList();
+                await DatabaseHelper.instance.insertNotes(result);
+                setState(() {
+                  notes.addAll(result);
+                });
+              } catch (e) {
+                if (mounted) {
+                  snackBar(context, e.toString(), durationSec: 10);
+                }
+              }
             },
           ),
           ListTile(
@@ -269,9 +277,13 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             leading: const Icon(Icons.privacy_tip),
             title: const Text('Privacy'),
-            onTap: () {
+            onTap: () async {
               // TODO: Open privacy.
               Navigator.pop(context);
+              await DatabaseHelper.instance.deleteAllNotes();
+              setState(() {
+                notes.clear();
+              });
             },
           ),
         ],

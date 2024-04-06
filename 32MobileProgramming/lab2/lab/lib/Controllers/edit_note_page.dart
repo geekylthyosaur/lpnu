@@ -194,7 +194,10 @@ class _EditNotePageState extends State<EditNotePage> {
             );
           },
           context: context,
-          firstDate: DateTime.now(),
+          firstDate: widget.note.alarm != null &&
+                  widget.note.alarm!.isBefore(DateTime.now())
+              ? widget.note.alarm!
+              : DateTime.now(),
           lastDate: DateTime.now().add(const Duration(days: 10000)),
           initialDate: widget.note.alarm,
           cancelText: widget.note.alarm != null ? 'Remove' : 'Cancel',

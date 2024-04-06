@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-void snackBar(BuildContext context, String msg) {
+void snackBar(BuildContext context, String msg, {int durationSec = 1}) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Text(msg),
-      duration: const Duration(seconds: 1),
+      duration: Duration(seconds: durationSec),
     ),
   );
 }

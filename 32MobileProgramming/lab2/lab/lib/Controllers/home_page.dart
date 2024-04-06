@@ -1,7 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:lab/Controllers/archived_notes_page.dart';
 import 'package:lab/Controllers/deleted_notes_page.dart';
 import 'package:lab/Controllers/edit_note_page.dart';
+import 'package:lab/Controllers/log_in_page.dart';
 import 'package:lab/Models/note.dart';
 import 'package:lab/Views/calendar.dart';
 import 'package:lab/Views/note_preview_list.dart';
@@ -17,11 +19,21 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late List<Note> notes;
   bool isLoading = true;
+  bool isLoggedIn = false;
   double bottomBarHeight = 170;
 
   @override
   void initState() {
     super.initState();
+    Firebase.initializeApp(
+            options: const FirebaseOptions(
+                apiKey: "current_key",
+                appId: "mobilesdk_app_id",
+                messagingSenderId: "project_number",
+                projectId: "project_id"))
+        .whenComplete(() {
+      setState(() {});
+    });
     DatabaseHelper.instance.fetchNotes().then((result) {
       setState(() {
         notes = result;
@@ -228,14 +240,31 @@ class _HomePageState extends State<HomePage> {
               Navigator.pop(context);
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Log out'),
-            onTap: () {
-              // TODO: Open log out.
-              Navigator.pop(context);
-            },
-          ),
+          isLoggedIn
+              ? ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Log out'),
+                  onTap: () async {
+                    // TODO: Open log out.
+                    Navigator.pop(context);
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (ctx) => const LogInPage()),
+                    );
+                  },
+                )
+              : ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Log in'),
+                  onTap: () async {
+                    // TODO: Open log in.
+                    Navigator.pop(context);
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (ctx) => const LogInPage()),
+                    );
+                  },
+                ),
           ListTile(
             leading: const Icon(Icons.privacy_tip),
             title: const Text('Privacy'),

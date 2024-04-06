@@ -1,6 +1,7 @@
 # Miscellaneous
 *.class
 *.log
+*.jks
 *.pyc
 *.swp
 .DS_Store
@@ -30,6 +31,8 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+
+google-services.json
 
 # Symbolication related
 app.*.symbols

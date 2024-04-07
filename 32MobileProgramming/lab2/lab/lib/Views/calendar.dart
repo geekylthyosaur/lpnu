@@ -42,7 +42,7 @@ class _CalendarState extends State<Calendar> {
                         ...getNextWeekdays(
                                 getCurrentWeekDates()[idx], idx + 1, len)
                             .map((date) => Column(children: [
-                                  _dateCell(date, widget.notes),
+                                  _dateCell(date),
                                   const SizedBox(height: 8)
                                 ]))
                       ]))),
@@ -51,11 +51,14 @@ class _CalendarState extends State<Calendar> {
   }
 
   Widget _dayCell(String day) {
-    return Text(day);
+    return Text(
+      day,
+      style: const TextStyle(fontSize: 16),
+    );
   }
 
-  Widget _dateCell(DateTime date, List<Note> notes) {
-    List<Note> todayNotes = notes.where((note) {
+  Widget _dateCell(DateTime date) {
+    List<Note> todayNotes = widget.notes.where((note) {
       return note.alarm != null &&
           note.alarm!.day == date.day &&
           note.alarm!.month == date.month &&
@@ -99,7 +102,7 @@ class _CalendarState extends State<Calendar> {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 4),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: indicators,

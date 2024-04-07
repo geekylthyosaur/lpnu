@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lab/Models/note.dart';
+import 'package:lab/Views/bool_dialog.dart';
+import 'package:lab/Views/snack_bar.dart';
 import 'package:lab/Views/note_preview_list.dart';
 
 class DeletedNotesPage extends StatefulWidget {
@@ -25,6 +27,10 @@ class _DeletedNotesPageState extends State<DeletedNotesPage> {
   }
 
   PreferredSizeWidget _topBar() {
+    confirmDeleteDialog() => boolDialog(context, 'Delete all notes?',
+        'Are you sure you want to delete all notes?', 'Delete', 'Cancel');
+    msg() => snackBar(context, 'Deleted');
+
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       centerTitle: true,
@@ -33,6 +39,19 @@ class _DeletedNotesPageState extends State<DeletedNotesPage> {
         icon: const Icon(Icons.arrow_back),
         onPressed: () => Navigator.of(context).pop(widget.notes),
       ),
+      actions: [
+        if (widget.notes.where((n) => n.isDeleted).isNotEmpty)
+          IconButton(
+              icon: const Icon(Icons.delete_forever),
+              onPressed: () async {
+                if (await confirmDeleteDialog()) {
+                  await DatabaseHelper.instance.deleteAllNotes();
+                  widget.notes.removeWhere((n) => n.isDeleted);
+                  setState(() {});
+                  msg();
+                }
+              }),
+      ],
       title: const Text("Deleted"),
     );
   }

@@ -178,6 +178,6 @@ class DatabaseHelper {
 
   Future<int> deleteAllNotes() async {
     Database db = await database;
-    return await db.delete('notes');
+    return await db.delete('notes', where: 'isDeleted = ?', whereArgs: [1]);
   }
 }

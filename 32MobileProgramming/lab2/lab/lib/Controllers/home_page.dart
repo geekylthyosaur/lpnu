@@ -46,7 +46,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: _bottomBar(),
       drawer: _leftDrawer(),
       endDrawer: _rightDrawer(),
-      floatingActionButton: _addButton(),
+      floatingActionButton: _isCalendarOpen() ? null : _addButton(),
       resizeToAvoidBottomInset: false,
     );
   }

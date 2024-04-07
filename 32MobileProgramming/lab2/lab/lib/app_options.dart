@@ -1,3 +1,6 @@
-class Options {
-  static int firstDayOfWeek = 0;
+import 'package:flutter/material.dart';
+
+class AppOptions {
+  static final ValueNotifier<ThemeMode> themeMode =
+      ValueNotifier(ThemeMode.light);
 }

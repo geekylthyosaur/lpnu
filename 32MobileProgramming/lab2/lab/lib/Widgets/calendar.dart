@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lab/Models/note.dart';
 import 'package:lab/Widgets/upcoming_notes_list.dart';
-import 'package:lab/app_options.dart';
 
 class Calendar extends StatefulWidget {
   final int len;
@@ -43,9 +42,7 @@ class _CalendarState extends State<Calendar> {
   }
 
   Widget _calendar(int len) {
-    final days = Options.firstDayOfWeek == 0
-        ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -155,9 +152,7 @@ List<DateTime> getNextWeekdays(DateTime startDate, int weekday, int len) {
 List<DateTime> getCurrentWeekDates() {
   final now = DateTime.now();
 
-  final startOfWeek = Options.firstDayOfWeek == 0
-      ? now.subtract(Duration(days: now.weekday - 1))
-      : now.subtract(Duration(days: now.weekday));
+  final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
 
   return List.generate(7, (index) => startOfWeek.add(Duration(days: index)));
 }

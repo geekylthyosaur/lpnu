@@ -3,7 +3,7 @@ import 'package:lab/Pages/archived_notes.dart';
 import 'package:lab/Pages/deleted_notes.dart';
 import 'package:lab/Pages/edit_note.dart';
 import 'package:lab/Pages/privacy.dart';
-import 'package:lab/Pages/settings.dart';
+import 'package:lab/Pages/options.dart';
 import 'package:lab/Models/note.dart';
 import 'package:lab/Services/firebase_auth.dart';
 import 'package:lab/Services/google_calendar.dart';
@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
             onTap: () async {
               Navigator.pop(context);
               await Navigator.of(context).push(
-                  MaterialPageRoute(builder: (ctx) => const SettingsPage()));
+                  MaterialPageRoute(builder: (ctx) => const OptionsPage()));
               setState(() {});
             },
           ),
@@ -176,18 +176,19 @@ class _HomePageState extends State<HomePage> {
               setState(() {});
             },
           ),
-          ListTile(
-            leading: const Icon(Icons.help),
-            title: const Text('Help'),
-            onTap: () async {
-              // TODO: Open Help.
-              Navigator.pop(context);
-              await DatabaseHelper.instance.deleteAllNotes();
-              setState(() {
-                notes.clear();
-              });
-            },
-          ),
+          if (false)
+            ListTile(
+              leading: const Icon(Icons.help),
+              title: const Text('Help'),
+              onTap: () async {
+                // TODO: Open Help.
+                Navigator.pop(context);
+                await DatabaseHelper.instance.deleteAllNotes();
+                setState(() {
+                  notes.clear();
+                });
+              },
+            ),
           ListTile(
             leading: const Icon(Icons.info),
             title: const Text('About'),
@@ -218,14 +219,15 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          ListTile(
-            leading: const Icon(Icons.account_box),
-            title: const Text('Account'),
-            onTap: () {
-              // TODO: Open account.
-              Navigator.pop(context);
-            },
-          ),
+          if (false)
+            ListTile(
+              leading: const Icon(Icons.account_box),
+              title: const Text('Account'),
+              onTap: () {
+                // TODO: Open account.
+                Navigator.pop(context);
+              },
+            ),
           ListTile(
             leading: const Icon(Icons.sync),
             title: const Text('Sync'),

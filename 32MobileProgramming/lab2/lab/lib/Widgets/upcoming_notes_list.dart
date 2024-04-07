@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lab/Models/note.dart';
 import 'package:lab/Widgets/note_preview_list.dart';

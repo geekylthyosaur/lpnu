@@ -25,7 +25,7 @@ class Calendar extends StatefulWidget {
                 onPressed: () {
                   Navigator.of(context).pop();
                 }),
-            Calendar(notes: notes, len: 5),
+            Calendar(notes: notes, len: 4),
             Expanded(child: UpcomingNotesList(notes: notes)),
           ]),
         ));
@@ -47,7 +47,7 @@ class _CalendarState extends State<Calendar> {
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Column(children: [
-          if (len == 5)
+          if (len == 4)
             Center(
                 child: Text(
               DateFormat('dd MMMM, yyyy').format(DateTime.now()),

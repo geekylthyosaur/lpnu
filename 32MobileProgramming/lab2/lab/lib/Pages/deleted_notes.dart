@@ -45,7 +45,7 @@ class _DeletedNotesPageState extends State<DeletedNotesPage> {
               icon: const Icon(Icons.delete_forever),
               onPressed: () async {
                 if (await confirmDeleteDialog()) {
-                  await DatabaseHelper.instance.deleteAllNotes();
+                  await DatabaseHelper.instance.deleteDeletedNotes();
                   widget.notes.removeWhere((n) => n.isDeleted);
                   setState(() {});
                   msg();

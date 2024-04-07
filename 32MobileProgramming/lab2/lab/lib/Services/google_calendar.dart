@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:lab/Models/note.dart';
 import 'package:lab/Services/firebase_auth.dart';
@@ -13,15 +14,18 @@ class GoogleCalendar {
       return [];
     }
 
-    List<Note> notes = events.items!.map((event) {
-      return Note(
-        googleId: event.id,
-        title: event.summary ?? "",
-        content: event.description ?? "",
-        lastEdited: event.updated ?? DateTime.now(),
-        alarm: event.start?.dateTime,
-      );
-    }).toList();
+    List<Note> notes = events.items!
+        .map((event) {
+          return Note(
+            googleId: event.id,
+            title: event.summary ?? "",
+            content: event.description ?? "",
+            lastEdited: event.updated ?? DateTime.now(),
+            alarm: event.start?.dateTime,
+          );
+        })
+        .whereNot((n) => n.title.isEmpty && n.content.isEmpty)
+        .toList();
 
     return notes;
   }

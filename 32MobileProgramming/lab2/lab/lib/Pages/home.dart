@@ -111,7 +111,7 @@ class _HomePageState extends State<HomePage> {
           }
         },
         child: BottomAppBar(
-            height: 185,
+            height: 190,
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.start, children: [
               IconButton(
@@ -179,9 +179,13 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             leading: const Icon(Icons.help),
             title: const Text('Help'),
-            onTap: () {
+            onTap: () async {
               // TODO: Open Help.
               Navigator.pop(context);
+              await DatabaseHelper.instance.deleteAllNotes();
+              setState(() {
+                notes.clear();
+              });
             },
           ),
           ListTile(

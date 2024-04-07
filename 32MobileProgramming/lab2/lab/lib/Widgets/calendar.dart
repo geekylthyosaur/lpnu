@@ -18,19 +18,18 @@ class Calendar extends StatefulWidget {
     return Padding(
         padding: const EdgeInsets.all(10),
         child: Container(
-            height: 700,
-            color: Theme.of(context).bottomAppBarTheme.color,
-            child: SingleChildScrollView(
-              child:
-                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-                IconButton(
-                    icon: const Icon(Icons.arrow_downward),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    }),
-                Calendar(notes: notes, len: 5),
-              ]),
-            )));
+          height: 700,
+          color: Theme.of(context).bottomAppBarTheme.color,
+          child: Column(children: [
+            IconButton(
+                icon: const Icon(Icons.arrow_downward),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
+            Calendar(notes: notes, len: 5),
+            Expanded(child: UpcomingNotesList(notes: notes)),
+          ]),
+        ));
   }
 
   @override
@@ -72,7 +71,6 @@ class _CalendarState extends State<Calendar> {
                                   const SizedBox(height: 8)
                                 ]))
                       ]))),
-          if (len == 5) UpcomingNotesList(notes: widget.notes),
         ]));
   }
 
@@ -88,7 +86,8 @@ class _CalendarState extends State<Calendar> {
       return note.alarm != null &&
           note.alarm!.day == date.day &&
           note.alarm!.month == date.month &&
-          note.alarm!.year == date.year;
+          note.alarm!.year == date.year &&
+          note.alarm!.isAfter(DateTime.now());
     }).toList();
 
     todayNotes =
@@ -128,7 +127,7 @@ class _CalendarState extends State<Calendar> {
             ),
             textAlign: TextAlign.center,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 3),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: indicators,

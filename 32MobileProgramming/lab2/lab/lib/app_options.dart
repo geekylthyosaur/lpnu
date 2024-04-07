@@ -1,3 +1,3 @@
 class Options {
-  static int firstDayOfWeek = 1;
+  static int firstDayOfWeek = 0;
 }

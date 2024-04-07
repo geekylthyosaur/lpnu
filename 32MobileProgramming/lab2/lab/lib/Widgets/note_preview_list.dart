@@ -42,51 +42,50 @@ class _NotePreviewListState extends State<NotePreviewList> {
       return Center(child: Text(widget.orElse));
     }
 
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(8),
-      child: Column(
-        children: notes
-            .where(filter)
-            .sorted(comparator)
-            .map((note) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: NotePreview(
-                    note: note,
-                    onPress: () async {
-                      Note result = await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (ctx) => EditNotePage(note: note)),
-                      );
-                      if (!result.isEmpty()) {
-                        if (notes.any((note) => note.id == result.id)) {
-                          await DatabaseHelper.instance.updateNote(result);
-                          setState(() {
-                            int index = notes
-                                .indexWhere((note) => note.id == result.id);
-                            if (index != -1) {
-                              notes[index] = result;
-                            }
-                          });
-                        } else {
-                          await DatabaseHelper.instance.insertNote(result);
-                          setState(() {
-                            notes.add(result);
-                          });
-                        }
-                      } else {
-                        if (notes.any((note) => note.id == result.id)) {
-                          await DatabaseHelper.instance.deleteNote(result);
-                          setState(() {
-                            notes.removeWhere((note) => note.id == result.id);
-                          });
-                        }
-                      }
-                    },
-                  ),
-                ))
-            .toList(),
-      ),
+    var iter = notes.where(filter).sorted(comparator).map((note) => Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: NotePreview(
+            note: note,
+            onPress: () async {
+              await _onPress(note);
+            },
+          ),
+        ));
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(10),
+      shrinkWrap: true,
+      itemBuilder: (context, n) => iter.elementAtOrNull(n),
     );
+  }
+
+  Future<void> _onPress(Note note) async {
+    Note result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (ctx) => EditNotePage(note: note)),
+    );
+    if (!result.isEmpty()) {
+      if (notes.any((note) => note.id == result.id)) {
+        await DatabaseHelper.instance.updateNote(result);
+        setState(() {
+          int index = notes.indexWhere((note) => note.id == result.id);
+          if (index != -1) {
+            notes[index] = result;
+          }
+        });
+      } else {
+        await DatabaseHelper.instance.insertNote(result);
+        setState(() {
+          notes.add(result);
+        });
+      }
+    } else {
+      if (notes.any((note) => note.id == result.id)) {
+        await DatabaseHelper.instance.deleteNote(result);
+        setState(() {
+          notes.removeWhere((note) => note.id == result.id);
+        });
+      }
+    }
   }
 }

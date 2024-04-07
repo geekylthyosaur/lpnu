@@ -25,6 +25,7 @@ class _NotePreviewState extends State<NotePreview> {
       child: Container(
         width: double.infinity,
         constraints: const BoxConstraints(
+          minHeight: 10,
           maxHeight: 200,
         ),
         decoration: BoxDecoration(
@@ -41,6 +42,10 @@ class _NotePreviewState extends State<NotePreview> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                if (widget.note.title.isEmpty && widget.note.content.isEmpty)
+                  const SizedBox(
+                    height: 8,
+                  ),
                 if (widget.note.title.isNotEmpty && widget.note.content.isEmpty)
                   _title(),
                 if (widget.note.content.isNotEmpty && widget.note.title.isEmpty)

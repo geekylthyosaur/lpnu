@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lab/Models/note.dart';
 import 'package:lab/Widgets/note_preview_list.dart';
@@ -26,11 +27,12 @@ class _UpcomingNotesListState extends State<UpcomingNotesList> {
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
         ),
         const SizedBox(height: 8),
-        NotePreviewList(
-            notes: widget.notes,
-            filter: filter,
-            comparator: comparator,
-            orElse: "Nothing is here."),
+        Expanded(
+            child: NotePreviewList(
+                notes: widget.notes,
+                filter: filter,
+                comparator: comparator,
+                orElse: "Nothing is here.")),
       ],
     );
   }

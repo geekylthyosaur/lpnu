@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:lab/Models/note.dart';
 import 'package:lab/Widgets/bool_dialog.dart';
@@ -18,12 +19,19 @@ class _EditNotePageState extends State<EditNotePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: scaffoldKey,
-      appBar: _topBar(),
-      body: _body(),
-      bottomNavigationBar: _bottomBar(),
-    );
+    return PopScope(
+        canPop: false,
+        onPopInvoked: (didPop) {
+          if (!didPop) {
+            Navigator.of(context).pop(widget.note);
+          }
+        },
+        child: Scaffold(
+          key: scaffoldKey,
+          appBar: _topBar(),
+          body: _body(),
+          bottomNavigationBar: _bottomBar(),
+        ));
   }
 
   PreferredSizeWidget _topBar() {

@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:lab/Controllers/edit_note_page.dart';
+import 'package:lab/Pages/edit_note.dart';
 import 'package:lab/Models/note.dart';
-import 'package:lab/Views/note_preview.dart';
+import 'package:lab/Widgets/note_preview.dart';
 
 class NotePreviewList extends StatefulWidget {
   final List<Note> notes;

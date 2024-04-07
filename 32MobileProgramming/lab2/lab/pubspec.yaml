@@ -41,10 +41,7 @@ dependencies:
   google_sign_in: ^6.2.1
   firebase_core: ^2.28.0
   googleapis: ^13.1.0
-  manage_calendar_events: ^2.0.2
-  http: ^1.2.1
-  googleapis_auth: ^1.5.1
-  url_launcher: ^6.2.5
+  settings_ui: ^2.0.2
 
 
 dev_dependencies:

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:lab/Controllers/archived_notes_page.dart';
-import 'package:lab/Controllers/deleted_notes_page.dart';
-import 'package:lab/Controllers/edit_note_page.dart';
-import 'package:lab/Controllers/privacy_page.dart';
+import 'package:lab/Pages/archived_notes.dart';
+import 'package:lab/Pages/deleted_notes.dart';
+import 'package:lab/Pages/edit_note.dart';
+import 'package:lab/Pages/privacy.dart';
+import 'package:lab/Pages/settings.dart';
 import 'package:lab/Models/note.dart';
 import 'package:lab/Services/firebase_auth.dart';
 import 'package:lab/Services/google_calendar.dart';
-import 'package:lab/Views/calendar.dart';
-import 'package:lab/Views/note_preview_list.dart';
-import 'package:lab/Views/snack_bar.dart';
+import 'package:lab/Widgets/calendar.dart';
+import 'package:lab/Widgets/note_preview_list.dart';
+import 'package:lab/Widgets/snack_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,7 +22,6 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   late List<Note> notes;
   bool isLoading = true;
-  double bottomBarHeight = 185;
 
   @override
   void initState() {
@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return const CircularProgressIndicator();
+      return const LinearProgressIndicator();
     }
 
     return Scaffold(
@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: _bottomBar(),
       drawer: _leftDrawer(),
       endDrawer: Auth.isLoggedIn ? _rightDrawer() : null,
-      floatingActionButton: _isCalendarOpen() ? null : _addButton(),
+      floatingActionButton: _addButton(),
       resizeToAvoidBottomInset: false,
     );
   }
@@ -63,7 +63,6 @@ class _HomePageState extends State<HomePage> {
             size: 25,
           ),
           onPressed: () {
-            _closeCalendar();
             scaffoldKey.currentState?.openDrawer();
           }),
       actions: [
@@ -71,7 +70,6 @@ class _HomePageState extends State<HomePage> {
             icon: Auth.userIcon,
             onPressed: () async {
               if (Auth.isLoggedIn) {
-                _closeCalendar();
                 scaffoldKey.currentState?.openEndDrawer();
               } else {
                 try {
@@ -98,48 +96,29 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _bottomBar() {
-    Widget inner =
-        Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-      _isCalendarOpen()
-          ? IconButton(
-              icon: const Icon(Icons.arrow_downward),
-              onPressed: () {
-                _closeCalendar();
-              })
-          : IconButton(
-              icon: const Icon(Icons.arrow_upward),
-              onPressed: () {
-                _openCalendar();
-              }),
-      _isCalendarOpen()
-          ? Calendar(notes: notes, len: 5)
-          : Calendar(notes: notes, len: 1),
-    ]);
+    void openFullCalendar() => showModalBottomSheet<void>(
+          context: context,
+          isScrollControlled: true,
+          builder: (BuildContext context) {
+            return Calendar.full(context, notes);
+          },
+        );
 
-    return AnimatedContainer(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(spreadRadius: -5, blurRadius: _isCalendarOpen() ? 40 : 0),
-        ],
-      ),
-      duration: const Duration(milliseconds: 250),
-      height: bottomBarHeight,
-      child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(_isCalendarOpen() ? 20.0 : 0),
-            topRight: Radius.circular(_isCalendarOpen() ? 20.0 : 0),
-          ),
-          child: BottomAppBar(
-            child: SizedBox(
-              height: bottomBarHeight,
-              child: _isCalendarOpen()
-                  ? SingleChildScrollView(
-                      child: inner,
-                    )
-                  : inner,
-            ),
-          )),
-    );
+    return GestureDetector(
+        onVerticalDragUpdate: (details) {
+          if (details.delta.dy < 0) {
+            openFullCalendar();
+          }
+        },
+        child: BottomAppBar(
+            height: 185,
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+              IconButton(
+                  icon: const Icon(Icons.arrow_upward),
+                  onPressed: () => openFullCalendar()),
+              Calendar.preview(notes),
+            ])));
   }
 
   Widget _leftDrawer() {
@@ -162,9 +141,11 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             leading: const Icon(Icons.settings),
             title: const Text('Settings'),
-            onTap: () {
-              // TODO: Open settings.
+            onTap: () async {
               Navigator.pop(context);
+              await Navigator.of(context).push(
+                  MaterialPageRoute(builder: (ctx) => const SettingsPage()));
+              setState(() {});
             },
           ),
           ListTile(
@@ -295,7 +276,6 @@ class _HomePageState extends State<HomePage> {
   Widget _addButton() {
     return FloatingActionButton(
       onPressed: () async {
-        _closeCalendar();
         Note result = await Navigator.push(
           context,
           MaterialPageRoute(builder: (ctx) => EditNotePage(note: Note())),
@@ -326,21 +306,5 @@ class _HomePageState extends State<HomePage> {
       },
       child: const Icon(Icons.add),
     );
-  }
-
-  void _openCalendar() {
-    setState(() {
-      bottomBarHeight = 700;
-    });
-  }
-
-  void _closeCalendar() {
-    setState(() {
-      bottomBarHeight = 185;
-    });
-  }
-
-  bool _isCalendarOpen() {
-    return bottomBarHeight == 700;
   }
 }

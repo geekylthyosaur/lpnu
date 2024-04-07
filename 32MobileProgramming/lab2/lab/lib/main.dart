@@ -1,7 +1,5 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:lab/Controllers/home_page.dart';
+import 'package:lab/Pages/home.dart';
 import 'package:lab/Services/firebase_auth.dart';
 
 void main() async {

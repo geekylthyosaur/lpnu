@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
 import 'package:lab/Models/note.dart';
-import 'package:lab/Views/bool_dialog.dart';
-import 'package:lab/Views/snack_bar.dart';
+import 'package:lab/Widgets/bool_dialog.dart';
+import 'package:lab/Widgets/snack_bar.dart';
 
 class EditNotePage extends StatefulWidget {
   final Note note;

@@ -1,13 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lab/Models/note.dart';
-import 'package:lab/Views/upcoming_notes_list.dart';
+import 'package:lab/Widgets/upcoming_notes_list.dart';
+import 'package:lab/app_options.dart';
 
 class Calendar extends StatefulWidget {
   final int len;
   final List<Note> notes;
 
   const Calendar({super.key, required this.notes, required this.len});
+
+  static Widget preview(List<Note> notes) {
+    return Calendar(notes: notes, len: 1);
+  }
+
+  static Widget full(BuildContext context, List<Note> notes) {
+    return Padding(
+        padding: const EdgeInsets.all(10),
+        child: Container(
+            height: 700,
+            color: Theme.of(context).bottomAppBarTheme.color,
+            child: SingleChildScrollView(
+              child:
+                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                IconButton(
+                    icon: const Icon(Icons.arrow_downward),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    }),
+                Calendar(notes: notes, len: 5),
+              ]),
+            )));
+  }
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -20,7 +44,9 @@ class _CalendarState extends State<Calendar> {
   }
 
   Widget _calendar(int len) {
-    final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    final days = Options.firstDayOfWeek == 0
+        ? ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+        : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     return Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -129,7 +155,10 @@ List<DateTime> getNextWeekdays(DateTime startDate, int weekday, int len) {
 
 List<DateTime> getCurrentWeekDates() {
   final now = DateTime.now();
-  final currentWeekday = now.weekday;
-  final startOfWeek = now.subtract(Duration(days: currentWeekday - 1));
+
+  final startOfWeek = Options.firstDayOfWeek == 0
+      ? now.subtract(Duration(days: now.weekday - 1))
+      : now.subtract(Duration(days: now.weekday));
+
   return List.generate(7, (index) => startOfWeek.add(Duration(days: index)));
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lab/Models/note.dart';
-import 'package:lab/Views/note_preview_list.dart';
+import 'package:lab/Widgets/note_preview_list.dart';
 
 class UpcomingNotesList extends StatefulWidget {
   final List<Note> notes;

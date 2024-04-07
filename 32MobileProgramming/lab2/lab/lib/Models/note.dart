@@ -17,6 +17,7 @@ class Note {
   DateTime? alarm;
   bool isArchived = false;
   bool isDeleted = false;
+  bool isPinned = false;
 
   Note({
     int? id,
@@ -28,6 +29,7 @@ class Note {
     this.alarm,
     this.isArchived = false,
     this.isDeleted = false,
+    this.isPinned = false,
   }) {
     this.id = id ?? 0;
     this.lastEdited = lastEdited ?? DateTime.now();
@@ -48,6 +50,7 @@ class Note {
       'alarm': alarm?.toString(),
       'isArchived': isArchived ? 1 : 0,
       'isDeleted': isDeleted ? 1 : 0,
+      'isPinned': isPinned ? 1 : 0,
     };
   }
 
@@ -64,6 +67,7 @@ class Note {
       alarm: map['alarm'] != null ? DateTime.parse(map['alarm']) : null,
       isArchived: map['isArchived'] == 1,
       isDeleted: map['isDeleted'] == 1,
+      isPinned: map['isPinned'] == 1,
     );
   }
 
@@ -115,7 +119,8 @@ class DatabaseHelper {
         colorScheme INTEGER,
         alarm TEXT,
         isArchived INTEGER,
-        isDeleted INTEGER
+        isDeleted INTEGER,
+        isPinned INTEGER
       )
     ''');
   }

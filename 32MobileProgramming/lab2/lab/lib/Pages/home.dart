@@ -105,6 +105,7 @@ class _HomePageState extends State<HomePage> {
         );
 
     return GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onVerticalDragUpdate: (details) {
           if (details.delta.dy < 0) {
             openFullCalendar();
@@ -140,12 +141,11 @@ class _HomePageState extends State<HomePage> {
           ),
           ListTile(
             leading: const Icon(Icons.settings),
-            title: const Text('Settings'),
-            onTap: () async {
+            title: const Text('Options'),
+            onTap: () {
               Navigator.pop(context);
-              await Navigator.of(context).push(
+              Navigator.of(context).push(
                   MaterialPageRoute(builder: (ctx) => const OptionsPage()));
-              setState(() {});
             },
           ),
           ListTile(

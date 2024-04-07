@@ -32,7 +32,13 @@ class _NotePreviewListState extends State<NotePreviewList> {
     notes = widget.notes;
     filter = widget.filter;
     comparator = widget.comparator ??
-        (a, b) => a.lastEdited.compareTo(b.lastEdited) * (-1);
+        (a, b) {
+          if (a.isPinned == b.isPinned) {
+            return a.lastEdited.compareTo(b.lastEdited) * (-1);
+          } else {
+            return a.isPinned ? -1 : 1;
+          }
+        };
     super.initState();
   }
 
@@ -42,15 +48,15 @@ class _NotePreviewListState extends State<NotePreviewList> {
       return Center(child: Text(widget.orElse));
     }
 
-    var iter = notes.where(filter).sorted(comparator).map((note) => Padding(
-          padding: const EdgeInsets.only(bottom: 8),
-          child: NotePreview(
-            note: note,
-            onPress: () async {
+    var iter =
+        notes.where(filter).sorted(comparator).map((note) => GestureDetector(
+            onTap: () async {
               await _onPress(note);
             },
-          ),
-        ));
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: NotePreview(note: note),
+            )));
 
     return ListView.builder(
       padding: const EdgeInsets.all(10),

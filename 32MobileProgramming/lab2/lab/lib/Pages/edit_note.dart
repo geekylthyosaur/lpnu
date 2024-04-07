@@ -45,23 +45,22 @@ class _EditNotePageState extends State<EditNotePage> {
       leading: BackButton(
           color: onPrimary,
           onPressed: () => Navigator.of(context).pop(widget.note)),
-      actions: !widget.note.isDeleted
-          ? [
-              IconButton(
-                  onPressed: () async {
-                    snackBar(context,
-                        widget.note.isArchived ? 'Unarchived' : 'Archived');
-                    setState(() {
-                      widget.note.isArchived = !widget.note.isArchived;
-                    });
-                    await DatabaseHelper.instance.updateNote(widget.note);
-                  },
-                  icon: Icon(
-                    widget.note.isArchived ? Icons.unarchive : Icons.archive,
-                    color: onPrimary,
-                  ))
-            ]
-          : [],
+      actions: [
+        if (!widget.note.isDeleted)
+          IconButton(
+              onPressed: () async {
+                snackBar(context,
+                    widget.note.isArchived ? 'Unarchived' : 'Archived');
+                setState(() {
+                  widget.note.isArchived = !widget.note.isArchived;
+                });
+                await DatabaseHelper.instance.updateNote(widget.note);
+              },
+              icon: Icon(
+                widget.note.isArchived ? Icons.unarchive : Icons.archive,
+                color: onPrimary,
+              ))
+      ],
     );
   }
 
@@ -115,7 +114,7 @@ class _EditNotePageState extends State<EditNotePage> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            _insertCustom(),
+            _pinButton(),
             _colorPickerDialog(),
             Text(
               "Last edited ${formatDateTimeRoughly(widget.note.lastEdited)}",
@@ -129,11 +128,17 @@ class _EditNotePageState extends State<EditNotePage> {
     );
   }
 
-  Widget _insertCustom() {
+  Widget _pinButton() {
     Color onPrimary = widget.note.colorScheme.onPrimary;
 
     return IconButton(
-        onPressed: () {}, icon: Icon(Icons.add_box_outlined, color: onPrimary));
+        onPressed: () async {
+          setState(() {
+            widget.note.isPinned = !widget.note.isPinned;
+          });
+        },
+        icon: Icon(widget.note.isPinned ? Icons.star : Icons.star_border,
+            color: onPrimary));
   }
 
   IconButton _colorPickerDialog() {

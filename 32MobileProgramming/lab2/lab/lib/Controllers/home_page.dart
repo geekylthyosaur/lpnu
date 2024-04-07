@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lab/Controllers/archived_notes_page.dart';
 import 'package:lab/Controllers/deleted_notes_page.dart';
 import 'package:lab/Controllers/edit_note_page.dart';
+import 'package:lab/Controllers/privacy_page.dart';
 import 'package:lab/Models/note.dart';
 import 'package:lab/Services/firebase_auth.dart';
 import 'package:lab/Services/google_calendar.dart';
@@ -45,7 +46,7 @@ class _HomePageState extends State<HomePage> {
       body: _body(),
       bottomNavigationBar: _bottomBar(),
       drawer: _leftDrawer(),
-      endDrawer: _rightDrawer(),
+      endDrawer: Auth.isLoggedIn ? _rightDrawer() : null,
       floatingActionButton: _isCalendarOpen() ? null : _addButton(),
       resizeToAvoidBottomInset: false,
     );
@@ -67,7 +68,7 @@ class _HomePageState extends State<HomePage> {
           }),
       actions: [
         IconButton(
-            icon: Auth.userIcon(),
+            icon: Auth.userIcon,
             onPressed: () async {
               if (Auth.isLoggedIn) {
                 _closeCalendar();
@@ -151,7 +152,7 @@ class _HomePageState extends State<HomePage> {
               color: Theme.of(context).colorScheme.secondary,
             ),
             child: Text(
-              'Drawer Header',
+              'Lab',
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onSecondary,
                 fontSize: 24,
@@ -225,7 +226,7 @@ class _HomePageState extends State<HomePage> {
               color: Theme.of(context).colorScheme.secondary,
             ),
             child: Text(
-              'Drawer Header',
+              Auth.userName!,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.onSecondary,
                 fontSize: 24,
@@ -281,12 +282,9 @@ class _HomePageState extends State<HomePage> {
             leading: const Icon(Icons.privacy_tip),
             title: const Text('Privacy'),
             onTap: () async {
-              // TODO: Open privacy.
               Navigator.pop(context);
-              await DatabaseHelper.instance.deleteAllNotes();
-              setState(() {
-                notes.clear();
-              });
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (ctx) => const PrivacyPage()));
             },
           ),
         ],

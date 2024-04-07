@@ -44,7 +44,7 @@ class Auth {
     return _auth.currentUser != null;
   }
 
-  static Widget userIcon() {
+  static Widget get userIcon {
     return isLoggedIn
         ? ClipOval(
             child: Image.network(
@@ -57,6 +57,10 @@ class Auth {
         : const ClipOval(
             child: Icon(Icons.person, size: 25),
           );
+  }
+
+  static String? get userName {
+    return _auth.currentUser?.displayName;
   }
 
   static get authHeaders {

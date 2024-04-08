@@ -2,8 +2,14 @@
 
 set -xeu -o pipefail
 
-podman stop database
-podman rm database
+podman stop --ignore database
+podman rm --ignore database
+if [ ! -f ~/Downloads/melbourne.zip ]; then
+  curl -o ~/Downloads/melbourne.zip https://zenodo.org/records/1186215/files/melbourne.zip?download=1
+fi
+if ! podman image exists database &> /dev/null; then
+  podman build -t database .
+fi
 podman run --name database --env POSTGRES_USER=user --env POSTGRES_PASSWORD=password --publish 5432:5432 --volume ~/Downloads/melbourne.zip:/melbourne.zip:Z --detach database
 podman exec -it database /bin/bash -c 'unzip /melbourne.zip -d /tmp'
 podman exec -it database /bin/bash -c 'python3 -m venv /tmp/venv'

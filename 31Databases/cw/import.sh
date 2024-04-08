@@ -8,11 +8,28 @@ podman run --name database --env POSTGRES_USER=user --env POSTGRES_PASSWORD=pass
 podman exec -it database /bin/bash -c 'unzip /melbourne.zip -d /tmp'
 podman exec -it database /bin/bash -c 'python3 -m venv /tmp/venv'
 podman exec -it database /bin/bash -c 'source /tmp/venv/bin/activate'
-podman exec -it database /bin/bash -c '/tmp/venv/bin/pip install geojson-to-sqlite'
-podman exec -it database /bin/bash -c '/tmp/venv/bin/geojson-to-sqlite /tmp/melbourne/route_stops.sqlite route_stops /tmp/melbourne/routes.geojson'
-podman exec -it database /bin/bash -c 'sqlite3 /tmp/melbourne/route_stops.sqlite -json "select route_I, geometry from route_stops" > /tmp/melbourne/route_stops.json'
+podman exec -it database /bin/bash -c '
+sqlite3 /tmp/melbourne/week.sqlite "
+  select route_I, stop_I, row_number() over (partition by route_I order by stop_I) as ord_idx 
+  from (select distinct t.route_I as route_I, stop_I
+    from stop_times
+    join main.trips t on stop_times.trip_I = t.trip_I
+    join main.routes r on t.route_I = r.route_I and r.type = 3
+    order by dep_time_ds and t.route_I
+  );
+" > /tmp/melbourne/route_stops.csv
+'
 podman exec -it database /bin/bash -c 'sqlite3 /tmp/melbourne/week.sqlite "select route_I, name, long_name from routes where type = 3;" > /tmp/melbourne/routes.csv'
 podman exec -it database /bin/bash -c 'sqlite3 /tmp/melbourne/week.sqlite "select stop_I, name, lat, lon from stops;" > /tmp/melbourne/stops.csv'
+podman exec -it database /bin/bash -c '
+sqlite3 /tmp/melbourne/week.sqlite "
+  select distinct t.route_I, stop_I, arr_time_ds, dep_time_ds
+  from stop_times
+  join main.trips t on stop_times.trip_I = t.trip_I
+  join main.routes r on t.route_I = r.route_I and r.type = 3
+  order by t.route_I, stop_I, dep_time_ds;
+" > /tmp/melbourne/schedule.csv
+'
 podman exec -it database psql -U user -d postgres -c 'create database src;'
 podman exec -it database psql -U user -d src -c "
 create table public.route (
@@ -20,8 +37,8 @@ create table public.route (
   name character varying(64),
   full_name character varying(128)
 );
-copy public.route(id, name, full_name) from '/tmp/melbourne/routes.csv' delimiter '|' csv header;
 "
+podman exec -it database psql -U user -d src -c "copy public.route(id, name, full_name) from '/tmp/melbourne/routes.csv' delimiter '|' csv;"
 podman exec -it database psql -U user -d src -c "
 create table public.stop (
   id integer primary key not null,
@@ -29,36 +46,41 @@ create table public.stop (
   lat numeric(16,14),
   lon numeric(16,13)
 );
-copy public.stop(id, name, lat, lon) from '/tmp/melbourne/stops.csv' delimiter '|' csv header;
 "
-podman exec -it database psql -U user -d src -c '
-create table public.route_stops (
-    route_id integer references public.route(id),
-    stop_id integer references public.stop(id),
-    ord_idx integer not null,
-    primary key (route_id, stop_id)
-);
-'
+podman exec -it database psql -U user -d src -c "copy public.stop(id, name, lat, lon) from '/tmp/melbourne/stops.csv' delimiter '|' csv;"
 podman exec -it database psql -U user -d src -c "
-create temporary table route_stops_coordinates (
-    route_id integer,
-    coordinates jsonb,
-    primary key (route_id)
+create table public.route_stops (
+  route_id integer references public.route(id),
+  stop_id integer references public.stop(id),
+  ord_idx integer not null,
+  primary key (route_id, stop_id)
 );
-insert into route_stops_coordinates (route_id, coordinates)
-select
-    (json_data->>'route_I')::integer as route_id,
-    ((json_data->>'geometry')::jsonb->>'coordinates')::jsonb as coordinates
-from jsonb_array_elements(pg_read_file('/tmp/melbourne/route_stops.json')::jsonb) as json_build_array(json_data);
-insert into public.route_stops (route_id, stop_id, ord_idx)
-select 
-    rsc.route_id,
-    s.id,
-    row_number() over (partition by rsc.route_id order by idx) as ord_idx
-from 
-    route_stops_coordinates rsc
-    join public.route r on r.id = rsc.route_id
-    cross join lateral jsonb_array_elements(rsc.coordinates) with ordinality as coord(lonlat, idx)
-    join public.stop s on s.lat = (coord.lonlat->>1)::numeric and s.lon = (coord.lonlat->>0)::numeric
-on conflict (route_id, stop_id) do nothing;
 "
+podman exec -it database psql -U user -d src -c "copy public.route_stops(route_id, stop_id, ord_idx) from '/tmp/melbourne/route_stops.csv' delimiter '|' csv;"
+podman exec -it database psql -U user -d src -c "
+create table public.schedule (
+  id serial not null,
+  route_id integer references public.route(id),
+  stop_id integer references public.stop(id),
+  arr_time_ds integer,
+  dep_time_ds integer,
+  primary key (id)
+);
+"
+podman exec -it database psql -U user -d src -c "copy public.schedule(route_id, stop_id, arr_time_ds, dep_time_ds) from '/tmp/melbourne/schedule.csv' delimiter '|' csv;"
+podman exec -it database psql -U user -d src -c "
+alter table public.schedule
+add column arr time,
+add column dep time;
+"
+podman exec -it database psql -U user -d src -c "
+update public.schedule
+set arr = to_char((arr_time_ds % 86400 || ' second')::interval, 'HH24:MI:SS')::time,
+  dep = to_char((dep_time_ds % 86400 || ' second')::interval, 'HH24:MI:SS')::time;
+"
+podman exec -it database psql -U user -d src -c "
+alter table public.schedule
+drop column arr_time_ds,
+drop column dep_time_ds;
+"
+

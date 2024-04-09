@@ -13,7 +13,7 @@ fi
 podman run --name database --env POSTGRES_USER=user --env POSTGRES_PASSWORD=password --publish 5432:5432 --volume ~/Downloads/melbourne.zip:/melbourne.zip:Z --detach database
 podman exec -it database /bin/bash -c 'unzip /melbourne.zip -d /tmp'
 podman exec -it database /bin/bash -c 'python3 -m venv /tmp/venv'
-podman exec -it database /bin/bash -c 'source /tmp/venv/bin/activate'
+podman exec -it database /bin/bash -c '/tmp/venv/bin/pip install faker'
 podman exec -it database /bin/bash -c '
 sqlite3 /tmp/melbourne/week.sqlite "
   select route_I, stop_I, row_number() over (partition by route_I order by stop_I) as ord_idx 
@@ -36,7 +36,21 @@ sqlite3 /tmp/melbourne/week.sqlite "
   order by t.route_I, stop_I, dep_time_ds;
 " > /tmp/melbourne/schedule.csv
 '
+podman exec -it database /tmp/venv/bin/python -c "
+import csv
+import random
+from faker import Faker
+fake = Faker()
+def vehicle():
+    license_plate = fake.license_plate()
+    capacity = random.randint(10, 15) * 10
+    return [license, capacity]
+with open('/tmp/melbourne/vehicles.csv', 'w', newline='') as f:
+    writer = csv.writer(f, delimiter='|')
+    writer.writerows([vehicle() for _ in range(1500)])
+"
 podman exec -it database psql -U user -d postgres -c 'create database src;'
+podman exec -it database psql -U user -d postgres -c 'create extension if not exists "uuid-ossp";'
 podman exec -it database psql -U user -d src -c "
 create table public.route (
   id integer primary key not null,
@@ -76,17 +90,36 @@ create table public.schedule (
 podman exec -it database psql -U user -d src -c "copy public.schedule(route_id, stop_id, arr_time_ds, dep_time_ds) from '/tmp/melbourne/schedule.csv' delimiter '|' csv;"
 podman exec -it database psql -U user -d src -c "
 alter table public.schedule
-add column arr time,
-add column dep time;
+  add column arr time,
+  add column dep time;
 "
 podman exec -it database psql -U user -d src -c "
 update public.schedule
-set arr = to_char((arr_time_ds % 86400 || ' second')::interval, 'HH24:MI:SS')::time,
-  dep = to_char((dep_time_ds % 86400 || ' second')::interval, 'HH24:MI:SS')::time;
+  set arr = to_char((arr_time_ds % 86400 || ' second')::interval, 'HH24:MI:SS')::time,
+    dep = to_char((dep_time_ds % 86400 || ' second')::interval, 'HH24:MI:SS')::time;
 "
 podman exec -it database psql -U user -d src -c "
 alter table public.schedule
-drop column arr_time_ds,
-drop column dep_time_ds;
+  drop column arr_time_ds,
+  drop column dep_time_ds;
 "
-
+podman exec -it database psql -U user -d src -c "
+create table public.vehicle (
+  license character varying(16) not null,
+  capacity integer not null,
+  primary key(license)
+);
+"
+podman exec -it database psql -U user -d src -c "copy public.vehicle(license, capacity) from '/tmp/melbourne/vehicles.csv' delimiter '|' csv;"
+podman exec -it database psql -U user -d src -c "
+create table public.transaction (
+  id uuid default uuid_generate_v4(),
+  route_id integer not null references public.route(id),
+  vehicle_id character varying(16) not null references public.vehicle(license),
+  from_stop_id interger not null references public.stop(id),
+  to_stop_id interger not null references public.stop(id),
+  fare numeric(8,2) not null,
+  timestampt integer not null,
+  primary key(id)
+);
+"

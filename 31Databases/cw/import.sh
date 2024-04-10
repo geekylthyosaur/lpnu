@@ -42,12 +42,20 @@ import random
 from faker import Faker
 fake = Faker()
 def vehicle():
-    license = fake.license_plate()[:16]
-    capacity = random.randint(10, 15) * 10
-    return [license, capacity]
+  license = fake.license_plate()[:16]
+  capacity = random.randint(10, 15) * 10
+  return [license, capacity]
 with open('/tmp/melbourne/vehicles.csv', 'w', newline='') as f:
-    writer = csv.writer(f, delimiter='|')
-    writer.writerows([vehicle() for _ in range(1500)])
+  writer = csv.writer(f, delimiter='|')
+  writer.writerows([vehicle() for _ in range(1500)])
+"
+podman exec -it database /tmp/venv/bin/python -c "
+import csv
+from faker import Faker
+fake = Faker()
+with open('/tmp/melbourne/drivers.csv', 'w', newline='') as f:
+  writer = csv.writer(f, delimiter='|')
+  writer.writerows([[fake.name()] for _ in range(2000)])
 "
 podman exec -it database psql -U user -d postgres -c 'create database src;'
 podman exec -it database psql -U user -d src -c 'create extension if not exists "uuid-ossp";'
@@ -189,4 +197,20 @@ create table public.driver (
   vehicle_id character varying(16) references public.vehicle(license),
   primary key(id)
 )
+"
+podman exec -it database psql -U user -d src -c "copy public.driver(name) from '/tmp/melbourne/drivers.csv' delimiter '|' csv;"
+podman exec -it database psql -U user -d src -c "
+update public.driver
+set vehicle_id = vehicles.license
+  from (
+    select id, row_number() over (order by id) as row_num
+    from public.driver
+  ) as drivers
+  inner join (
+    select license, row_number() over (order by license) as row_num
+    from public.vehicle
+  ) as vehicles
+  on drivers.row_num = vehicles.row_num
+  where drivers.id = public.driver.id
+  and drivers.row_num <= 1500;
 "

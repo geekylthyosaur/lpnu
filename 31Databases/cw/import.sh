@@ -117,6 +117,22 @@ create table public.vehicle (
 podman exec -it database psql -U user -d src -c "copy public.vehicle(license, capacity) from '/tmp/melbourne/vehicles.csv' delimiter '|' csv;"
 podman exec -it database psql -U user -d src -c "create index idx_vehicle on vehicle(license);"
 podman exec -it database psql -U user -d src -c "
+create table public.route_vehicles (
+  route_id integer not null references public.route(id),
+  vehicle_id character varying(16) references public.vehicle(license),
+  primary key(route_id, vehicle_id)
+)
+"
+podman exec -it database psql -U user -d src -c "
+insert into route_vehicles
+select route_id, license from (
+  select r.id as route_id, v.license, row_number() over (partition by v.license order by random()) as row_num
+  from vehicle v
+  join route r on true
+) as subquery
+where row_num = 1;
+"
+podman exec -it database psql -U user -d src -c "
 create table public.transaction (
   id uuid default uuid_generate_v4(),
   route_id integer not null references public.route(id),
@@ -131,37 +147,46 @@ create table public.transaction (
 podman exec -it database psql -U user -d src -c "
 do \$\$
 declare
-    i integer := 0;
+  i integer := 0;
 begin
-    while i < 1000 loop
+  while i < 1000 loop
     insert into public.transaction(route_id, vehicle_id, from_stop_id, to_stop_id, fare, timestamp)
     with stop_ids_cte as (
-        select r.id as route_id,
-               array_agg(s.id) as stop_ids
-        from route r
-        cross join lateral (
-            select s.id
-            from route_stops rs
-            join stop s on rs.stop_id = s.id
-            where rs.route_id = r.id
-            order by random()
-            limit 2
-        ) s
-        group by r.id
+      select r.id as r_id,
+        array_agg(s.id) as stop_ids
+      from route r
+      cross join lateral (
+        select s.id
+        from route_stops rs
+        join stop s on rs.stop_id = s.id
+        where rs.route_id = r.id
         order by random()
-        limit 1
+        limit 2
+      ) s
+      where (select 1 from route_vehicles rv where rv.route_id = r.id limit 1) = 1
+      group by r.id
+      order by random()
+      limit 1
     )
     select
-        route_id,
-        (select v.license from vehicle v order by random() limit 1) as vehicle_id,
-        stop_ids[1],
-        stop_ids[2],
-        (select floor(random() * (30 - 5 + 1) + 5)) as fare,
-        extract (epoch from (select current_date + arr from schedule where route_id = route_id and stop_id = stop_ids[2] order by random() limit 1)) as timestamp
+      r_id,
+      (select v.license from vehicle v join public.route_vehicles rv on v.license = rv.vehicle_id and rv.route_id = r_id order by random() limit 1) as vehicle_id,
+      stop_ids[1],
+      stop_ids[2],
+      (select floor(random() * (30 - 5 + 1) + 5)) as fare,
+      extract (epoch from (select current_date + arr from schedule where route_id = r_id and stop_id = stop_ids[2] order by random() limit 1)) as timestamp
     from stop_ids_cte
     order by random()
     limit 1;
     i := i + 1;
     end loop;
 end \$\$;
+"
+podman exec -it database psql -U user -d src -c "
+create table public.driver (
+  id serial not null,
+  name character varying(64) not null,
+  vehicle_id character varying(16) references public.vehicle(license),
+  primary key(id)
+)
 "

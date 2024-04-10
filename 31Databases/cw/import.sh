@@ -42,7 +42,7 @@ import random
 from faker import Faker
 fake = Faker()
 def vehicle():
-    license_plate = fake.license_plate()
+    license = fake.license_plate()[:16]
     capacity = random.randint(10, 15) * 10
     return [license, capacity]
 with open('/tmp/melbourne/vehicles.csv', 'w', newline='') as f:
@@ -50,7 +50,7 @@ with open('/tmp/melbourne/vehicles.csv', 'w', newline='') as f:
     writer.writerows([vehicle() for _ in range(1500)])
 "
 podman exec -it database psql -U user -d postgres -c 'create database src;'
-podman exec -it database psql -U user -d postgres -c 'create extension if not exists "uuid-ossp";'
+podman exec -it database psql -U user -d src -c 'create extension if not exists "uuid-ossp";'
 podman exec -it database psql -U user -d src -c "
 create table public.route (
   id integer primary key not null,
@@ -59,6 +59,7 @@ create table public.route (
 );
 "
 podman exec -it database psql -U user -d src -c "copy public.route(id, name, full_name) from '/tmp/melbourne/routes.csv' delimiter '|' csv;"
+podman exec -it database psql -U user -d src -c "create index idx_route on public.route(id);"
 podman exec -it database psql -U user -d src -c "
 create table public.stop (
   id integer primary key not null,
@@ -68,6 +69,7 @@ create table public.stop (
 );
 "
 podman exec -it database psql -U user -d src -c "copy public.stop(id, name, lat, lon) from '/tmp/melbourne/stops.csv' delimiter '|' csv;"
+podman exec -it database psql -U user -d src -c "create index idx_stop on public.stop(id);"
 podman exec -it database psql -U user -d src -c "
 create table public.route_stops (
   route_id integer references public.route(id),
@@ -77,6 +79,7 @@ create table public.route_stops (
 );
 "
 podman exec -it database psql -U user -d src -c "copy public.route_stops(route_id, stop_id, ord_idx) from '/tmp/melbourne/route_stops.csv' delimiter '|' csv;"
+podman exec -it database psql -U user -d src -c "create index idx_route_stops on public.route_stops(route_id, stop_id);"
 podman exec -it database psql -U user -d src -c "
 create table public.schedule (
   id serial not null,
@@ -103,6 +106,7 @@ alter table public.schedule
   drop column arr_time_ds,
   drop column dep_time_ds;
 "
+podman exec -it database psql -U user -d src -c "create index idx_route_stop on public.schedule (route_id, stop_id);"
 podman exec -it database psql -U user -d src -c "
 create table public.vehicle (
   license character varying(16) not null,
@@ -111,15 +115,53 @@ create table public.vehicle (
 );
 "
 podman exec -it database psql -U user -d src -c "copy public.vehicle(license, capacity) from '/tmp/melbourne/vehicles.csv' delimiter '|' csv;"
+podman exec -it database psql -U user -d src -c "create index idx_vehicle on vehicle(license);"
 podman exec -it database psql -U user -d src -c "
 create table public.transaction (
   id uuid default uuid_generate_v4(),
   route_id integer not null references public.route(id),
   vehicle_id character varying(16) not null references public.vehicle(license),
-  from_stop_id interger not null references public.stop(id),
-  to_stop_id interger not null references public.stop(id),
+  from_stop_id integer not null references public.stop(id),
+  to_stop_id integer not null references public.stop(id),
   fare numeric(8,2) not null,
-  timestampt integer not null,
+  timestamp integer not null,
   primary key(id)
 );
+"
+podman exec -it database psql -U user -d src -c "
+do \$\$
+declare
+    i integer := 0;
+begin
+    while i < 1000 loop
+    insert into public.transaction(route_id, vehicle_id, from_stop_id, to_stop_id, fare, timestamp)
+    with stop_ids_cte as (
+        select r.id as route_id,
+               array_agg(s.id) as stop_ids
+        from route r
+        cross join lateral (
+            select s.id
+            from route_stops rs
+            join stop s on rs.stop_id = s.id
+            where rs.route_id = r.id
+            order by random()
+            limit 2
+        ) s
+        group by r.id
+        order by random()
+        limit 1
+    )
+    select
+        route_id,
+        (select v.license from vehicle v order by random() limit 1) as vehicle_id,
+        stop_ids[1],
+        stop_ids[2],
+        (select floor(random() * (30 - 5 + 1) + 5)) as fare,
+        extract (epoch from (select current_date + arr from schedule where route_id = route_id and stop_id = stop_ids[2] order by random() limit 1)) as timestamp
+    from stop_ids_cte
+    order by random()
+    limit 1;
+    i := i + 1;
+    end loop;
+end \$\$;
 "

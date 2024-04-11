@@ -238,3 +238,41 @@ set vehicle_id = vehicles.license
   where drivers.id = public.driver.id
   and drivers.row_num <= 1500;
 "
+podman exec -it database psql -U user -d src -c "
+create table public.maintenance (
+  id serial not null,
+  vehicle_id character varying(16) not null references public.vehicle(license),
+  driver_id integer not null references public.driver(id),
+  description text not null,
+  time timestamp default now() not null,
+  cost numeric(8, 2) not null,
+  primary key(id)
+);
+"
+podman exec -it database psql -U user -d src -c "
+do \$\$
+declare
+  i integer := 0;
+begin
+  while i < 10 loop
+    insert into public.maintenance(vehicle_id, driver_id, description, time, cost)
+    select
+      vehicle_id,
+      id as driver_id,
+      (select case
+        when random() + id*0 < 0.2 then 'regular check-up'
+        when random() + id*0 < 0.4 then 'oil change'
+        when random() + id*0 < 0.6 then 'brake inspection'
+        when random() + id*0 < 0.8 then 'tire rotation'
+        else 'visit to gas station'
+      end) as description,
+      now() - '1 year'::interval * random() * 10 as time,
+      (select floor((random() + id*0) * (30 - 5 + 1) + 5))*4 as cost
+    from driver
+    where vehicle_id is not null
+    order by random()
+    limit 100;
+    i := i + 1;
+  end loop;
+end \$\$;
+"

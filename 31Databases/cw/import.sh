@@ -57,6 +57,20 @@ with open('/tmp/melbourne/drivers.csv', 'w', newline='') as f:
   writer = csv.writer(f, delimiter='|')
   writer.writerows([[fake.name()] for _ in range(2000)])
 "
+podman exec -it database /tmp/venv/bin/python -c "
+import csv
+from faker import Faker
+import random
+fake = Faker()
+ticket_discounts = ['student', 'elder', 'veteran', None, None, None, None, None, None, None]
+def ticket():
+  discount = random.choice(ticket_discounts)
+  balance = round(random.uniform(0, 100), 2)
+  return [discount, balance]
+with open('/tmp/melbourne/tickets.csv', 'w', newline='') as f:
+  writer = csv.writer(f, delimiter='|')
+  writer.writerows([ticket() for _ in range(1000)])
+"
 podman exec -it database psql -U user -d postgres -c 'create database src;'
 podman exec -it database psql -U user -d src -c 'create extension if not exists "uuid-ossp";'
 podman exec -it database psql -U user -d src -c "
@@ -141,14 +155,25 @@ select route_id, license from (
 where row_num = 1;
 "
 podman exec -it database psql -U user -d src -c "
+create type ticket_discount as enum ('student', 'elder', 'veteran');
+create table public.ticket (
+  id uuid default uuid_generate_v4() not null,
+  discount ticket_discount,
+  balance numeric(8, 2) default 0 not null,
+  primary key (id)
+);
+"
+podman exec -it database psql -U user -d src -c "copy public.ticket(discount, balance) from '/tmp/melbourne/tickets.csv' delimiter '|' csv;"
+podman exec -it database psql -U user -d src -c "
 create table public.transaction (
-  id uuid default uuid_generate_v4(),
+  id uuid default uuid_generate_v4() not null,
+  ticket_id uuid not null references public.ticket(id),
   route_id integer not null references public.route(id),
   vehicle_id character varying(16) not null references public.vehicle(license),
   from_stop_id integer not null references public.stop(id),
   to_stop_id integer not null references public.stop(id),
   fare numeric(8,2) not null,
-  timestamp integer not null,
+  timestamp timestamp not null,
   primary key(id)
 );
 "
@@ -158,7 +183,7 @@ declare
   i integer := 0;
 begin
   while i < 1000 loop
-    insert into public.transaction(route_id, vehicle_id, from_stop_id, to_stop_id, fare, timestamp)
+    insert into public.transaction(route_id, ticket_id, vehicle_id, from_stop_id, to_stop_id, fare, timestamp)
     with stop_ids_cte as (
       select r.id as r_id,
         array_agg(s.id) as stop_ids
@@ -173,21 +198,20 @@ begin
       ) s
       where (select 1 from route_vehicles rv where rv.route_id = r.id limit 1) = 1
       group by r.id
-      order by random()
-      limit 1
     )
     select
       r_id,
-      (select v.license from vehicle v join public.route_vehicles rv on v.license = rv.vehicle_id and rv.route_id = r_id order by random() limit 1) as vehicle_id,
+      (select t.id from ticket t order by (random() + stop_ids_cte.r_id*0) limit 1),
+      (select v.license from vehicle v join public.route_vehicles rv on v.license = rv.vehicle_id and rv.route_id = r_id limit 1) as vehicle_id,
       stop_ids[1],
       stop_ids[2],
-      (select floor(random() * (30 - 5 + 1) + 5)) as fare,
-      extract (epoch from (select current_date + arr from schedule where route_id = r_id and stop_id = stop_ids[2] order by random() limit 1)) as timestamp
+      (select floor((random() + stop_ids_cte.r_id*0) * (30 - 5 + 1) + 5)) as fare,
+      (select current_date + arr from schedule where route_id = r_id and stop_id = stop_ids[2] order by random() limit 1) as timestamp
     from stop_ids_cte
     order by random()
-    limit 1;
+    limit 100;
     i := i + 1;
-    end loop;
+  end loop;
 end \$\$;
 "
 podman exec -it database psql -U user -d src -c "

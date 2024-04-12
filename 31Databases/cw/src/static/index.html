@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transactions</title>
+</head>
+
+<body>
+    <h1>Transactions</h1>
+    <div id="transactions"></div>
+
+    <script>
+        // Fetch transactions from the Go backend
+        fetch('/').then(response => response.json())
+            .then(transactions => {
+                // Render transactions in the DOM
+                const transactionsDiv = document.getElementById('transactions');
+                transactions.forEach(transaction => {
+                    const transactionDiv = document.createElement('div');
+                    transactionDiv.innerHTML = `
+                        <p><strong>ID:</strong> ${transaction.id}</p>
+                        <p><strong>Ticket ID:</strong> ${transaction.ticket_id}</p>
+                        <p><strong>Route ID:</strong> ${transaction.route_id}</p>
+                        <p><strong>Vehicle ID:</strong> ${transaction.vehicle_id}</p>
+                        <p><strong>From Stop ID:</strong> ${transaction.from_stop_id}</p>
+                        <p><strong>To Stop ID:</strong> ${transaction.to_stop_id}</p>
+                        <p><strong>Fare:</strong> ${transaction.fare}</p>
+                        <p><strong>Timestamp:</strong> ${transaction.timestamp}</p>
+                        <hr>
+                    `;
+                    transactionsDiv.appendChild(transactionDiv);
+                });
+            })
+            .catch(error => console.error('Error fetching transactions:', error));
+    </script>
+</body>
+
+</html>
+

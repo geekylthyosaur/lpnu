@@ -133,26 +133,21 @@ podman exec -it database psql -U user -d src -c "
 create table public.vehicle (
   license character varying(16) not null,
   capacity integer not null,
+  route_id integer references public.route(id),
   primary key(license)
 );
 "
 podman exec -it database psql -U user -d src -c "copy public.vehicle(license, capacity) from '/tmp/melbourne/vehicles.csv' delimiter '|' csv;"
 podman exec -it database psql -U user -d src -c "create index idx_vehicle on vehicle(license);"
 podman exec -it database psql -U user -d src -c "
-create table public.route_vehicles (
-  route_id integer not null references public.route(id),
-  vehicle_id character varying(16) references public.vehicle(license),
-  primary key(route_id, vehicle_id)
-)
-"
-podman exec -it database psql -U user -d src -c "
-insert into route_vehicles
-select route_id, license from (
+update vehicle as v
+set route_id = subquery.route_id
+from (
   select r.id as route_id, v.license, row_number() over (partition by v.license order by random()) as row_num
   from vehicle v
   join route r on true
 ) as subquery
-where row_num = 1;
+where v.license = subquery.license and row_num = 1;
 "
 podman exec -it database psql -U user -d src -c "
 create type ticket_discount as enum ('student', 'elder', 'veteran');
@@ -196,13 +191,13 @@ begin
         order by random()
         limit 2
       ) s
-      where (select 1 from route_vehicles rv where rv.route_id = r.id limit 1) = 1
+      where (select 1 from vehicle v where v.route_id = r.id limit 1) = 1
       group by r.id
     )
     select
       r_id,
       (select t.id from ticket t order by (random() + stop_ids_cte.r_id*0) limit 1),
-      (select v.license from vehicle v join public.route_vehicles rv on v.license = rv.vehicle_id and rv.route_id = r_id limit 1) as vehicle_id,
+      (select v.license from vehicle v where v.route_id = r_id limit 1) as vehicle_id,
       stop_ids[1],
       stop_ids[2],
       (select floor((random() + stop_ids_cte.r_id*0) * (30 - 5 + 1) + 5)) as fare,
@@ -275,4 +270,37 @@ begin
     i := i + 1;
   end loop;
 end \$\$;
+"
+podman exec -it database psql -U user -d src -c "
+create view routes_with_stops as
+select
+  s1.id as from_stop_id,
+  s1.name as from_stop_name,
+  s2.id as to_stop_id,
+  s2.name as to_stop_name,
+  r.id as route_id,
+  (case when r.name is null then r.full_name else r.name end) as route_name
+from stop s1
+cross join stop s2
+join route_stops rs1 on rs1.stop_id = s1.id
+join route_stops rs2 on rs2.stop_id = s2.id
+join route r on rs1.route_id = rs2.route_id and rs1.route_id = r.id
+where s1.id <> s2.id;
+"
+podman exec -it database psql -U user -d src -c "
+create view arrival_with_stops_in as
+select from_stop_id, from_stop_name, to_stop_id, to_stop_name, route_id, route_name, to_char(arr_in, 'MI:SS') as arr_in from (
+select
+  s.from_stop_id,
+  s.from_stop_name,
+  s.to_stop_id,
+  s.to_stop_name,
+  s.route_id,
+  (case when r.name is null then r.full_name else r.name end) as route_name,
+  sch.arr - now()::time as arr_in
+from routes_with_stops s
+join schedule sch on s.route_id = sch.route_id and (s.from_stop_id = sch.stop_id or s.to_stop_id = sch.stop_id)
+join route r on r.id = s.route_id) as arrival
+where arr_in > interval '0 seconds' and arr_in < interval '1 hour'
+order by arr_in;
 "

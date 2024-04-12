@@ -37,6 +37,8 @@
 \renewcommand*{\thesubsection}{\roman{subsection}}
 \usepackage{tocloft}
 \setlength{\cftsecnumwidth}{5em}
+\setlength\parindent{1.25cm}
+\usepackage{enumitem}
 
 \begin{document}
 \begin{titlepage}
@@ -94,6 +96,7 @@
 
 \begin{list}{-}{Специфікація важливих понять:}
 \item Зупинка - статичне місце, де зупиняться транспорт для посадки та висадки пасажирів.
+\item Квиток - карта, що видається пасажиру, що має баланс.
 \end{list}
 
 % Встановлення обсягів аналізу теми
@@ -145,11 +148,14 @@
 Очевидно найзатребуванішими ресурсами бази даних для додавання, буде інформація про транзакції та пасажирів. Іншим затребуваним ресурсом для додавання може бути інформація про обслуговування транспортних засобів, особливо під час початку або завершення робочого дня, коли проводиться технічне обслуговування транспортних засобів.
 
 % Очікувані запити та вибірки
+TODO
 
 % Обмеження доступу та ін.
+TODO
 
 \subsection{Логічне проектування схеми бази даних}
 % Домени
+TODO
 
 % Таблиці
 База даних для предметної області складається з наступних структур:
@@ -169,26 +175,39 @@
 
 \subsection{Реалізація процедур бізнес-логіки}
 % Тригери
+TODO
 
 % Процедури
+TODO
 
 \newpage
 
 \section{Розробка програмного коду}
 \subsection{Обґрунтування обраної архітектури}
 % Тип
+TODO
 
 % Мова програмування
+TODO
 
 % Система баз даних
+TODO
 
 % Формати
+TODO
 
-% Протокол
+% Протоколи
+TODO
 
 \subsection{Структурна модель інформаційної системи}
+TODO
+
 \subsection{Призначення модулів та компонентів системи}
+TODO
+
 \subsection{Особливості реалізації та елементи інтерфейсу}
+TODO
+
 \newpage
 
 \section{Наповнення бази даних}
@@ -217,25 +236,47 @@
 
 \section{Функціональні можливості для користувача}
 \subsection{Опис інтерфейсу у відповідності до бізнес-процесів}
+TODO
+
 \subsection{Засоби аналітичного представлення даних}
+TODO
+
 \subsection{Засоби експорту даних}
+% Обмеження
+TODO
+
+% Формат файлу
+TODO
+
 \subsection{Засоби програмного інтерфейсу}
+TODO
+
 \newpage
 
 \section{Висновки}
 \subsection{Встановлені недоліки}
+TODO
+
 \subsection{Перспективи покращення}
+TODO
+
 \newpage
 
 \section{Список літератури}
 \href{https://www.researchgate.net/publication/325161554_A_collection_of_public_transport_network_data_sets_for_25_cities}{https://www.researchgate.net/publication/325161554\_A\_collection\_of\_public...}
+
+TODO
+
 \newpage
 
 \section{Додатки}
 \subsection{Скрипт створення бази даних та завантаження історичних даних}
-{\small\lstinputlisting{import.sh}}
+{\fontsize{8pt}{8pt}\selectfont\lstinputlisting{import.sh}}
 
 \subsection{Інший програмний код}
+TODO
+
 \subsection{Інший код створених моделей}
+TODO
 
 \end{document}

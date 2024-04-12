@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/geekylthyosaur/lpnu/models"
 	_ "github.com/lib/pq"
@@ -16,29 +15,53 @@ var db *sql.DB
 
 func init() {
 	var err error
-	db, err = sql.Open("postgres", "postgres://user:password@localhost/src?sslmode=disable")
+	db, err = sql.Open("postgres", "postgres://root:password@localhost:5432/src?sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
-	db.SetMaxOpenConns(10)
-	db.SetMaxIdleConns(5)
-	db.SetConnMaxLifetime(time.Minute * 5)
+	db.SetConnMaxLifetime(0)
+	db.SetMaxOpenConns(1)
+	db.SetMaxIdleConns(1)
 }
 
 func main() {
-	http.HandleFunc("/route_with_stops", getRouteWithStopsHandler)
-	http.HandleFunc("/arrival_with_stops_in", getArrivalWithStopsInHandler)
-	http.HandleFunc("/route", getRouteHandler)
-	http.HandleFunc("/stop", getStopHandler)
-	http.HandleFunc("/schedule", getScheduleHandler)
-	http.HandleFunc("/vehicle", getVehicleHandler)
-	http.HandleFunc("/ticket", getTicketHandler)
-	http.HandleFunc("/transaction", getTransactionHandler)
-	http.HandleFunc("/driver", getDriverHandler)
-	http.HandleFunc("/maintenance", getMaintenanceHandler)
+	// Define HTTP routes with authentication middleware
+	http.HandleFunc("/route_with_stops", authMiddleware(getRouteWithStopsHandler))
+	http.HandleFunc("/arrival_with_stops_in", authMiddleware(getArrivalWithStopsInHandler))
+	http.HandleFunc("/new_transaction", authMiddleware(newTransactionHandler))
+	http.HandleFunc("/route", authMiddleware(getRouteHandler))
+	http.HandleFunc("/stop", authMiddleware(getStopHandler))
+	http.HandleFunc("/schedule", authMiddleware(getScheduleHandler))
+	http.HandleFunc("/vehicle", authMiddleware(getVehicleHandler))
+	http.HandleFunc("/ticket", authMiddleware(getTicketHandler))
+	http.HandleFunc("/transaction", authMiddleware(getTransactionHandler))
+	http.HandleFunc("/driver", authMiddleware(getDriverHandler))
+	http.HandleFunc("/maintenance", authMiddleware(getMaintenanceHandler))
 
 	fmt.Println("Server is running on port 8080...")
 	log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
+func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Implement authentication logic here
+		// This could involve parsing headers, cookies, tokens, etc.
+		// and validating the user's identity
+
+		role := "passenger"
+
+		db.SetConnMaxLifetime(0)
+		db.SetMaxOpenConns(1)
+		db.SetMaxIdleConns(1)
+		_, err := db.Exec(fmt.Sprintf("set role %s;", role))
+
+		if err != nil {
+			http.Error(w, "Failed to set user role", http.StatusInternalServerError)
+			return
+		}
+
+		next(w, r)
+	}
 }
 
 func getRouteWithStopsHandler(w http.ResponseWriter, r *http.Request) {
@@ -82,13 +105,10 @@ func getRouteWithStopsHandler(w http.ResponseWriter, r *http.Request) {
 func getArrivalWithStopsInHandler(w http.ResponseWriter, r *http.Request) {
 	queryParams := r.URL.Query()
 
-	// Prepare the base SQL query
 	sqlQuery := "SELECT from_stop_id, from_stop_name, to_stop_id, to_stop_name, route_id, route_name, arr_in FROM arrival_with_stops_in WHERE 1=1"
 
-	// Prepare placeholders for filter parameters and values
 	var args []interface{}
 
-	// Add filters based on query parameters
 	if fromStopID := queryParams.Get("from_stop_id"); fromStopID != "" {
 		sqlQuery += " AND from_stop_id = $1"
 		args = append(args, fromStopID)
@@ -102,7 +122,6 @@ func getArrivalWithStopsInHandler(w http.ResponseWriter, r *http.Request) {
 		args = append(args, routeID)
 	}
 
-	// Execute the SQL query with prepared statement
 	rows, err := db.Query(sqlQuery, args...)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -110,10 +129,8 @@ func getArrivalWithStopsInHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer rows.Close()
 
-	// Define a slice to hold the results
 	var arrivalsWithStopsIn []models.ArrivalWithStopsIn
 
-	// Iterate through the rows and scan the results into ArrivalWithStopsIn structs
 	for rows.Next() {
 		var arrivalWithStopsIn models.ArrivalWithStopsIn
 		err := rows.Scan(&arrivalWithStopsIn.FromStopID, &arrivalWithStopsIn.FromStopName, &arrivalWithStopsIn.ToStopID, &arrivalWithStopsIn.ToStopName, &arrivalWithStopsIn.RouteID, &arrivalWithStopsIn.RouteName, &arrivalWithStopsIn.ArrIn)
@@ -124,8 +141,24 @@ func getArrivalWithStopsInHandler(w http.ResponseWriter, r *http.Request) {
 		arrivalsWithStopsIn = append(arrivalsWithStopsIn, arrivalWithStopsIn)
 	}
 
-	// Encode the results as JSON and send the response
 	json.NewEncoder(w).Encode(arrivalsWithStopsIn)
+}
+
+func newTransactionHandler(w http.ResponseWriter, r *http.Request) {
+	queryParams := r.URL.Query()
+	ticketID := queryParams.Get("ticket_id")
+	vehicleID := queryParams.Get("vehicle_id")
+	fromStopID := queryParams.Get("from_stop_id")
+	toStopID := queryParams.Get("to_stop_id")
+
+	_, err := db.Exec("SELECT new_transaction($1, $2, $3, $4)", ticketID, vehicleID, fromStopID, toStopID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("New transaction executed successfully"))
 }
 
 func getRouteHandler(w http.ResponseWriter, r *http.Request) {

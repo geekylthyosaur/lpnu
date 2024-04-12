@@ -10,7 +10,7 @@ fi
 if ! podman image exists database &> /dev/null; then
   podman build -t database .
 fi
-podman run --name database --env POSTGRES_USER=user --env POSTGRES_PASSWORD=password --publish 5432:5432 --volume ~/Downloads/melbourne.zip:/melbourne.zip:Z --detach database
+podman run --name database --env POSTGRES_USER=root --env POSTGRES_PASSWORD=password --publish 5432:5432 --volume ~/Downloads/melbourne.zip:/melbourne.zip:Z --detach database
 podman exec -it database /bin/bash -c 'unzip /melbourne.zip -d /tmp'
 podman exec -it database /bin/bash -c 'python3 -m venv /tmp/venv'
 podman exec -it database /bin/bash -c '/tmp/venv/bin/pip install faker'
@@ -71,38 +71,41 @@ with open('/tmp/melbourne/tickets.csv', 'w', newline='') as f:
   writer = csv.writer(f, delimiter='|')
   writer.writerows([ticket() for _ in range(1000)])
 "
-podman exec -it database psql -U user -d postgres -c 'create database src;'
-podman exec -it database psql -U user -d src -c 'create extension if not exists "uuid-ossp";'
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d postgres -c 'create database src;'
+podman exec -it database psql -U root -d src -c 'create extension if not exists "uuid-ossp";'
+podman exec -it database psql -U root -d src -c "
 create table public.route (
   id integer primary key not null,
   name character varying(64),
   full_name character varying(128)
 );
+alter table public.route owner to root;
 "
-podman exec -it database psql -U user -d src -c "copy public.route(id, name, full_name) from '/tmp/melbourne/routes.csv' delimiter '|' csv;"
-podman exec -it database psql -U user -d src -c "create index idx_route on public.route(id);"
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "copy public.route(id, name, full_name) from '/tmp/melbourne/routes.csv' delimiter '|' csv;"
+podman exec -it database psql -U root -d src -c "create index idx_route on public.route(id);"
+podman exec -it database psql -U root -d src -c "
 create table public.stop (
   id integer primary key not null,
   name character varying(128),
   lat numeric(16,14),
   lon numeric(16,13)
 );
+alter table public.stop owner to root;
 "
-podman exec -it database psql -U user -d src -c "copy public.stop(id, name, lat, lon) from '/tmp/melbourne/stops.csv' delimiter '|' csv;"
-podman exec -it database psql -U user -d src -c "create index idx_stop on public.stop(id);"
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "copy public.stop(id, name, lat, lon) from '/tmp/melbourne/stops.csv' delimiter '|' csv;"
+podman exec -it database psql -U root -d src -c "create index idx_stop on public.stop(id);"
+podman exec -it database psql -U root -d src -c "
 create table public.route_stops (
   route_id integer references public.route(id),
   stop_id integer references public.stop(id),
   ord_idx integer not null,
   primary key (route_id, stop_id)
 );
+alter table public.route_stops owner to root;
 "
-podman exec -it database psql -U user -d src -c "copy public.route_stops(route_id, stop_id, ord_idx) from '/tmp/melbourne/route_stops.csv' delimiter '|' csv;"
-podman exec -it database psql -U user -d src -c "create index idx_route_stops on public.route_stops(route_id, stop_id);"
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "copy public.route_stops(route_id, stop_id, ord_idx) from '/tmp/melbourne/route_stops.csv' delimiter '|' csv;"
+podman exec -it database psql -U root -d src -c "create index idx_route_stops on public.route_stops(route_id, stop_id);"
+podman exec -it database psql -U root -d src -c "
 create table public.schedule (
   id serial not null,
   route_id integer references public.route(id),
@@ -111,35 +114,37 @@ create table public.schedule (
   dep_time_ds integer,
   primary key (id)
 );
+alter table public.schedule owner to root;
 "
-podman exec -it database psql -U user -d src -c "copy public.schedule(route_id, stop_id, arr_time_ds, dep_time_ds) from '/tmp/melbourne/schedule.csv' delimiter '|' csv;"
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "copy public.schedule(route_id, stop_id, arr_time_ds, dep_time_ds) from '/tmp/melbourne/schedule.csv' delimiter '|' csv;"
+podman exec -it database psql -U root -d src -c "
 alter table public.schedule
   add column arr time,
   add column dep time;
 "
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "
 update public.schedule
   set arr = to_char((arr_time_ds % 86400 || ' second')::interval, 'HH24:MI:SS')::time,
     dep = to_char((dep_time_ds % 86400 || ' second')::interval, 'HH24:MI:SS')::time;
 "
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "
 alter table public.schedule
   drop column arr_time_ds,
   drop column dep_time_ds;
 "
-podman exec -it database psql -U user -d src -c "create index idx_route_stop on public.schedule (route_id, stop_id);"
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "create index idx_route_stop on public.schedule (route_id, stop_id);"
+podman exec -it database psql -U root -d src -c "
 create table public.vehicle (
   license character varying(16) not null,
   capacity integer not null,
   route_id integer references public.route(id),
   primary key(license)
 );
+alter table public.vehicle owner to root;
 "
-podman exec -it database psql -U user -d src -c "copy public.vehicle(license, capacity) from '/tmp/melbourne/vehicles.csv' delimiter '|' csv;"
-podman exec -it database psql -U user -d src -c "create index idx_vehicle on vehicle(license);"
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "copy public.vehicle(license, capacity) from '/tmp/melbourne/vehicles.csv' delimiter '|' csv;"
+podman exec -it database psql -U root -d src -c "create index idx_vehicle on vehicle(license);"
+podman exec -it database psql -U root -d src -c "
 update vehicle as v
 set route_id = subquery.route_id
 from (
@@ -149,7 +154,7 @@ from (
 ) as subquery
 where v.license = subquery.license and row_num = 1;
 "
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "
 create type ticket_discount as enum ('student', 'elder', 'veteran');
 create table public.ticket (
   id uuid default uuid_generate_v4() not null,
@@ -157,9 +162,23 @@ create table public.ticket (
   balance numeric(8, 2) default 0 not null,
   primary key (id)
 );
+alter table public.ticket owner to root;
 "
-podman exec -it database psql -U user -d src -c "copy public.ticket(discount, balance) from '/tmp/melbourne/tickets.csv' delimiter '|' csv;"
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "copy public.ticket(discount, balance) from '/tmp/melbourne/tickets.csv' delimiter '|' csv;"
+podman exec -it database psql -U root -d src -c "
+create table public.ticket_discount_mult (
+  discount ticket_discount not null,
+  mult numeric(2, 2) not null,
+  primary key (discount)
+);
+insert into public.ticket_discount_mult(discount, mult)
+values ('student', 0.5);
+insert into public.ticket_discount_mult(discount, mult)
+values ('elder', 0.3);
+insert into public.ticket_discount_mult(discount, mult)
+values ('veteran', 0.2);
+"
+podman exec -it database psql -U root -d src -c "
 create table public.transaction (
   id uuid default uuid_generate_v4() not null,
   ticket_id uuid not null references public.ticket(id),
@@ -168,16 +187,18 @@ create table public.transaction (
   from_stop_id integer not null references public.stop(id),
   to_stop_id integer not null references public.stop(id),
   fare numeric(8,2) not null,
-  timestamp timestamp not null,
+  timestamp timestamp not null default now(),
   primary key(id)
 );
+alter table public.transaction owner to root;
 "
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "
 do \$\$
 declare
   i integer := 0;
 begin
-  while i < 1000 loop
+  -- TODO while i < 1000 loop
+  while i < 10 loop
     insert into public.transaction(route_id, ticket_id, vehicle_id, from_stop_id, to_stop_id, fare, timestamp)
     with stop_ids_cte as (
       select r.id as r_id,
@@ -209,16 +230,17 @@ begin
   end loop;
 end \$\$;
 "
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "
 create table public.driver (
   id serial not null,
   name character varying(64) not null,
   vehicle_id character varying(16) references public.vehicle(license),
   primary key(id)
-)
+);
+alter table public.driver owner to root;
 "
-podman exec -it database psql -U user -d src -c "copy public.driver(name) from '/tmp/melbourne/drivers.csv' delimiter '|' csv;"
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "copy public.driver(name) from '/tmp/melbourne/drivers.csv' delimiter '|' csv;"
+podman exec -it database psql -U root -d src -c "
 update public.driver
 set vehicle_id = vehicles.license
   from (
@@ -233,7 +255,7 @@ set vehicle_id = vehicles.license
   where drivers.id = public.driver.id
   and drivers.row_num <= 1500;
 "
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "
 create table public.maintenance (
   id serial not null,
   vehicle_id character varying(16) not null references public.vehicle(license),
@@ -243,12 +265,14 @@ create table public.maintenance (
   cost numeric(8, 2) not null,
   primary key(id)
 );
+alter table public.maintenance owner to root;
 "
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "
 do \$\$
 declare
   i integer := 0;
 begin
+  -- TODO while i < 1000 loop
   while i < 10 loop
     insert into public.maintenance(vehicle_id, driver_id, description, time, cost)
     select
@@ -271,8 +295,8 @@ begin
   end loop;
 end \$\$;
 "
-podman exec -it database psql -U user -d src -c "
-create view routes_with_stops as
+podman exec -it database psql -U root -d src -c "
+create view public.routes_with_stops as
 select
   s1.id as from_stop_id,
   s1.name as from_stop_name,
@@ -286,8 +310,9 @@ join route_stops rs1 on rs1.stop_id = s1.id
 join route_stops rs2 on rs2.stop_id = s2.id
 join route r on rs1.route_id = rs2.route_id and rs1.route_id = r.id
 where s1.id <> s2.id;
+alter view public.routes_with_stops owner to root;
 "
-podman exec -it database psql -U user -d src -c "
+podman exec -it database psql -U root -d src -c "
 create view arrival_with_stops_in as
 select from_stop_id, from_stop_name, to_stop_id, to_stop_name, route_id, route_name, to_char(arr_in, 'MI:SS') as arr_in from (
 select
@@ -303,4 +328,47 @@ join schedule sch on s.route_id = sch.route_id and (s.from_stop_id = sch.stop_id
 join route r on r.id = s.route_id) as arrival
 where arr_in > interval '0 seconds' and arr_in < interval '1 hour'
 order by arr_in;
+alter view public.arrival_with_stops_in owner to root;
+"
+podman exec -it database psql -U root -d src -c "
+create or replace function new_transaction(ticket_id uuid, vehicle_id character varying(16), from_stop_id integer, to_stop_id integer)
+returns void as
+\$\$
+declare
+  fare integer;
+  r_id integer = (select route_id from vehicle v where v.license = vehicle_id);
+begin
+  if r_id is null then return; end if;
+
+  fare = abs((select ord_idx from route_stops rs
+  where rs.route_id = r_id and rs.stop_id = to_stop_id)
+  - (select ord_idx from route_stops rs
+  where rs.route_id = r_id and rs.stop_id = from_stop_id)) * 5 * coalesce((select mult from ticket_discount_mult d where d.discount = (select discount from ticket t where t.id = ticket_id)), 1);
+
+  if fare is null then raise 'invalid vehicle_id for given stops'; end if;
+
+  if (select balance from ticket t where t.id = ticket_id) - fare < 0 then raise 'not enough balance'; end if;
+
+  update ticket t set balance = balance - fare where t.id = ticket_id;
+
+  insert into transaction(ticket_id, route_id, vehicle_id, from_stop_id, to_stop_id, fare, timestamp)
+  values (ticket_id, r_id, vehicle_id, from_stop_id, to_stop_id, fare, now());
+end;
+\$\$
+language plpgsql;
+"
+podman exec -it database psql -U root -d src -c "
+create role manager;
+create role driver;
+create role passenger;
+"
+podman exec -it database psql -U root -d src -c "
+grant select on public.routes_with_stops to passenger;
+grant select on public.arrival_with_stops_in to passenger;
+grant select on public.vehicle to passenger;
+grant select on public.route_stops to passenger;
+grant select on public.ticket to passenger;
+grant update on public.ticket to passenger;
+grant select on public.ticket_discount_mult to passenger;
+grant execute on function new_transaction(uuid, character varying(16), integer, integer) to passenger;
 "

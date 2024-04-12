@@ -29,6 +29,7 @@ func main() {
 	http.HandleFunc("/route_with_stops", authMiddleware(getRouteWithStopsHandler))
 	http.HandleFunc("/arrival_with_stops_in", authMiddleware(getArrivalWithStopsInHandler))
 	http.HandleFunc("/new_transaction", authMiddleware(newTransactionHandler))
+	http.HandleFunc("/next_stop", authMiddleware(nextStopHandler))
 	http.HandleFunc("/route", authMiddleware(getRouteHandler))
 	http.HandleFunc("/stop", authMiddleware(getStopHandler))
 	http.HandleFunc("/schedule", authMiddleware(getScheduleHandler))
@@ -48,7 +49,7 @@ func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		// This could involve parsing headers, cookies, tokens, etc.
 		// and validating the user's identity
 
-		role := "passenger"
+		role := "driver"
 
 		db.SetConnMaxLifetime(0)
 		db.SetMaxOpenConns(1)
@@ -159,6 +160,39 @@ func newTransactionHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("New transaction executed successfully"))
+}
+
+// Handler for executing the next_stop function
+func nextStopHandler(w http.ResponseWriter, r *http.Request) {
+	// Parse URL query parameters
+	queryParams := r.URL.Query()
+	vehicleID := queryParams.Get("vehicle_id")
+	stopID := queryParams.Get("stop_id")
+
+	// Execute the next_stop function with the extracted arguments
+	rows, err := db.Query("SELECT * FROM next_stop($1, $2)", vehicleID, stopID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Define a slice to hold the results
+	var stops []models.NextStop
+
+	// Iterate through the rows and scan the results into NextStop structs
+	for rows.Next() {
+		var stop models.NextStop
+		err := rows.Scan(&stop.NextStopID, &stop.StopName, &stop.ArrIn)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		stops = append(stops, stop)
+	}
+
+	// Encode the results as JSON and send the response
+	json.NewEncoder(w).Encode(stops)
 }
 
 func getRouteHandler(w http.ResponseWriter, r *http.Request) {

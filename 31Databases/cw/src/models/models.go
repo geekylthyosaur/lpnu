@@ -90,3 +90,9 @@ type ArrivalWithStopsIn struct {
 	RouteName    string `json:"route_name"`
 	ArrIn        string `json:"arr_in"`
 }
+
+type NextStop struct {
+	NextStopID int    `json:"next_stop_id"`
+	StopName   string `json:"stop_name"`
+	ArrIn      string `json:"arr_in"`
+}

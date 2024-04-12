@@ -358,6 +358,23 @@ end;
 language plpgsql;
 "
 podman exec -it database psql -U root -d src -c "
+create or replace function next_stop(vehicle_id varchar, stop_id integer)
+returns table (next_stop_id integer, stop_name varchar, arr_in text) as \$\$
+begin
+  return query
+  select rs.stop_id, s.name as stop_name, to_char(((select sch.arr from schedule sch where s.id = sch.stop_id and rs.route_id = sch.route_id and sch.arr - now()::time > interval '0 seconds' limit 1) - now()::time), 'MI:SS') as arr_in
+  from public.route_stops rs
+  join public.stop s on rs.stop_id = s.id
+  where rs.route_id = (select route_id from public.vehicle where license = vehicle_id)
+  and rs.ord_idx > (
+    select ord_idx from public.route_stops rs where route_id = (select route_id from public.vehicle where license = vehicle_id) and rs.stop_id = next_stop.stop_id
+  )
+  order by rs.ord_idx
+  limit 1;
+end;
+\$\$ language plpgsql;
+"
+podman exec -it database psql -U root -d src -c "
 create role manager;
 create role driver;
 create role passenger;
@@ -371,4 +388,17 @@ grant select on public.ticket to passenger;
 grant update on public.ticket to passenger;
 grant select on public.ticket_discount_mult to passenger;
 grant execute on function new_transaction(uuid, character varying(16), integer, integer) to passenger;
+
+grant select on public.vehicle to driver;
+grant select on public.route_stops to driver;
+grant select on public.schedule to driver;
+grant select on public.stop to driver;
+grant execute on function next_stop(character varying(16), integer) to driver;
+grant insert on public.maintenance to driver;
+
+grant select on all tables in schema public to manager;
+grant select on all views in schema public to manager;
+grant insert on all tables in schema public to manager;
+grant update on all tables in schema public to manager;
+grant execute on all functions in schema public to manager;
 "

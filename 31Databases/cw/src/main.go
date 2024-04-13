@@ -26,6 +26,8 @@ func init() {
 
 func main() {
 	// Define HTTP routes with authentication middleware
+	http.HandleFunc("/search_stop", authMiddleware(searchStopHandler))
+	http.HandleFunc("/search_route", authMiddleware(searchRouteHandler))
 	http.HandleFunc("/route_with_stops", authMiddleware(getRouteWithStopsHandler))
 	http.HandleFunc("/arrival_with_stops_in", authMiddleware(getArrivalWithStopsInHandler))
 	http.HandleFunc("/new_transaction", authMiddleware(newTransactionHandler))
@@ -40,7 +42,7 @@ func main() {
 	http.HandleFunc("/maintenance", authMiddleware(getMaintenanceHandler))
 
 	fmt.Println("Server is running on port 8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8080", corsHandler(http.DefaultServeMux)))
 }
 
 func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
@@ -49,7 +51,7 @@ func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		// This could involve parsing headers, cookies, tokens, etc.
 		// and validating the user's identity
 
-		role := "driver"
+		role := "passenger"
 
 		db.SetConnMaxLifetime(0)
 		db.SetMaxOpenConns(1)
@@ -63,6 +65,62 @@ func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 		next(w, r)
 	}
+}
+
+func searchStopHandler(w http.ResponseWriter, r *http.Request) {
+	queryParams := r.URL.Query()
+	name := queryParams.Get("name")
+
+	sqlQuery := "SELECT * FROM search_stop($1)"
+
+	rows, err := db.Query(sqlQuery, name)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var stops []models.Stop
+
+	for rows.Next() {
+		var stop models.Stop
+		err := rows.Scan(&stop.ID, &stop.Name, &stop.Lat, &stop.Lon)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		stops = append(stops, stop)
+	}
+
+	json.NewEncoder(w).Encode(stops)
+}
+
+func searchRouteHandler(w http.ResponseWriter, r *http.Request) {
+	queryParams := r.URL.Query()
+	name := queryParams.Get("name")
+
+	sqlQuery := "SELECT id, route_name FROM search_route($1)"
+
+	rows, err := db.Query(sqlQuery, name)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var routes []models.Route
+
+	for rows.Next() {
+		var route models.Route
+		err := rows.Scan(&route.ID, &route.Name)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		routes = append(routes, route)
+	}
+
+	json.NewEncoder(w).Encode(routes)
 }
 
 func getRouteWithStopsHandler(w http.ResponseWriter, r *http.Request) {
@@ -81,6 +139,7 @@ func getRouteWithStopsHandler(w http.ResponseWriter, r *http.Request) {
 		args = append(args, toStopID)
 	}
 
+	sqlQuery += " LIMIT 10"
 	rows, err := db.Query(sqlQuery, args...)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -110,19 +169,32 @@ func getArrivalWithStopsInHandler(w http.ResponseWriter, r *http.Request) {
 
 	var args []interface{}
 
-	if fromStopID := queryParams.Get("from_stop_id"); fromStopID != "" {
+	fromStopID := queryParams.Get("from_stop_id")
+	if fromStopID != "" {
 		sqlQuery += " AND from_stop_id = $1"
 		args = append(args, fromStopID)
 	}
-	if toStopID := queryParams.Get("to_stop_id"); toStopID != "" {
-		sqlQuery += " AND to_stop_id = $2"
+
+	toStopID := queryParams.Get("to_stop_id")
+	if toStopID != "" {
+		if fromStopID == "" {
+			sqlQuery += " AND to_stop_id = $1"
+		} else {
+			sqlQuery += " AND to_stop_id = $2"
+		}
 		args = append(args, toStopID)
 	}
 	if routeID := queryParams.Get("route_id"); routeID != "" {
-		sqlQuery += " AND route_id = $3"
+		if fromStopID == "" && toStopID == "" {
+			sqlQuery += " AND route_id = $1"
+		} else if fromStopID == "" || toStopID == "" {
+			sqlQuery += " AND route_id = $2"
+		} else {
+			sqlQuery += " AND route_id = $3"
+		}
 		args = append(args, routeID)
 	}
-
+	sqlQuery += " LIMIT 10"
 	rows, err := db.Query(sqlQuery, args...)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -206,7 +278,7 @@ func getRouteHandler(w http.ResponseWriter, r *http.Request) {
 	var routes []models.Route
 	for rows.Next() {
 		var route models.Route
-		err := rows.Scan(&route.ID, &route.Name, &route.FullName)
+		err := rows.Scan(&route.ID, &route.Name)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -369,4 +441,22 @@ func getMaintenanceHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(maintenances)
+}
+
+func corsHandler(h http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Set CORS headers
+		w.Header().Set("Access-Control-Allow-Origin", "*") // Allow requests from any origin
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		// If it's a preflight request, send an OK status
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		// Call the actual handler
+		h.ServeHTTP(w, r)
+	}
 }

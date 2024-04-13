@@ -375,6 +375,43 @@ end;
 \$\$ language plpgsql;
 "
 podman exec -it database psql -U root -d src -c "
+create or replace function search_stop(s varchar)
+returns table (
+  id integer,
+  name varchar,
+  lat numeric,
+  lon numeric
+)
+language plpgsql
+as \$\$
+begin
+  return query execute '
+    select id, name, lat, lon from public.stop
+    where name ilike \$1
+    limit 10;
+  ' using '%' || s || '%';
+end;
+\$\$;
+"
+podman exec -it database psql -U root -d src -c "
+create or replace function search_route(s varchar)
+returns table (
+  id integer,
+  route_name varchar
+)
+language plpgsql
+as \$\$
+begin
+  return query execute '
+    select id, (case when name is null then full_name else name end) as route_name
+    from public.route
+    where name ilike \$1 or full_name ilike \$1
+    limit 10;
+  ' using '%' || s || '%';
+end;
+\$\$;
+"
+podman exec -it database psql -U root -d src -c "
 create role manager;
 create role driver;
 create role passenger;
@@ -384,10 +421,14 @@ grant select on public.routes_with_stops to passenger;
 grant select on public.arrival_with_stops_in to passenger;
 grant select on public.vehicle to passenger;
 grant select on public.route_stops to passenger;
+grant select on public.stop to passenger;
+grant select on public.route to passenger;
 grant select on public.ticket to passenger;
 grant update on public.ticket to passenger;
 grant select on public.ticket_discount_mult to passenger;
 grant execute on function new_transaction(uuid, character varying(16), integer, integer) to passenger;
+grant execute on function search_stop(varchar) to passenger;
+grant execute on function search_route(varchar) to passenger;
 
 grant select on public.vehicle to driver;
 grant select on public.route_stops to driver;
@@ -397,7 +438,6 @@ grant execute on function next_stop(character varying(16), integer) to driver;
 grant insert on public.maintenance to driver;
 
 grant select on all tables in schema public to manager;
-grant select on all views in schema public to manager;
 grant insert on all tables in schema public to manager;
 grant update on all tables in schema public to manager;
 grant execute on all functions in schema public to manager;

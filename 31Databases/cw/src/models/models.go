@@ -6,9 +6,8 @@ import (
 )
 
 type Route struct {
-	ID       int            `json:"id"`
-	Name     sql.NullString `json:"name"`
-	FullName string         `json:"full_name"`
+	ID   int    `json:"id"`
+	Name string `json:"name"`
 }
 
 type Stop struct {

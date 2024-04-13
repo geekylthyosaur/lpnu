@@ -20,6 +20,13 @@ export default {
       showResults: false
     };
   },
+  watch: {
+    searchTerm(newVal) {
+      if (newVal === '') {
+        this.$emit('stop-selected', { id: '', name: '' });
+      }
+    }
+  },
   methods: {
     searchStops() {
       if (this.searchTerm.length > 0) {

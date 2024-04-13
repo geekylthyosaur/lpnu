@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import SearchStop from './SearchStop.vue';
 import SearchRoute from './SearchRoute.vue';
 
@@ -47,7 +48,6 @@ export default {
   },
   methods: {
     formatArrivalTime(time) {
-      console.log(typeof time);
       if (!time) return '';
       const hours = parseInt(time.substring(0, 2));
       const minutes = parseInt(time.substring(3, 5));
@@ -63,19 +63,17 @@ export default {
       this.routeID = route.id;
     },
     fetchRoutes() {
-      const url = new URL('http://localhost:8080/arrival_with_stops_in');
+      const url = 'http://localhost:8080/arrival_with_stops_in';
       const params = { 
         from_stop_id: this.fromStopID, 
         to_stop_id: this.toStopID,
         route_id: this.routeID,
       };
-      url.search = new URLSearchParams(params).toString();
-      
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          console.log(data);
-          this.routes = data || [];
+
+      axios.get(url, { params })
+        .then(response => {
+          console.log(response.data);
+          this.routes = response.data || [];
         })
         .catch(error => {
           console.error('Error fetching routes:', error);

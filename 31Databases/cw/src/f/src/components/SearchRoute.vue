@@ -20,6 +20,13 @@ export default {
       showResults: false
     };
   },
+  watch: {
+    searchTerm(newVal) {
+      if (newVal === '') {
+        this.$emit('route-selected', { id: '', name: '' });
+      }
+    }
+  },
   methods: {
     searchRoutes() {
       if (this.searchTerm.length > 0) {

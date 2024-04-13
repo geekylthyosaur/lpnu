@@ -25,7 +25,6 @@ func init() {
 }
 
 func main() {
-	// Define HTTP routes with authentication middleware
 	http.HandleFunc("/search_stop", authMiddleware(searchStopHandler))
 	http.HandleFunc("/search_route", authMiddleware(searchRouteHandler))
 	http.HandleFunc("/route_with_stops", authMiddleware(getRouteWithStopsHandler))
@@ -47,11 +46,27 @@ func main() {
 
 func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		// Implement authentication logic here
-		// This could involve parsing headers, cookies, tokens, etc.
-		// and validating the user's identity
+		authHeader := r.Header.Get("Authorization")
 
-		role := "passenger"
+		if authHeader == "" {
+			http.Error(w, "Unauthorized", http.StatusUnauthorized)
+			return
+		}
+
+		username := authHeader
+
+		var role string
+		switch username {
+		case "passenger":
+			role = "passenger"
+		case "driver":
+			role = "driver"
+		case "manager":
+			role = "manager"
+		default:
+			http.Error(w, "Invalid username", http.StatusUnauthorized)
+			return
+		}
 
 		db.SetConnMaxLifetime(0)
 		db.SetMaxOpenConns(1)
@@ -130,12 +145,17 @@ func getRouteWithStopsHandler(w http.ResponseWriter, r *http.Request) {
 
 	var args []interface{}
 
-	if fromStopID := queryParams.Get("from_stop_id"); fromStopID != "" {
+	fromStopID := queryParams.Get("from_stop_id")
+	if fromStopID != "" {
 		sqlQuery += " AND from_stop_id = $1"
 		args = append(args, fromStopID)
 	}
 	if toStopID := queryParams.Get("to_stop_id"); toStopID != "" {
-		sqlQuery += " AND to_stop_id = $2"
+		if fromStopID == "" {
+			sqlQuery += " AND to_stop_id = $1"
+		} else {
+			sqlQuery += " AND to_stop_id = $2"
+		}
 		args = append(args, toStopID)
 	}
 

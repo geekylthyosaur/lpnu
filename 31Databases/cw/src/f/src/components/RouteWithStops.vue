@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 import SearchStop from './SearchStop.vue';
 
 export default {
@@ -45,14 +46,12 @@ export default {
       this.toStopID = stop.id;
     },
     fetchRoutes() {
-      const url = new URL('http://localhost:8080/route_with_stops');
+      const url = 'http://localhost:8080/route_with_stops';
       const params = { from_stop_id: this.fromStopID, to_stop_id: this.toStopID };
-      url.search = new URLSearchParams(params).toString();
-      
-      fetch(url)
-        .then(response => response.json())
-        .then(data => {
-          this.routes = data || [];
+
+      axios.get(url, { params })
+        .then(response => {
+          this.routes = response.data || [];
         })
         .catch(error => {
           console.error('Error fetching routes:', error);

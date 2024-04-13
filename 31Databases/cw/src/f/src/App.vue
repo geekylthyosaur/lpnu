@@ -1,10 +1,17 @@
 <template>
-  <div v-if="authenticated">
+  <div v-if="authenticated && role === 'passenger'">
     <button @click="logout" class="logout-button">Logout</button>
     <RouteWithStops />
     <ArrivalIn />
   </div>
-  <div v-else>
+  <div v-if="authenticated && role === 'driver'">
+    <button @click="logout" class="logout-button">Logout</button>
+    <InsertMaintenance/>
+  </div>
+  <div v-if="authenticated && role === 'manager'">
+    <button @click="logout" class="logout-button">Logout</button>
+  </div>
+  <div v-if="!authenticated">
     <div class="login-form">
       <h2>Please login</h2>
       <input type="text" v-model="username" placeholder="Username" class="input-field">
@@ -19,12 +26,14 @@
 import axios from 'axios';
 import RouteWithStops from './components/RouteWithStops.vue'
 import ArrivalIn from './components/ArrivalIn.vue'
+import InsertMaintenance from './components/InsertMaintenance.vue'
 
 export default {
   name: 'App',
   components: {
     RouteWithStops,
     ArrivalIn,
+    InsertMaintenance,
   },
   data() {
     return {
@@ -34,6 +43,10 @@ export default {
       authenticated: localStorage.getItem('username') !== null,
       loginError: ''
     };
+  },
+  beforeMount() {
+    this.role = this.username;
+    this.setAuthorizationHeader();
   },
   methods: {
     login() {

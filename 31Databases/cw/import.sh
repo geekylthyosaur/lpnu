@@ -436,6 +436,7 @@ grant select on public.schedule to driver;
 grant select on public.stop to driver;
 grant execute on function next_stop(character varying(16), integer) to driver;
 grant insert on public.maintenance to driver;
+grant usage, select on sequence maintenance_id_seq to driver;
 
 grant select on all tables in schema public to manager;
 grant insert on all tables in schema public to manager;

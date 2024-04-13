@@ -35,6 +35,7 @@
 \titlelabel{\thetitle.\quad}
 \renewcommand*{\thesection}{Розділ~\arabic{section}}
 \renewcommand*{\thesubsection}{\roman{subsection}}
+\renewcommand{\thefigure}{\arabic{section}.\arabic{figure}}
 \usepackage{tocloft}
 \setlength{\cftsecnumwidth}{5em}
 \setlength\parindent{1.25cm}
@@ -283,7 +284,38 @@ TODO
 
 \section{Функціональні можливості для користувача}
 \subsection{Опис інтерфейсу у відповідності до бізнес-процесів}
-TODO
+Інтерфейс користувача дозволяє авторизуватися використовуючи логін та пароль, та, залежно від ролі користувача - виконувати різні дії над даними відповідно до бізнес-процесів.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.25]{1}
+\caption{Сторінка авторизації.}
+\end{figure}
+
+Користувачі, авторизовані з роллю \textit{passenger}, мають можливість знайти маршрут між двома вказаними зупинками та отримати час до прибуття транспортного засобу на вказану зупинку на вказаному маршруті.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.25]{2}
+\caption{Пошук маршрутів між вказаними зупинками.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.25]{3}
+\caption{Отримання часу прибуття транспортного засобу на вказану зупинку на вказаному маршруті.}
+\end{figure}
+
+Користувачі, авторизовані з роллю \textit{driver}, мають можливість внести запис про технічне обслуговування, та отримати деталі маршруту.
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.25]{4}
+\caption{Внесення запису про технічне обслуговування транспортного засобу.}
+\end{figure}
+
+Користувачі, авторизовані з роллю \textit{manager}, мають можливість експортувати дані у форматі \textit{JSON}, та призначати водіїв на маршрути.
+
 
 \subsection{Засоби аналітичного представлення даних}
 TODO

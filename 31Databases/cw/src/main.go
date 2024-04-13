@@ -29,6 +29,7 @@ func main() {
 	http.HandleFunc("/search_route", authMiddleware(searchRouteHandler))
 	http.HandleFunc("/route_with_stops", authMiddleware(getRouteWithStopsHandler))
 	http.HandleFunc("/arrival_with_stops_in", authMiddleware(getArrivalWithStopsInHandler))
+	http.HandleFunc("/insert_maintenance", authMiddleware(insertMaintenanceHandler))
 	http.HandleFunc("/new_transaction", authMiddleware(newTransactionHandler))
 	http.HandleFunc("/next_stop", authMiddleware(nextStopHandler))
 	http.HandleFunc("/route", authMiddleware(getRouteHandler))
@@ -80,6 +81,29 @@ func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 		next(w, r)
 	}
+}
+
+func insertMaintenanceHandler(w http.ResponseWriter, r *http.Request) {
+	var maintenance models.MaintenanceForm
+	err := json.NewDecoder(r.Body).Decode(&maintenance)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	sqlQuery := `
+        INSERT INTO maintenance (vehicle_id, driver_id, description, cost)
+        VALUES ($1, $2, $3, $4)
+    `
+
+	_, err = db.Exec(sqlQuery, maintenance.VehicleID, maintenance.DriverID, maintenance.Description, maintenance.Cost)
+	if err != nil {
+		fmt.Println(err.Error())
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
 }
 
 func searchStopHandler(w http.ResponseWriter, r *http.Request) {

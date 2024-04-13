@@ -71,6 +71,13 @@ type Maintenance struct {
 	Cost        float64   `json:"cost"`
 }
 
+type MaintenanceForm struct {
+	VehicleID   string  `json:"vehicle_id"`
+	DriverID    int     `json:"driver_id"`
+	Description string  `json:"description"`
+	Cost        float64 `json:"cost"`
+}
+
 type RouteWithStops struct {
 	FromStopID   int    `json:"from_stop_id"`
 	FromStopName string `json:"from_stop_name"`

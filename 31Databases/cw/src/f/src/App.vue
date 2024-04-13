@@ -10,6 +10,17 @@
   </div>
   <div v-if="authenticated && role === 'manager'">
     <button @click="logout" class="logout-button">Logout</button>
+    <ExportData :table="'driver'"/>
+    <br>
+    <ExportData :table="'maintenance'"/>
+    <br>
+    <ExportData :table="'vehicle'"/>
+    <br>
+    <ExportData :table="'schedule'"/>
+    <br>
+    <ExportData :table="'route'"/>
+    <br>
+    <ExportData :table="'stop'"/>
   </div>
   <div v-if="!authenticated">
     <div class="login-form">
@@ -27,6 +38,7 @@ import axios from 'axios';
 import RouteWithStops from './components/RouteWithStops.vue'
 import ArrivalIn from './components/ArrivalIn.vue'
 import InsertMaintenance from './components/InsertMaintenance.vue'
+import ExportData from './components/ExportData.vue'
 
 export default {
   name: 'App',
@@ -34,6 +46,7 @@ export default {
     RouteWithStops,
     ArrivalIn,
     InsertMaintenance,
+    ExportData,
   },
   data() {
     return {

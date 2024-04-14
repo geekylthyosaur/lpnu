@@ -14,7 +14,7 @@
 \usepackage{graphicx}
 \usepackage{float}
 \usepackage[center]{titlesec}
-\usepackage{hyperref}
+\PassOptionsToPackage{hyphens}{url}\usepackage{hyperref}
 \usepackage{array}
 \fancyhf{}
 \renewcommand{\headrulewidth}{0pt}
@@ -34,7 +34,7 @@
 \counterwithin{figure}{section}
 \titlelabel{\thetitle.\quad}
 \renewcommand*{\thesection}{Розділ~\arabic{section}}
-\renewcommand*{\thesubsection}{\roman{subsection}}
+\renewcommand*{\thesubsection}{\arabic{subsection}}
 \renewcommand{\thefigure}{\arabic{section}.\arabic{figure}}
 \usepackage{tocloft}
 \setlength{\cftsecnumwidth}{5em}
@@ -52,7 +52,7 @@
 		{\large
 		\textbf{з дисципліни <<Бази даних>>}\\
 		на тему:\\
-		<<Інформаційна система для ...>>
+		<<Інформаційна система для компанії з регулярних перевезень>>
 		}
 		\vspace*{40pt}
 		
@@ -374,23 +374,42 @@
 
 \newpage
 
-\section{Висновки}
+\section*{Висновки}
+\setcounter{subsection}{0}
+\addcontentsline{toc}{section}{Висновки}
 \subsection{Встановлені недоліки}
-TODO
+Під час створення інформаційної системи для компанії з регулярних перевезень було виявлено наступні недоліки:
+\begin{itemize}
+\item Запити до програмного інтерфейсу, які повертають увесь вміст бази даних, можуть призвести до низької продуктивності системи. Це може бути особливо важливо при роботі з великими обсягами даних.
+\item Інтерфейс користувача системи потребує покращення для забезпечення зручності та ефективності взаємодії з системою. Важливо забезпечити інтуїтивно зрозумілий та привабливий для користувача інтерфейс.
+\end{itemize}
 
 \subsection{Перспективи покращення}
-TODO
+Для подолання встановлених недоліків можна реалізувати наступне:
+\begin{itemize}
+\item Для спрощення обліку транзакцій можна реалізувати інтеграцію з банківською системою. Це дозволить автоматизувати процеси оплати та обліку коштів пасажирів.
+\item Необхідно провести аналіз та оптимізацію запитів до бази даних, щоб зменшити навантаження на систему та покращити її продуктивність.
+\item Розробка мобільного додатка для пасажирів дозволить забезпечити зручний доступ до інформації про розклад руху та покупку квитків. Окрема система для адміністраторів та водіїв дозволить керувати функціями та даними, що відповідають їхнім потребам та відповідальностям.
+\end{itemize}
 
 \newpage
 
-\section{Список літератури}
-\href{https://www.researchgate.net/publication/325161554_A_collection_of_public_transport_network_data_sets_for_25_cities}{https://www.researchgate.net/publication/325161554\_A\_collection\_of\_public...}
+\section*{Список літератури}
+\setcounter{subsection}{0}
+\addcontentsline{toc}{section}{Список літератури}
 
-TODO
+\begin{enumerate}
+\item Джерело первинних історичних даних: \href{https://www.researchgate.net/publication/325161554_A_collection_of_public_transport_network_data_sets_for_25_cities}{https://www.researchgate.net/publicat\\ion/325161554-A-collection-of-public-transport-network-data-sets-for-25-cities}
+\item Документація Golang: \href{https://go.dev/doc/}{https://go.dev/doc/}
+\item Документація Vue.js: \href{https://vuejs.org/guide/introduction.html}{https://vuejs.org/guide/introduction.html}
+\item Документація PostgreSQL: \href{https://www.postgresql.org/docs/}{https://www.postgresql.org/docs/}
+\end{enumerate}
 
 \newpage
 
-\section{Додатки}
+\section*{Додатки}
+\setcounter{subsection}{0}
+\addcontentsline{toc}{section}{Додатки}
 \subsection{Скрипт створення бази даних та завантаження історичних даних}
 {\fontsize{8pt}{8pt}\selectfont\lstinputlisting{import.sh}}
 
@@ -401,7 +420,7 @@ TODO
 Файл \textit{models.go}
 {\fontsize{8pt}{8pt}\selectfont\lstinputlisting{src/models/models.go}}
 
-\subsection{Інший код створених моделей}
-TODO
+Файл \textit{App.Vue}
+{\fontsize{8pt}{8pt}\selectfont\lstinputlisting{src/f/src/App.vue}}
 
 \end{document}

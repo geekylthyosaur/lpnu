@@ -18,7 +18,7 @@ export default {
     async downloadJson() {
       try {
         const response = await axios.get(`http://localhost:8080/${this.table}`, {
-          responseType: 'blob' // To get binary data
+          responseType: 'blob'
         });
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
@@ -41,8 +41,8 @@ export default {
 
 .download-btn {
   padding: 10px 20px;
-  font-size: 16px;
-  background-color: #007bff;
+  background-color: dodgerblue;
+  margin: 10px;
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -51,7 +51,7 @@ export default {
 }
 
 .download-btn:hover {
-  background-color: #0056b3;
+  background-color: royalblue;
 }
 </style>
 

@@ -441,5 +441,7 @@ grant usage, select on sequence maintenance_id_seq to driver;
 grant select on all tables in schema public to manager;
 grant insert on all tables in schema public to manager;
 grant update on all tables in schema public to manager;
+grant delete on all tables in schema public to manager;
 grant execute on all functions in schema public to manager;
+grant usage, select on all sequences in schema public to manager;
 "

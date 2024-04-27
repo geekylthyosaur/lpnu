@@ -2,23 +2,26 @@
   <div>
     <h1>Search for routes</h1>
     <div>
-      <div class="search-container">
-        <label for="fromStopID">From Stop:</label>
-        <SearchStop id="fromStopID" @stop-selected="fromStopSelected" />
+      <div class="container">
+        <SearchStop :label="'From stop:'" @stop-selected="fromStopSelected" />
       </div>
-      <div class="search-container">
-        <label for="toStopID">To Stop:</label>
-        <SearchStop id="toStopID" @stop-selected="toStopSelected" />
+      <div class="container">
+        <SearchStop :label="'To stop:'" @stop-selected="toStopSelected" />
       </div>
-      <button @click="fetchRoutes" :disabled="!fromStopID || !toStopID" class="apply-filters-btn">Search</button>
+      <button @click="fetchRoutes" :disabled="!fromStopID && !toStopID" class="search-button">Search</button>
     </div>
-    <ul v-if="routes.length" class="routes-list">
-      <li v-for="(route, index) in routes" :key="index">
-        <h2>{{ route.route_name }}</h2>
-        <p>From: {{ route.from_stop_name }}</p>
-        <p>To: {{ route.to_stop_name }}</p>
-      </li>
-    </ul>
+    <table v-if="routes.length" class="routes">
+      <tr>
+        <td>Route name</td>
+        <td>From stop name</td>
+        <td>To stop name</td>
+      </tr>
+      <tr v-for="(route, index) in routes" :key="index">
+        <td>{{ route.route_name }}</td>
+        <td>{{ route.from_stop_name }}</td>
+        <td>{{ route.to_stop_name }}</td>
+      </tr>
+    </table>
     <p v-else>No routes found.</p>
   </div>
 </template>
@@ -62,12 +65,12 @@ export default {
 </script>
 
 <style scoped>
-.search-container {
+.container {
   margin-bottom: 20px;
 }
 
-.apply-filters-btn {
-  background-color: #4CAF50; /* Green */
+.search-button {
+  background-color: #4CAF50;
   border: none;
   color: white;
   padding: 10px 24px;
@@ -81,20 +84,49 @@ export default {
   border-radius: 8px;
 }
 
-.apply-filters-btn:hover {
+.search-button:disabled {
+  background-color: #bbb;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.search-button {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.search-button:hover {
   background-color: #45a049;
 }
 
-.routes-list {
-  list-style-type: none;
-  padding: 0;
+.routes {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.routes-list li {
-  margin-bottom: 20px;
+.routes th,
+.routes td {
+  padding: 8px;
   border: 1px solid #ddd;
-  padding: 10px;
-  border-radius: 8px;
+  text-align: left;
+}
+
+.routes th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.routes tr:nth-child(even) {
+  background-color: #f2f2f2;
 }
 </style>
 

@@ -36,9 +36,14 @@ func main() {
 	http.HandleFunc("/stop", authMiddleware(getStopHandler))
 	http.HandleFunc("/schedule", authMiddleware(getScheduleHandler))
 	http.HandleFunc("/vehicle", authMiddleware(getVehicleHandler))
+	http.HandleFunc("/vehicle/add", authMiddleware(insertVehicleHandler))
+	http.HandleFunc("/vehicle/edit", authMiddleware(editVehicleHandler))
 	http.HandleFunc("/ticket", authMiddleware(getTicketHandler))
 	http.HandleFunc("/transaction", authMiddleware(getTransactionHandler))
 	http.HandleFunc("/driver", authMiddleware(getDriverHandler))
+  http.HandleFunc("/driver/delete", authMiddleware(deleteDriverHandler))
+  http.HandleFunc("/driver/add", authMiddleware(insertDriverHandler))
+  http.HandleFunc("/driver/edit", authMiddleware(editDriverHandler))
 	http.HandleFunc("/maintenance", authMiddleware(getMaintenanceHandler))
 
 	fmt.Println("Server is running on port 8080...")
@@ -312,7 +317,7 @@ func nextStopHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func getRouteHandler(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query("SELECT id, name, full_name FROM public.route")
+	rows, err := db.Query("SELECT id, CASE WHEN name IS NOT NULL THEN name || ' (' || full_name || ')' ELSE full_name END AS name FROM public.route;")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -399,6 +404,64 @@ func getVehicleHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(vehicles)
 }
 
+func insertVehicleHandler(w http.ResponseWriter, r *http.Request) {
+    license := r.URL.Query().Get("license")
+    capacity := r.URL.Query().Get("capacity")
+    routeID := r.URL.Query().Get("route_id")
+
+    if license == "" || capacity == "" {
+        http.Error(w, "License and Capacity are required fields", http.StatusBadRequest)
+        return
+    }
+
+    if routeID == "" {
+      query := "INSERT INTO public.vehicle (license, capacity) VALUES ($1, $2)"
+      _, err := db.Exec(query, license, capacity)
+      if err != nil {
+          http.Error(w, err.Error(), http.StatusInternalServerError)
+          return
+      }
+    } else {
+      query := "INSERT INTO public.vehicle (license, capacity, route_id) VALUES ($1, $2, $3)"
+      _, err := db.Exec(query, license, capacity, routeID)
+      if err != nil {
+          http.Error(w, err.Error(), http.StatusInternalServerError)
+          return
+      }
+    }
+
+    w.WriteHeader(http.StatusCreated)
+}
+
+func editVehicleHandler(w http.ResponseWriter, r *http.Request) {
+    license := r.URL.Query().Get("license")
+    capacity := r.URL.Query().Get("capacity")
+    routeID := r.URL.Query().Get("route_id")
+
+    if license == "" || capacity == "" {
+        http.Error(w, "License and Capacity are required fields", http.StatusBadRequest)
+        return
+    }
+
+    if routeID == "" {
+      query := "UPDATE public.vehicle SET capacity = $1 WHERE license = $3"
+      _, err := db.Exec(query, capacity, license)
+      if err != nil {
+          http.Error(w, err.Error(), http.StatusInternalServerError)
+          return
+      }
+    } else {
+      query := "UPDATE public.vehicle SET capacity = $1, route_id = $2 WHERE license = $3"
+      _, err := db.Exec(query, capacity, routeID, license)
+      if err != nil {
+          http.Error(w, err.Error(), http.StatusInternalServerError)
+          return
+      }
+    }
+
+    w.WriteHeader(http.StatusOK)
+}
+
 func getTicketHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.Query("SELECT id, discount, balance FROM public.ticket")
 	if err != nil {
@@ -463,6 +526,78 @@ func getDriverHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(drivers)
+}
+
+func deleteDriverHandler(w http.ResponseWriter, r *http.Request) {
+	driverID := r.URL.Query().Get("id")
+	if driverID == "" {
+		http.Error(w, "Missing driver ID", http.StatusBadRequest)
+		return
+	}
+
+	_, err := db.Exec("DELETE FROM public.driver WHERE id = $1", driverID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
+
+func insertDriverHandler(w http.ResponseWriter, r *http.Request) {
+	name := r.URL.Query().Get("name")
+	vehicleID := r.URL.Query().Get("vehicle_id")
+
+	if name == "" {
+		http.Error(w, "Name and Vehicle ID are required fields", http.StatusBadRequest)
+		return
+	}
+
+  if vehicleID == "" {
+    _, err := db.Exec("INSERT INTO public.driver (name) VALUES ($1)", name)
+    if err != nil {
+      http.Error(w, err.Error(), http.StatusInternalServerError)
+      return
+    }
+  } else {
+    _, err := db.Exec("INSERT INTO public.driver (name, vehicle_id) VALUES ($1, $2)", name, vehicleID)
+    if err != nil {
+      http.Error(w, err.Error(), http.StatusInternalServerError)
+      return
+    }
+  }
+
+	w.WriteHeader(http.StatusCreated)
+}
+
+func editDriverHandler(w http.ResponseWriter, r *http.Request) {
+	driverID := r.URL.Query().Get("id")
+	name := r.URL.Query().Get("name")
+	vehicleID := r.URL.Query().Get("vehicle_id")
+
+	if driverID == "" || name == "" {
+		http.Error(w, "Driver ID, name, and vehicle ID are required", http.StatusBadRequest)
+		return
+	}
+
+  if vehicleID == "" {
+    query := "UPDATE public.driver SET name = $1 WHERE id = $3"
+    _, err := db.Exec(query, name, driverID)
+    if err != nil {
+      http.Error(w, err.Error(), http.StatusInternalServerError)
+      return
+    }
+  } else {
+    query := "UPDATE public.driver SET name = $1, vehicle_id = $2 WHERE id = $3"
+    _, err := db.Exec(query, name, vehicleID, driverID)
+    if err != nil {
+      http.Error(w, err.Error(), http.StatusInternalServerError)
+      return
+    }
+  }
+
+
+	w.WriteHeader(http.StatusOK)
 }
 
 func getMaintenanceHandler(w http.ResponseWriter, r *http.Request) {

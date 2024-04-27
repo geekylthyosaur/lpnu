@@ -1,5 +1,6 @@
 <template>
   <div class="search-container">
+    <label class="search-label">{{ label }}</label>
     <input type="text" v-model="searchTerm" @input="searchStops" placeholder="Search for a stop" class="search-input">
     <div v-if="showResults" class="search-results">
       <div v-for="stop in stops" :key="stop.id" @click="selectStop(stop.id, stop.name)">
@@ -13,6 +14,12 @@
 import axios from 'axios';
 
 export default {
+  props: {
+    label: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       searchTerm: '',
@@ -52,9 +59,13 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .search-container {
   position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 .search-input {
@@ -64,17 +75,23 @@ export default {
   width: 50%;
 }
 
+.search-label {
+  padding: 8px;
+  width: 10em;
+}
+
 .search-results {
   position: absolute;
   top: calc(100% + 4px);
-  left: 25%;
+  left: 31%;
   background-color: white;
   border: 1px solid #ccc;
   max-height: 200px;
   overflow-y: auto;
   width: 50%;
-  z-index: 999;
+  z-index: 99;
 }
+
 .search-results div {
   padding: 5px;
   cursor: pointer;

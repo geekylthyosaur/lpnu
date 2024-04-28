@@ -198,7 +198,7 @@ declare
   i integer := 0;
 begin
   -- TODO while i < 1000 loop
-  while i < 10 loop
+  while i < 10000 loop
     insert into public.transaction(route_id, ticket_id, vehicle_id, from_stop_id, to_stop_id, fare, timestamp)
     with stop_ids_cte as (
       select r.id as r_id,
@@ -222,7 +222,14 @@ begin
       stop_ids[1],
       stop_ids[2],
       (select floor((random() + stop_ids_cte.r_id*0) * (30 - 5 + 1) + 5)) as fare,
-      (select current_date + arr from schedule where route_id = r_id and stop_id = stop_ids[2] order by random() limit 1) as timestamp
+      (WITH random_date AS (
+    SELECT current_date - (floor(random() * 30 + stop_ids_cte.r_id*0) * '1 day'::interval) AS rand_date
+)
+SELECT rand_date + arr
+FROM schedule, random_date
+WHERE route_id = 1 AND stop_id = 1
+ORDER BY random() + stop_ids_cte.r_id*0
+LIMIT 1) as timestamp
     from stop_ids_cte
     order by random()
     limit 100;

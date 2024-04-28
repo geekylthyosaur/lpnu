@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+  "time"
+  "strings"
+  "strconv"
 
 	"github.com/geekylthyosaur/lpnu/models"
 	_ "github.com/lib/pq"
@@ -45,6 +48,7 @@ func main() {
   http.HandleFunc("/driver/add", authMiddleware(insertDriverHandler))
   http.HandleFunc("/driver/edit", authMiddleware(editDriverHandler))
 	http.HandleFunc("/maintenance", authMiddleware(getMaintenanceHandler))
+	http.HandleFunc("/stats", authMiddleware(getStatsHandler))
 
 	fmt.Println("Server is running on port 8080...")
 	log.Fatal(http.ListenAndServe(":8080", corsHandler(http.DefaultServeMux)))
@@ -639,3 +643,89 @@ func corsHandler(h http.Handler) http.HandlerFunc {
 		h.ServeHTTP(w, r)
 	}
 }
+
+func getStatsHandler(w http.ResponseWriter, r *http.Request) {
+  r.ParseForm()
+	routeID := r.Form.Get("route_id")
+	startDateStr := r.Form.Get("start_date")
+	endDateStr := r.Form.Get("end_date")
+
+	// Build the SQL query conditionally based on provided parameters
+	query := `
+		SELECT DATE_TRUNC('day', timestamp) AS transaction_date, SUM(fare) AS daily_total
+		FROM transaction
+	`
+	var args []interface{}
+	var conditions []string
+
+	// Check if routeID is provided
+	if routeID != "" {
+		conditions = append(conditions, "route_id = $"+strconv.Itoa(len(args)+1))
+		args = append(args, routeID)
+	}
+
+	// Check if startDate is provided
+	if startDateStr != "" {
+		startDate, err := time.Parse("02-01-2006", startDateStr)
+		if err != nil {
+      fmt.Println(err);
+			http.Error(w, "Invalid start date", http.StatusBadRequest)
+			return
+		}
+		conditions = append(conditions, "timestamp >= $"+strconv.Itoa(len(args)+1))
+		args = append(args, startDate)
+	}
+
+	// Check if endDate is provided
+	if endDateStr != "" {
+		endDate, err := time.Parse("02-01-2006", endDateStr)
+		if err != nil {
+      fmt.Println(err);
+			http.Error(w, "Invalid end date", http.StatusBadRequest)
+			return
+		}
+		conditions = append(conditions, "timestamp < $"+strconv.Itoa(len(args)+1))
+		args = append(args, endDate)
+	}
+
+	// Construct the WHERE clause if there are conditions
+	if len(conditions) > 0 {
+		query += " WHERE " + strings.Join(conditions, " AND ")
+	}
+
+	query += " GROUP BY DATE_TRUNC('day', timestamp)"
+
+	// Execute the SQL query
+	rows, err := db.Query(query, args...)
+	if err != nil {
+      fmt.Println(err);
+		http.Error(w, "Database query error", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Fetch results and create Transaction objects
+	var transactions []Transaction
+	for rows.Next() {
+		var transaction Transaction
+		err := rows.Scan(&transaction.TransactionDate, &transaction.DailyTotal)
+		if err != nil {
+      fmt.Println(err);
+			http.Error(w, "Error scanning row", http.StatusInternalServerError)
+			return
+		}
+		transactions = append(transactions, transaction)
+	}
+
+	// Convert to JSON and write response
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(transactions)
+}
+
+// Transaction represents a row from the transaction table
+type Transaction struct {
+	TransactionDate time.Time `json:"transaction_date"`
+	DailyTotal      float64   `json:"daily_total"`
+}
+
+

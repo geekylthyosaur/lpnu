@@ -1,7 +1,10 @@
 <template>
   <div>
-    <VueDatePicker v-model="date" range/>
-    <SearchRoute @route-selected="routeSelected" :label="'Select route:'"/>
+    <div style="display: flex; justify-content: center; align-items: center;">
+    <VueDatePicker v-model="date" range style="width: 500px"/>
+    <SearchRoute @route-selected="routeSelected" :label="'Select route:'" style="width: 700px"/>
+</div>
+
     <Line
       :data="this.data"
       :options="this.options"
@@ -51,8 +54,8 @@ export default {
     fetchData() {
       const params = {
         route_id: this.routeId,
-        start_date: this.formatDate(this.date[0]) || '',
-        end_date: this.formatDate(this.date[1]) || '',
+        start_date: this.formatDate((this.date || [])[0]) || '',
+        end_date: this.formatDate((this.date || [])[1]) || '',
       };
 
       const queryString = Object.keys(params)

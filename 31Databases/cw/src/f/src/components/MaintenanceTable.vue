@@ -4,12 +4,12 @@
     <ExportData :table="'maintenance'"/>
     <table v-if="data.length" class="data">
       <tr>
-        <td>Id</td>
-        <td>Vehicle Id</td>
-        <td>Driver Id</td>
-        <td>Description</td>
-        <td>Timestamp</td>
-        <td>Cost</td>
+        <td @click="sortById">Id</td>
+        <td @click="sortByVehicleId">Vehicle Id</td>
+        <td @click="sortByDriverId">Driver Id</td>
+        <td @click="sortByDescription">Description</td>
+        <td @click="sortByTime">Timestamp</td>
+        <td @click="sortByCost">Cost</td>
       </tr>
       <tr v-for="item in data" :key="item.id">
         <td>{{ item.id }}</td>
@@ -53,8 +53,42 @@ export default {
   },
   methods: {
     search() {
-      this.data = this.data.filter(item => item.description.includes(this.searchTerm) || (''+ item.time).includes(this.searchTerm));
+      this.data = this.data.filter(item => item.vehicle_id.includes(this.searchTerm) || item.description.includes(this.searchTerm) || (''+ item.time).includes(this.searchTerm));
     },
+    sortById() {
+    this.data.sort((a, b) => {
+      return a.id - b.id;
+    });
+  },
+  sortByVehicleId() {
+    this.data = this.data.sort((a, b) => {
+      if (a.vehicle_id < b.vehicle_id) return -1;
+      if (a.vehicle_id > b.vehicle_id) return 1;
+      return 0;
+    });
+  },
+  sortByDriverId() {
+    this.data.sort((a, b) => {
+      return a.driver_id - b.driver_id;
+    });
+  },
+  sortByDescription() {
+    this.data.sort((a, b) => {
+      if (a.description < b.description) return -1;
+      if (a.description > b.description) return 1;
+      return 0;
+    });
+  },
+  sortByTime() {
+    this.data.sort((a, b) => {
+      return new Date(a.time) - new Date(b.time);
+    });
+  },
+  sortByCost() {
+    this.data.sort((a, b) => {
+      return a.cost - b.cost;
+    });
+  },
     fetchData() {
       const url = "http://localhost:8080/maintenance";
       axios.get(url)

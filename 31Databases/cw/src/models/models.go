@@ -34,7 +34,7 @@ type Schedule struct {
 type Vehicle struct {
 	License  string `json:"license"`
 	Capacity int    `json:"capacity"`
-	RouteID  int    `json:"route_id"`
+	RouteID  sql.NullInt64    `json:"route_id"`
 }
 
 type TicketDiscount string

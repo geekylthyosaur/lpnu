@@ -448,16 +448,22 @@ func editVehicleHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     if routeID == "" {
-      query := "UPDATE public.vehicle SET capacity = $1 WHERE license = $3"
+      query := "UPDATE public.vehicle SET capacity = $1 WHERE license = $2"
+
+        fmt.Println(query)
       _, err := db.Exec(query, capacity, license)
       if err != nil {
+        fmt.Println(err)
           http.Error(w, err.Error(), http.StatusInternalServerError)
           return
       }
     } else {
       query := "UPDATE public.vehicle SET capacity = $1, route_id = $2 WHERE license = $3"
+        fmt.Println(query)
+        fmt.Println(routeID)
       _, err := db.Exec(query, capacity, routeID, license)
       if err != nil {
+        fmt.Println(err)
           http.Error(w, err.Error(), http.StatusInternalServerError)
           return
       }

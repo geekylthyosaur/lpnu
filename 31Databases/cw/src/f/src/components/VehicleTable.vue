@@ -14,15 +14,15 @@
     </div>
     <table v-if="data.length" class="data">
       <tr>
-        <td>License</td>
-        <td>Capacity</td>
-        <td>Route Id</td>
+        <td @click="sortByLicense">License</td>
+        <td @click="sortByCapacity">Capacity</td>
+        <td @click="sortByRouteId">Route Id</td>
         <td></td>
       </tr>
       <tr v-for="item in data" :key="item.license">
         <td>{{ item.license }}</td>
         <td>{{ item.capacity }}</td>
-        <td>{{ item.route_id }}</td>
+        <td>{{ item.route_id.Valid ? item.route_id.Int64 : '' }}</td>
         <td style="text-align: center; width: 200px">
           <button @click="itemToEdit = item.license; show = 'edit'; editItem(item)" class="edit-button">Edit</button>
         </td>
@@ -87,7 +87,7 @@ export default {
     },
     editItem(item) {
       setTimeout(() => {document.getElementById("input_capacity").value = item.capacity}, 50);
-      setTimeout(() => {document.getElementById("input_route_id").value = item.route_id}, 50);
+      setTimeout(() => {document.getElementById("input_route_id").value = item.route_id.Valid ? item.route_id.Int64 : ''}, 50);
     },
     confirmEditItem() {
       const license = this.itemToEdit;
@@ -97,6 +97,7 @@ export default {
       document.getElementById("input_route_id").value = "";
       this.show = "default";
       const url = "http://localhost:8080/vehicle/edit?license=" + license + "&capacity=" + capacity + "&route_id=" + route_id;
+      console.log(url);
       axios.post(url)
         .then(response => {
           console.log(response);
@@ -122,6 +123,23 @@ export default {
           console.error("Error fetching data:", error);
         });
       this.fetchData();
+    },
+    sortByLicense() {
+      this.data = this.data.sort((a, b) => {
+        if (a.license < b.license) return -1;
+        if (a.license > b.license) return 1;
+        return 0;
+      });
+    },
+    sortByCapacity() {
+      this.data = this.data.sort((a, b) => {
+        return a.capacity - b.capacity;
+      });
+    },
+    sortByRouteId() {
+      this.data = this.data.sort((a, b) => {
+        return a.route_id.Int64 - b.route_id.Int64;
+      });
     }
   }
 }

@@ -19,6 +19,10 @@
       </div>
       <button type="submit">Submit</button>
     </form>
+
+  <div v-if="isSuccess">
+    Success
+  </div>
   </div>
 </template>
 
@@ -33,7 +37,8 @@ export default {
         driver_id: null,
         description: '',
         cost: null
-      }
+      },
+        isSuccess: false,
     };
   },
   methods: {
@@ -41,7 +46,7 @@ export default {
       axios.post('http://localhost:8080/insert_maintenance', this.formData)
         .then(response => {
           console.log('Maintenance data submitted successfully:', response.data);
-          // Optionally, you can reset the form here
+          this.isSuccess = true;
           this.resetForm();
         })
         .catch(error => {

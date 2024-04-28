@@ -13,9 +13,9 @@
     </div>
     <table v-if="data.length" class="data">
       <tr>
-        <td>Id</td>
-        <td>Name</td>
-        <td>Vehicle Id</td>
+        <td @click="sortById">Id</td>
+        <td @click="sortByName">Name</td>
+        <td @click="sortByVehicleId">Vehicle Id</td>
         <td></td>
       </tr>
       <tr v-for="item in data" :key="item.id">
@@ -68,6 +68,26 @@ export default {
     search() {
       this.data = this.data.filter(item => item.name.includes(this.searchTerm) || item.vehicle_id.String.includes(this.searchTerm) || (''+ item.id).includes(this.searchTerm));
     },
+    sortById() {
+    this.data.sort((a, b) => {
+      return a.id - b.id;
+    });
+  },
+      sortByVehicleId() {
+    this.data = this.data.sort((a, b) => {
+      if (a.vehicle_id.String < b.vehicle_id.String) return -1;
+      if (a.vehicle_id.String > b.vehicle_id.String) return 1;
+      return 0;
+    });
+  },
+
+  sortByName() {
+    this.data.sort((a, b) => {
+      if (a.name < b.name) return -1;
+      if (a.name > b.name) return 1;
+      return 0;
+    });
+  },
     fetchData() {
       const url = "http://localhost:8080/driver";
       axios.get(url)

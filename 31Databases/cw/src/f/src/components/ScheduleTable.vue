@@ -5,14 +5,13 @@
     <SearchStop v-if="selectedRouteId" :label="'Select stop:'" @stop-selected="stopSelected"/>
     <br>
     <button v-if="!isLoading" @click="show = 'add'" class="add-button">Add</button>
-    <div v-if="(show === 'add' || show === 'edit') && !isLoading">
+    <div v-if="(show === 'add') && !isLoading">
       <VueDatePicker v-model="time" time-picker :range="{ partialRange: false }" enable-seconds style="width: 300px; margin-left: 550px;"/>
       <br>
       <button v-if="show === 'add'" @click="addItem" class="add-button">Add</button>
-      <button v-if="show === 'edit'" @click="confirmEditItem" class="add-button">Edit</button>
       <button @click="cancel" class="add-button">Cancel</button>
     </div>
-    <table v-if="data.length" class="data">
+    <table v-if="data.length && !isLoading" class="data">
       <tr>
         <td>Arrival</td>
         <td>Departure</td>
@@ -54,9 +53,11 @@ export default {
   },
   watch: {
     selectedRouteId() {
+      if (!this.selectedRouteId || !this.selectedStopId) {this.isLoading=true;} 
       if (this.selectedRouteId && this.selectedStopId) {this.fetchData();}
     },
     selectedStopId() {
+      if (!this.selectedRouteId || !this.selectedStopId) {this.isLoading=true;} 
       if (this.selectedRouteId && this.selectedStopId) {this.fetchData();}
     },
     time(t) {

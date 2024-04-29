@@ -2,14 +2,6 @@
   <div class="maintenance-form">
     <form @submit.prevent="submitForm">
       <div class="form-group">
-        <label for="vehicle_id">Vehicle ID:</label>
-        <input type="text" id="vehicle_id" v-model="formData.vehicle_id" required>
-      </div>
-      <div class="form-group">
-        <label for="driver_id">Driver ID:</label>
-        <input type="number" id="driver_id" v-model="formData.driver_id" required>
-      </div>
-      <div class="form-group">
         <label for="description">Description:</label>
         <textarea id="description" v-model="formData.description" required></textarea>
       </div>
@@ -34,7 +26,7 @@ export default {
     return {
       formData: {
         vehicle_id: '',
-        driver_id: null,
+        driver_id: parseInt(localStorage.getItem("driverId"), 10),
         description: '',
         cost: null
       },
@@ -43,6 +35,7 @@ export default {
   },
   methods: {
     submitForm() {
+      this.formData.vehicle_id = localStorage.getItem("vehicleId");
       axios.post('http://localhost:8080/insert_maintenance', this.formData)
         .then(response => {
           console.log('Maintenance data submitted successfully:', response.data);

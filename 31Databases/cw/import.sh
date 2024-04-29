@@ -438,6 +438,7 @@ grant execute on function search_stop(varchar) to passenger;
 grant execute on function search_route(varchar) to passenger;
 
 grant select on public.vehicle to driver;
+grant select on public.driver to driver;
 grant select on public.route_stops to driver;
 grant select on public.schedule to driver;
 grant select on public.stop to driver;

@@ -1,6 +1,9 @@
 <template>
   <header class="header">
     <img src="@/assets/logo.png" alt="Logo" class="logo">
+    <div v-if="role !== ''" style="background-color:  white; padding: 9px; border-radius: 10px;color: black; margin-left: 1600px">
+      {{ role }}
+    </div>
     <button v-if="authenticated" @click="logout" class="logout-button">Log Out</button>
     <button v-else @click="login" class="login-button">Log In</button>
   </header>
@@ -23,6 +26,7 @@
     data() {
       return {
         loginDialog: false,
+        role: localStorage.getItem('username') || '',
       };
     },
     methods: {
@@ -32,13 +36,16 @@
       logout() {
         localStorage.clear();
         this.$emit("logout");
+        this.role = localStorage.getItem('username') || '';
       },
       loginDialogSuccess(username) {
         this.loginDialog = false;
         this.$emit("login", username);
+        this.role = localStorage.getItem('username') || '';
       },
       loginDialogCancel() {
         this.loginDialog = false;
+        this.role = localStorage.getItem('username') || '';
       },
     },
   }

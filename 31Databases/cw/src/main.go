@@ -44,6 +44,7 @@ func main() {
 	http.HandleFunc("/ticket", authMiddleware(getTicketHandler))
 	http.HandleFunc("/transaction", authMiddleware(getTransactionHandler))
 	http.HandleFunc("/driver", authMiddleware(getDriverHandler))
+	http.HandleFunc("/driver/id", authMiddleware(getDriverByIdHandler))
   http.HandleFunc("/driver/delete", authMiddleware(deleteDriverHandler))
   http.HandleFunc("/driver/add", authMiddleware(insertDriverHandler))
   http.HandleFunc("/driver/edit", authMiddleware(editDriverHandler))
@@ -64,6 +65,8 @@ func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		username := authHeader
+
+    fmt.Println(username)
 
 		var role string
 		switch username {
@@ -536,6 +539,32 @@ func getDriverHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(drivers)
+}
+
+func getDriverByIdHandler(w http.ResponseWriter, r *http.Request) {
+	// Parse the driver ID from URL parameters
+	driverID := r.URL.Query().Get("id")
+	if driverID == "" {
+		http.Error(w, "Driver ID is required", http.StatusBadRequest)
+		return
+	}
+
+	// Query the database for the specified driver ID
+	row := db.QueryRow("SELECT id, name, vehicle_id FROM public.driver WHERE id = $1", driverID)
+	var driver models.Driver
+	err := row.Scan(&driver.ID, &driver.Name, &driver.VehicleID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			http.Error(w, "Driver not found", http.StatusNotFound)
+		} else {
+      fmt.Println(err)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+		return
+	}
+
+	// If the driver is found, encode and send the response
+	json.NewEncoder(w).Encode(driver)
 }
 
 func deleteDriverHandler(w http.ResponseWriter, r *http.Request) {

@@ -12,6 +12,7 @@
 </template>
 
 <script>
+  import axios from 'axios';
 export default {
   data() {
     return {
@@ -40,15 +41,29 @@ export default {
   },
   methods: {
     login() {
-      let success = false;
-      if ((this.username === "driver" || this.username === "manager") && this.password === "password") {
-        success = true;
+      if (this.username === "manager" && this.password === "password") {
+        localStorage.setItem("username", this.username);
+        this.$emit("success", this.username);
       } else {
         this.error = "Invalid credentials. Please try again.";
       }
-      if (success) {
-        localStorage.setItem("username", this.username);
-        this.$emit("success", this.username);
+
+      const regex = /^driver(\d+)$/;
+      if (regex.test(this.username) && this.password === "password") {
+        const driverId = parseInt(this.username.match(regex)[1]);
+        localStorage.setItem("username", "driver");
+        localStorage.setItem("driverId", driverId);
+        axios.defaults.headers.common['Authorization'] = "driver";
+        axios.get(`http://localhost:8080/driver/id?id=${driverId}`)
+          .then(response => {
+            localStorage.setItem("vehicleId", response.data.vehicle_id.String);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+          });
+        this.$emit("success", "driver", driverId);
+      } else {
+        this.error = "Invalid credentials. Please try again.";
       }
     },
     cancel() {

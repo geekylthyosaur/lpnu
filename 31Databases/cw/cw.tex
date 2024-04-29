@@ -29,7 +29,7 @@
 	\renewcommand{\headrulewidth}{0pt}
 	\renewcommand{\footrulewidth}{0pt}
 }
-\lstset{breaklines=true,}
+\lstset{breaklines=true,showstringspaces=false}
 \graphicspath{ {./pictures} }
 \counterwithin{figure}{section}
 \titlelabel{\thetitle.\quad}
@@ -92,13 +92,22 @@
 
 \section{Аналіз предметної області та постановка завдання}
 \subsection{Опис предметної області}
+Інформаційна система для компанії з регулярних перевезень створюється для оптимізації управління пасажирськими перевезеннями шляхом автоматизації процесів призначення водіїв, ведення обліку пасажирів та квитків, а також аналізу.
+
+Інформаційна система для компанії з регулярних перевезень також надає можливість пасажирам отримувати доступ до розкладу руху транспортних засобів та іншої корисної інформації. Пасажири можуть скористатися додатком для перегляду актуального розкладу руху автобусів, зупинок та часу їх прибуття на кожну зупинку.
+
 % Актуальність
 З кожним днем мобільність населення постійно зростає, транспортна інфраструктура розвивається, потреба у вдосконаленні та оптимізації процесів управління перевезеннями постійно росте. Компанії, які здійснюють регулярні перевезення, стикаються з великою кількістю даних, складних розрахунків і потребують ефективних інструментів для керування цими процесами. Розробка інформаційної системи для компанії з регулярних перевезень стає необхідністю для оптимізації витрат, підвищення якості обслуговування та конкурентоспроможності.
 
 % Специфікація важливих понять
 \begin{list}{-}{Специфікація важливих понять:}
-\item Зупинка - статичне місце, де зупиняться транспорт для посадки та висадки пасажирів.
-\item Квиток - карта, видана пасажиру, що має баланс.
+\item Зупинка - інформація про місце, призначене для посадки та висадки пасажирів.
+\item Маршрут - послідовність зупинок, які обслуговує певний транспортний засіб.
+\item Транспортний засіб - засіб перевезення пасажирів, який обслуговує певний маршрут.
+\item Водій - особа, яка керує транспортним засобом під час перевезення пасажирів.
+\item Квиток - інформація про проїзну карту видану пасажиру.
+\item Транзакція - запис, що фіксує факт використання квитка пасажиром на конкретному маршруті та у певний час.
+\item Розклад руху - перелік часу прибуття та відправлення транспортного засобу на кожній зупинці певного маршруту.
 \item Технічне обслуговування транспортних засобів - заправка, зміна шин, загальний огляд, прибирання, тощо.
 \end{list}
 
@@ -176,10 +185,8 @@
 Очікувані запити та вибірки для інформаційної системи для компанії з регулярних перевезень можуть включати:
 \begin{itemize}
 \item Отримання розкладу руху: Користувачі, особливо пасажири, можуть бажати отримати інформацію про час прибуття та відправлення транспортного засобу на конкретній зупинці або для певного маршруту.
-\item Деталі маршруту: Водії транспортних засобів можуть бажати отримати інформацію про маршрути, які вони обслуговують, включаючи список зупинок та розклад руху.
 \item Пошук маршрутів за двома зупинками: Користувачі можуть шукати маршрути між двома певними зупинками, щоб планувати свої поїздки.
 \item Пошук зупинок за назвою: Користувачі можуть шукати зупинки за їхніми назвами або частковими співпадіннями.
-\item Інформація про поточний маршрут: Водії можуть бажати отримати інформацію про поточний маршрут, у тому числі про наступну зупинку та час, що залишився до її досягнення.
 \item Отримання інформації про обслуговування транспортного засобу: Адміністратори або водії можуть бажати отримати інформацію про проведене технічне обслуговування транспортного засобу, включаючи опис робіт, вартість та дату проведення обслуговування.
 \end{itemize}
 
@@ -220,21 +227,119 @@
 Для реалізації бізнес-логіки реалізовано наступні процедури:
 \begin{itemize}
 \item \textit{new\_transaction} - інкапсулює логіку створення нової транзакції. Виконує валідацію вхідних даних відповідно до обмежень цілісності бази даних, виконує списання коштів з рахунку квитка, та створює новий запис у таблиці транзакцій.
+{\fontsize{8pt}{8pt}\selectfont\begin{lstlisting}[language=sql]
+create or replace function new_transaction(ticket_id uuid, vehicle_id character varying(16), from_stop_id integer, to_stop_id integer)
+returns void as
+$$
+declare
+	fare integer;
+	r_id integer = (select route_id from vehicle v where v.license = vehicle_id);
+	begin
+	if r_id is null then return; end if;
+
+	fare = abs((select ord_idx from route_stops rs
+	where rs.route_id = r_id and rs.stop_id = to_stop_id)
+	- (select ord_idx from route_stops rs
+	where rs.route_id = r_id and rs.stop_id = from_stop_id)) * 5 * coalesce((select mult from ticket_discount_mult d where d.discount = (select discount from ticket t where t.id = ticket_id)), 1);
+	
+	if fare is null then raise 'invalid vehicle_id for given stops'; end if;
+	
+	if (select balance from ticket t where t.id = ticket_id) - fare < 0 then raise 'not enough balance'; end if;
+	
+	update ticket t set balance = balance - fare where t.id = ticket_id;
+
+	insert into transaction(ticket_id, route_id, vehicle_id, from_stop_id, to_stop_id, fare, timestamp)
+	values (ticket_id, r_id, vehicle_id, from_stop_id, to_stop_id, fare, now());
+end;
+$$
+	language plpgsql;
+\end{lstlisting}}
 \end{itemize}
 
 % Функції
 Для реалізації бізнес-логіки реалізовано наступні функції:
 \begin{itemize}
-\item \textit{next\_stop} - повертає назву наступної зупинки після вказаної на маршруті, та час, який залишається до прибуття.
 \item \textit{search\_stop} - повертає зупинки, назва яких частково співпадає з аргументом.
+{\fontsize{8pt}{8pt}\selectfont\begin{lstlisting}[language=sql]
+create or replace function search_stop(s varchar)
+returns table (
+	id integer,
+	name varchar,
+	lat numeric,
+	lon numeric
+)
+language plpgsql
+	as $$
+	begin
+		return query execute '
+		select id, name, lat, lon from public.stop
+		where name ilike \$1
+		limit 10;
+		' using '%' || s || '%';
+end;
+$$;
+\end{lstlisting}}
 \item \textit{search\_route} - повертає маршрути, назва яких частково співпадає з аргументом.
+{\fontsize{8pt}{8pt}\selectfont\begin{lstlisting}[language=sql]
+create or replace function search_route(s varchar)
+returns table (
+	id integer,
+	route_name varchar
+)
+language plpgsql
+as $$
+	begin
+	return query execute '
+		select id, (case when name is null then full_name else name end) as route_name
+		from public.route
+		where name ilike \$1 or full_name ilike \$1
+		limit 10;
+		' using '%' || s || '%';
+	end;
+$$;
+\end{lstlisting}}
 \end{itemize}
 
 % Представлення
 Для реалізації бізнес-логіки реалізовано наступні представлення:
 \begin{itemize}
 \item \textit{routes\_with\_stops} - повертає маршрути які містять у собі дві вказані зупинки.
+{\fontsize{8pt}{8pt}\selectfont\begin{lstlisting}[language=sql]
+create view public.routes_with_stops as
+	select
+			s1.id as from_stop_id,
+			s1.name as from_stop_name,
+			s2.id as to_stop_id,
+			s2.name as to_stop_name,
+			r.id as route_id,
+			(case when r.name is null then r.full_name else r.name end) as route_name
+		from stop s1
+		cross join stop s2
+		join route_stops rs1 on rs1.stop_id = s1.id
+		join route_stops rs2 on rs2.stop_id = s2.id
+		join route r on rs1.route_id = rs2.route_id and rs1.route_id = r.id
+		where s1.id <> s2.id;
+alter view public.routes_with_stops owner to root;
+\end{lstlisting}}
 \item \textit{arrival\_with\_stops\_in} - повертає час, що залишається до прибуття до вказаної зупинки, та напрямок руху транспорту на вказаній зупинці.
+{\fontsize{8pt}{8pt}\selectfont\begin{lstlisting}[language=sql]
+create view arrival_with_stops_in as
+select from_stop_id, from_stop_name, to_stop_id, to_stop_name, route_id, route_name, to_char(arr_in, 'MI:SS') as arr_in from (
+select
+		s.from_stop_id,
+		s.from_stop_name,
+		s.to_stop_id,
+		s.to_stop_name,
+		s.route_id,
+		(case when r.name is null then r.full_name else r.name end) as route_name,
+		sch.arr - now()::time as arr_in
+	from routes_with_stops s
+	join schedule sch on s.route_id = sch.route_id and (s.from_stop_id = sch.stop_id or s.to_stop_id = sch.stop_id)
+	join route r on r.id = s.route_id) as arrival
+	where arr_in > interval '0 seconds' and arr_in < interval '1 hour'
+	order by arr_in;
+alter view public.arrival_with_stops_in owner to root;
+\end{lstlisting}}
 \end{itemize}
 
 \newpage
@@ -243,6 +348,8 @@
 \subsection{Обґрунтування обраної архітектури}
 % Тип
 Для розробки інформаційної системи для компанії з регулярних перевезень було обрано клієнт-серверну архітектуру, що дозволить абстрагуватися над реалізацією інтерфейсу користувача, що буде корисно для підтримки різноманітних форматів взаємодії з користувачем. В реальних умовах це дозволить створити мобільний додаток для пасажирів, вбудовану систему для водіїв та додаток для персонального комп'ютера для менеджера.
+
+Для реалізації серверної частину було використано архітектуру MVC, (Model-View-Controller) - дозволяє розділити логіку обробки даних, від логіки представлення та отримання даних.
 
 % Мова програмування
 Для реалізації серверної частини інформаційної системи для компанії з регулярних перевезень було обрано мову програмування \textit{Go}. Завдяки своїй простоті цей вибір дозволить швидко створити прототип системи. А завдяки швидкості виконання цей вибір дозволить зосередитись на створенні нового функціоналу системи замість оптимізації існуючого.
@@ -264,10 +371,16 @@
 \item Клієнтська частина - містить модулі інтерфейсу, та модулі роботи з серверною частиною.
 \end{itemize}
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.15]{schema}
+	\caption{Структурна модель бази даних.}
+\end{figure}
+
 \subsection{Призначення модулів та компонентів системи}
 Серверна частина містить наступні модулі:
 \begin{itemize}
-\item Опис моделей бази даних, та структур даних для передачі по мережі.
+\item Модуль, що описує моделі бази даних, та структури даних для передачі по мережі.
 \item Модуль роботи з мережею, звертається до бази даних, перетворює отриману інформацію до потрібного формату та відправляє до клієнтської частини.
 \end{itemize}
 
@@ -284,6 +397,16 @@
 \subsection{Особливості реалізації та елементи інтерфейсу}
 При розробці інтерфейсу користувача було приділено особливу увагу забезпеченню простоти та зручності використання. Елементи інтерфейсу були ретельно підібрані та стилізовані з метою максимальної інтуїтивності та естетичного вигляду. Кожен модуль системи виконує свою функцію точно та ефективно, забезпечуючи високу продуктивність та надійність роботи системи в цілому.
 
+Реалізація інтерфейсу користувача має бути реалізована наступним чином:
+\begin{itemize}
+	\item Якщо користувач не авторизований, він має доступ до елементів, що доступні користувачу з роллю пасажира.
+	\item Користувач має можливість авторизуватися, змінивши свою роль.
+	\item Якщо користувач авторизувався, то головна сторінка має змінитись відповідно до ролі користувача.
+	\item Додаток має відображати отримані дані у вигляді таблиць, та має можливість їх зручно модифікувати, сортувати, фільтрувати.
+	\item Додаток повинен відображати статистичні дані про прибуток.
+	\item Додаток повинен мати можливість експортувати дані таблиць.
+\end{itemize}
+
 \newpage
 
 \section{Наповнення бази даних}
@@ -297,7 +420,7 @@
 \subsection{Опис процесів генерації тестових даних}
 Тестові дані генеруються за допомогою бібліотеки Faker для Python та SQL команд з використанням функції \textit{random()}, після чого адаптуються до реляційних відношень та обмежень цілісності бази даних. 
 
-Випадковим чином були згенеровані дані для наступних таблиць: \textit{Vehicle} (1500 записів), \textit{Driver} (2000 записів) \textit{Ticket} (1000 записів), \textit{Transaction} (100000 записів), \textit{Maintenance} (1000 записів).
+Випадковим чином були згенеровані дані для наступних таблиць: \textit{Vehicle} (1 500 записів), \textit{Driver} (2 000 записів) \textit{Ticket} (1 000 записів), \textit{Transaction} (1 000 000 записів), \textit{Maintenance} (1 000 записів).
 
 \subsection{Трансформація та первинне завантаження даних}
 Завантаження первинних історичних даних з мережі, запуск серверу бази даних, додавання рядків після створення відповідних таблиць та відношень реалізована в контейнеризованому оточенні за допомогою \textit{podman}, що дозволяє отримати готову до роботи, заповнену інформацією базу даних на будь якій системі за лічені хвилини.
@@ -317,41 +440,64 @@
 \begin{figure}[H]
 \centering
 \includegraphics[scale=0.25]{1}
-\caption{Сторінка авторизації.}
+\caption{Сторінка пошуку маршрутів між зупинками.}
 \end{figure}
 
 Користувачі, авторизовані з роллю \textit{passenger}, мають можливість знайти маршрут між двома вказаними зупинками та отримати час до прибуття транспортного засобу на вказану зупинку на вказаному маршруті.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.25]{2}
-\caption{Пошук маршрутів між вказаними зупинками.}
+\includegraphics[scale=0.3]{2}
+\caption{Сторінка пошуку маршрутів між зупинками.}
 \end{figure}
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.25]{3}
+\includegraphics[scale=0.3]{3}
 \caption{Отримання часу прибуття транспортного засобу на вказану зупинку на вказаному маршруті.}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.3]{4}
+	\caption{Сторінка авторизації.}
 \end{figure}
 
 Користувачі, авторизовані з роллю \textit{driver}, мають можливість внести запис про технічне обслуговування, та отримати деталі маршруту.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.25]{4}
+\includegraphics[scale=0.25]{5}
 \caption{Внесення запису про технічне обслуговування транспортного засобу.}
 \end{figure}
 
-Користувачі, авторизовані з роллю \textit{manager}, мають можливість експортувати дані у форматі \textit{JSON}, та призначати водіїв на маршрути.
+Користувачі, авторизовані з роллю \textit{manager}, мають можливість експортувати дані у форматі \textit{JSON}, та переглядати статистику та дані у базі даних.
 
 \begin{figure}[H]
 \centering
-\includegraphics[scale=0.25]{5}
-\caption{Експортування різноманітних даних.}
+\includegraphics[scale=0.3]{6}
+\caption{Вигляд засобу відображення даних про водіїв.}
 \end{figure}
 
-% \subsection{Засоби аналітичного представлення даних}
-% TODO
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.3]{7}
+	\caption{Вигляд засобу відображення даних про транспортні засоби.}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.3]{8}
+	\caption{Вигляд засобу відображення даних про технічне обслуговування.}
+\end{figure}
+
+\subsection{Засоби аналітичного представлення даних}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale=0.3]{10}
+	\caption{Вигляд засобу аналітичного представлення даних.}
+\end{figure}
 
 \subsection{Засоби експорту даних}
 % Обмеження

@@ -37,7 +37,7 @@ func main() {
 	http.HandleFunc("/next_stop", authMiddleware(nextStopHandler))
 	http.HandleFunc("/route", authMiddleware(getRouteHandler))
 	http.HandleFunc("/stop", authMiddleware(getStopHandler))
-	http.HandleFunc("/schedule", authMiddleware(getScheduleHandler))
+	http.HandleFunc("/stops", authMiddleware(getStopsHandler))
 	http.HandleFunc("/vehicle", authMiddleware(getVehicleHandler))
 	http.HandleFunc("/vehicle/add", authMiddleware(insertVehicleHandler))
 	http.HandleFunc("/vehicle/edit", authMiddleware(editVehicleHandler))
@@ -50,6 +50,9 @@ func main() {
   http.HandleFunc("/driver/edit", authMiddleware(editDriverHandler))
 	http.HandleFunc("/maintenance", authMiddleware(getMaintenanceHandler))
 	http.HandleFunc("/stats", authMiddleware(getStatsHandler))
+	http.HandleFunc("/schedule", authMiddleware(getScheduleHandler))
+	http.HandleFunc("/schedule/delete", authMiddleware(deleteScheduleHandler))
+	http.HandleFunc("/schedule/add", authMiddleware(insertScheduleHandler))
 
 	fmt.Println("Server is running on port 8080...")
 	log.Fatal(http.ListenAndServe(":8080", corsHandler(http.DefaultServeMux)))
@@ -65,8 +68,6 @@ func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 		}
 
 		username := authHeader
-
-    fmt.Println(username)
 
 		var role string
 		switch username {
@@ -93,6 +94,147 @@ func authMiddleware(next http.HandlerFunc) http.HandlerFunc {
 
 		next(w, r)
 	}
+}
+
+func getScheduleHandler(w http.ResponseWriter, r *http.Request) {
+	params := r.URL.Query()
+	routeID, err := strconv.Atoi(params.Get("route_id"))
+	if err != nil {
+		http.Error(w, "Invalid route ID", http.StatusBadRequest)
+		return
+	}
+	stopID, err := strconv.Atoi(params.Get("stop_id"))
+	if err != nil {
+		http.Error(w, "Invalid stop ID", http.StatusBadRequest)
+		return
+	}
+
+	rows, err := db.Query("SELECT id, arr, dep FROM schedule WHERE route_id = $1 AND stop_id = $2", routeID, stopID)
+	if err != nil {
+		http.Error(w, "Database error", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	var schedule []map[string]string
+	for rows.Next() {
+		var id, arr, dep string
+		if err := rows.Scan(&id, &arr, &dep); err != nil {
+			http.Error(w, "Database error", http.StatusInternalServerError)
+			return
+		}
+    schedule = append(schedule, map[string]string{"id": id, "arr": arr, "dep": dep})
+	}
+
+	if err := rows.Err(); err != nil {
+		http.Error(w, "Database error", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(schedule)
+}
+
+func deleteScheduleHandler(w http.ResponseWriter, r *http.Request) {
+    id := r.URL.Query().Get("id")
+    if id == "" {
+        http.Error(w, "ID parameter is missing", http.StatusBadRequest)
+        return
+    }
+
+    _, err := db.Exec("DELETE FROM schedule WHERE id = $1", id)
+    if err != nil {
+        http.Error(w, "Database error", http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusOK)
+    fmt.Fprintf(w, "Schedule entry with ID %s deleted successfully", id)
+}
+
+func insertScheduleHandler(w http.ResponseWriter, r *http.Request) {
+    // Parse parameters from URL
+    routeID, err := strconv.Atoi(r.URL.Query().Get("route_id"))
+    if err != nil {
+        http.Error(w, "Invalid route ID", http.StatusBadRequest)
+        return
+    }
+    stopID, err := strconv.Atoi(r.URL.Query().Get("stop_id"))
+    if err != nil {
+        http.Error(w, "Invalid stop ID", http.StatusBadRequest)
+        return
+    }
+    arr := r.URL.Query().Get("arr")
+    dep := r.URL.Query().Get("dep")
+
+    // Parse time strings to time.Time objects
+    layout := "15:04:05" // HH:MM:SS
+    arrTime, err := time.Parse(layout, arr)
+    if err != nil {
+        http.Error(w, "Invalid arrival time format", http.StatusBadRequest)
+        return
+    }
+    depTime, err := time.Parse(layout, dep)
+    if err != nil {
+        http.Error(w, "Invalid departure time format", http.StatusBadRequest)
+        return
+    }
+
+    // Insert into the database
+    _, err = db.Exec("INSERT INTO schedule (route_id, stop_id, arr, dep) VALUES ($1, $2, $3, $4)", routeID, stopID, arrTime, depTime)
+    if err != nil {
+        http.Error(w, "Database error", http.StatusInternalServerError)
+        return
+    }
+
+    w.WriteHeader(http.StatusCreated)
+    fmt.Fprintf(w, "Schedule entry inserted successfully for route %d and stop %d", routeID, stopID)
+}
+
+func getStopsHandler(w http.ResponseWriter, r *http.Request) {
+	// Extract vehicle ID from URL path
+	vehicleID := r.URL.Query().Get("vehicle_id")
+	// Query the database for stop names
+	rows, err := db.Query(`SELECT s.name 
+						   FROM route_stops rs
+						   JOIN public.stop s ON rs.stop_id = s.id
+						   JOIN public.vehicle v ON rs.route_id = v.route_id
+						   WHERE v.license = $1
+						   ORDER BY ord_idx`, vehicleID)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error querying database: %v", err), http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	// Iterate over the rows and collect stop names
+	var stops []string
+	for rows.Next() {
+		var stopName string
+		if err := rows.Scan(&stopName); err != nil {
+			http.Error(w, fmt.Sprintf("Error scanning rows: %v", err), http.StatusInternalServerError)
+			return
+		}
+		stops = append(stops, stopName)
+	}
+
+	// Check for any errors during row iteration
+	if err := rows.Err(); err != nil {
+		http.Error(w, fmt.Sprintf("Error iterating over rows: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	// Convert the list of stop names to JSON and write to response
+	stopJSON, err := json.Marshal(stops)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error marshalling JSON: %v", err), http.StatusInternalServerError)
+		return
+	}
+
+	// Set response headers and write the JSON response
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(stopJSON)
 }
 
 func insertMaintenanceHandler(w http.ResponseWriter, r *http.Request) {
@@ -195,7 +337,7 @@ func getRouteWithStopsHandler(w http.ResponseWriter, r *http.Request) {
 		args = append(args, toStopID)
 	}
 
-	sqlQuery += " LIMIT 10"
+	sqlQuery += " LIMIT 100"
 	rows, err := db.Query(sqlQuery, args...)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -250,7 +392,7 @@ func getArrivalWithStopsInHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		args = append(args, routeID)
 	}
-	sqlQuery += " LIMIT 10"
+	sqlQuery += " LIMIT 100"
 	rows, err := db.Query(sqlQuery, args...)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -367,7 +509,7 @@ func getStopHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(stops)
 }
 
-func getScheduleHandler(w http.ResponseWriter, r *http.Request) {
+func getAAAScheduleHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.Query("SELECT id, route_id, stop_id, arr, dep FROM public.schedule")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

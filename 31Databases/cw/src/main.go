@@ -862,7 +862,7 @@ func getStatsHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Invalid end date", http.StatusBadRequest)
 			return
 		}
-		conditions = append(conditions, "timestamp <= $"+strconv.Itoa(len(args)+1))
+		conditions = append(conditions, "timestamp < $"+strconv.Itoa(len(args)+1))
 		args = append(args, endDate)
 	}
 

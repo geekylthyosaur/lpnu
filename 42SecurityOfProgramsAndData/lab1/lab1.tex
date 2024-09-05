@@ -1,0 +1,124 @@
+\documentclass[oneside,14pt]{extarticle}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage[english,ukrainian]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{subfig}
+\usepackage{tempora}
+\geometry{
+	a4paper,
+	left=20mm,
+	right=20mm,
+	top=15mm,
+	bottom=15mm,
+}
+\lstset{
+	language=c,
+	tabsize=4,
+	keepspaces,
+	showstringspaces=false,
+	frame=single,
+	breaklines,
+	language=C,
+}
+\graphicspath{ {./pictures} }
+\setlength{\parindent}{4em}
+
+\newcommand\subject{Безпека програм та даних}
+\newcommand\lecturer{к.т.н., доцент кафедри ПЗ\\Сенів М.М.}
+\newcommand\teacher{к.т.н., доцент кафедри ПЗ\\Сенів М.М.}
+\newcommand\mygroup{ПЗ-42}
+\newcommand\lab{1}
+\newcommand\theme{Створення генератора псевдовипадкових чисел}
+\newcommand\purpose{Ознайомитись з джерелами та застосуванням випадкових
+	чисел, алгоритмами генерування псевдовипадкових чисел та навчитись
+	створювати програмні генератори псевдовипадкових чисел для використання в
+	системах захисту інформації}
+
+\begin{document}
+\begin{normalsize}
+	\begin{titlepage}
+		\thispagestyle{empty}
+		\begin{center}
+			\textbf{МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\\
+				НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ "ЛЬВІВСЬКА ПОЛІТЕХНІКА"}
+		\end{center}
+		\begin{flushright}
+			\textbf{ІКНІ}\\
+			Кафедра \textbf{ПЗ}
+		\end{flushright}
+		\vspace{80pt}
+		\begin{center}
+			\textbf{ЗВІТ}\\
+			\vspace{10pt}
+			до лабораторної роботи № \lab\\
+			\textbf{на тему}: <<\textit{\theme}>>\\
+			\textbf{з дисципліни}: <<\subject>>
+		\end{center}
+		\vspace{80pt}
+		\begin{flushright}
+			
+			\textbf{Лекторка}:\\
+			\lecturer\\
+			\vspace{28pt}
+			\textbf{Виконав}:\\
+			
+			студент групи \mygroup\\
+			Коваленко Д.М.\\
+			\vspace{28pt}
+			\textbf{Прийняв}:\\
+			
+			\teacher\\
+			
+			\vspace{28pt}
+			«\rule{1cm}{0.15mm}» \rule{1.5cm}{0.15mm} 2024 р.\\
+			$\sum$ = \rule{1cm}{0.15mm}……………\\
+			
+		\end{flushright}
+		\vspace{\fill}
+		\begin{center}
+			\textbf{Львів — 2024}
+		\end{center}
+	\end{titlepage}
+		
+	\begin{description}
+		\item[Тема.] \theme.
+		\item[Мета.] \purpose.
+	\end{description}
+
+    \section*{Лабораторне завдання}
+    Згідно до варіанту, наведеного в таблиці, створити програмну реалізацію генератора псевдовипадкових чисел за алгоритмом лінійного порівняння. Програма повинна генерувати послідовність із заданої при вводі кількості псевдовипадкових чисел, результати повинні як виводитись на екран, так і зберігатись у файл. Перевірити період функції генерації, зробити висновок про адекватність вибору параметрів алгоритму. У звіті навести протокол роботи програми, значення періоду функції генерації та зробити висновок про придатність цього генератора для задач криптографії.
+
+	Варіант 3: $m = 2^{12}-1$, $a = 4^5$, $c = 2$, $X_0=8$.
+
+	\section*{Хід роботи}
+	
+	\subsection*{Виконання програми}
+	\begin{figure}[H]
+		\centering
+		\begin{minipage}{0.45\textwidth}
+			\centering
+			\includegraphics[scale=0.8]{1}
+			\caption{Робота програми}
+		\end{minipage}
+		\hfill
+		\begin{minipage}{0.45\textwidth}
+			\centering
+			\includegraphics[scale=0.8]{2}
+			\caption{Вивід у файл}
+		\end{minipage}
+	\end{figure}
+	
+	\subsection*{Код програми}
+	Файл \textit{main.rs}:
+	{\small	\lstinputlisting{src/main.rs}}
+	
+	\section*{Висновки}
+	Під час виконання лабораторної роботи я ознайомився зі способам отримання випадкових чисел за допомогою алгоритмму лінійного порівняння для отримання псевдовипадкових чисел і реалізував його. Для мого варіанту алгоритм генерує псевдовипадкові числа з періодом 17, що свідчить про те, що параметри є погано підібраними. Проте, цей генератор може бути придатним для задач криптографії у випадку використання адекватного множника, інкремента та модуля порівняння і різного початкового значення (наприклад, системний час).
+	    
+\end{normalsize}
+\end{document}

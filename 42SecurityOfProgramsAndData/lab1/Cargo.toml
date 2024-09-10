@@ -3,4 +3,15 @@ name = "lab1"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "random"
+path = "src/lib.rs"
+
+[[bin]]
+name = "random"
+path = "src/main.rs"
+
 [dependencies]
+eframe = { version = "0.28.1", default-features = false, features = ["default_fonts", "wayland", "wgpu"] }
+meval = "0.2.0"
+rfd = "0.14.1"

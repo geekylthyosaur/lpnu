@@ -1,56 +1,54 @@
-use std::ops;
-
-pub struct Random<T> {
+#[derive(Debug, Clone, Copy)]
+pub struct Random {
     /// Comparision module
-    m: T,
+    m: usize,
     /// Multiplier
-    a: T,
+    a: usize,
     /// Increment
-    c: T,
+    c: usize,
     /// Seed
-    x_0: T,
-    x: T,
+    x: usize,
 }
 
-impl<T: Copy> Random<T> {
-    pub fn new(m: T, a: T, c: T, x_0: T) -> Self {
-        Self {
-            m,
-            a,
-            c,
-            x_0,
-            x: x_0,
-        }
+impl Random {
+    pub fn new(m: usize, a: usize, c: usize, x_0: usize) -> Self {
+        Self { m, a, c, x: x_0 }
     }
 }
 
-impl<T> Random<T>
-where
-    T: Copy + ops::Add<Output = T> + ops::Mul<Output = T> + ops::Rem<Output = T>,
-    T: Copy + PartialEq + std::hash::Hash + Eq,
-    Random<T>: Iterator<Item = T>,
-{
+impl Random {
     pub fn period(&mut self) -> usize {
+        let mut rng = self.clone();
         let mut seen = std::collections::HashSet::new();
         let mut count = 0;
-
-        while seen.insert(self.x) {
+        while seen.insert(rng.next()) {
             count += 1;
-            self.x = (self.a * self.x + self.c) % self.m;
+            if count > 100 {
+                let mut a = self.clone();
+                let mut b = self.clone();
+                _ = a.next();
+                _ = b.next();
+                _ = b.next();
+                let mut count = 1;
+                while a.x != b.x {
+                    count += 1;
+                    _ = a.next();
+                    _ = b.next();
+                    _ = b.next();
+                }
+                return count;
+            }
         }
-
         count
     }
 }
 
-impl<T> Iterator for Random<T>
-where
-    T: Copy + ops::Add<Output = T> + ops::Mul<Output = T> + ops::Rem<Output = T>,
-{
-    type Item = T;
+impl Iterator for Random {
+    type Item = usize;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.x = (self.a * self.x + self.c) % self.m;
-        Some(self.x)
+        let x = self.x;
+        self.x = (self.a.checked_mul(self.x)?.checked_add(self.c)?).checked_rem(self.m)?;
+        Some(x)
     }
 }

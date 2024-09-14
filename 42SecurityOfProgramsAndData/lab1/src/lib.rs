@@ -18,26 +18,17 @@ impl Random {
 
 impl Random {
     pub fn period(&mut self) -> usize {
-        let mut rng = self.clone();
-        let mut seen = std::collections::HashSet::new();
-        let mut count = 0;
-        while seen.insert(rng.next()) {
+        let mut a = self.clone();
+        let mut b = self.clone();
+        let mut x = a.next();
+        b.next();
+        let mut y = b.next();
+        let mut count = 1;
+        while x != y {
             count += 1;
-            if count > 100 {
-                let mut a = self.clone();
-                let mut b = self.clone();
-                _ = a.next();
-                _ = b.next();
-                _ = b.next();
-                let mut count = 1;
-                while a.x != b.x {
-                    count += 1;
-                    _ = a.next();
-                    _ = b.next();
-                    _ = b.next();
-                }
-                return count;
-            }
+            x = a.next();
+            b.next();
+            y = b.next();
         }
         count
     }

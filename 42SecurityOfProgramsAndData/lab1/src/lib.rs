@@ -1,3 +1,4 @@
+#![feature(core_intrinsics)]
 #[derive(Debug, Clone, Copy)]
 pub struct Random {
     /// Comparision module
@@ -34,12 +35,15 @@ impl Random {
     }
 }
 
+use std::intrinsics::unchecked_rem;
+
 impl Iterator for Random {
     type Item = usize;
 
     fn next(&mut self) -> Option<Self::Item> {
         let x = self.x;
-        self.x = (self.a.checked_mul(self.x)?.checked_add(self.c)?).checked_rem(self.m)?;
+        self.x =
+            unsafe { unchecked_rem(self.a.unchecked_mul(self.x).unchecked_add(self.c), self.m) };
         Some(x)
     }
 }

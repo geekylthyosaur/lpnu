@@ -131,6 +131,9 @@ impl App {
     fn controls(&mut self, ui: &mut Ui) {
         if !self.generating && !self.writing {
             if ui.add(egui::Button::new("Generate")).clicked() {
+                if self.m == 0 {
+                    return;
+                }
                 self.written = false;
                 self.generating = true;
                 let mut rng = Random::new(self.m, self.a, self.c, self.x_0);

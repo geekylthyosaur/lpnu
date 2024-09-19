@@ -13,5 +13,4 @@ path = "src/main.rs"
 
 [dependencies]
 eframe = { version = "0.28.1", default-features = false, features = ["wayland", "wgpu", "default_fonts"] }
-md5_not_my = { package = "md5", version = "0.7.0" }
 rfd = "0.14.1"

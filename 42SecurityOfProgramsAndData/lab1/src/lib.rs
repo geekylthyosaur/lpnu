@@ -1,4 +1,6 @@
+#![allow(internal_features)]
 #![feature(core_intrinsics)]
+
 #[derive(Debug, Clone, Copy)]
 pub struct Random {
     /// Comparision module
@@ -19,17 +21,27 @@ impl Random {
 
 impl Random {
     pub fn period(&mut self) -> usize {
-        let mut a = self.clone();
-        let mut b = self.clone();
-        let mut x = a.next();
-        b.next();
-        let mut y = b.next();
-        let mut count = 1;
-        while x != y {
+        let mut rng = self.clone();
+        let mut seen = std::collections::HashSet::new();
+        let mut count = 0;
+        while seen.insert(rng.next()) {
             count += 1;
-            x = a.next();
-            b.next();
-            y = b.next();
+            if count > 100 {
+                let mut a = self.clone();
+                let mut b = self.clone();
+                let mut x = a.next();
+                b.next();
+                let mut y = b.next();
+                let mut count = 1;
+                while x != y {
+                    count += 1;
+                    x = a.next();
+                    b.next();
+                    y = b.next();
+                }
+
+                return count;
+            }
         }
         count
     }

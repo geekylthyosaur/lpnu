@@ -1,6 +1,6 @@
 use std::{
     fs::File,
-    io::{Read, Write},
+    io::{self, BufRead, BufReader, Read, Write},
     num::ParseIntError,
 };
 
@@ -15,11 +15,14 @@ fn main() -> eframe::Result {
     eframe::run_native("Lab 2", options, Box::new(|_| Ok(Box::<App>::default())))
 }
 
+enum Input {
+    String(String),
+    File { name: String },
+}
+
 struct App {
     output_hash: Digest,
-    input_string: Option<String>,
-    input_file: Option<Vec<u8>>,
-    file_name: Option<String>,
+    input: Input,
     hash_from_file: Option<Digest>,
 }
 
@@ -27,9 +30,7 @@ impl Default for App {
     fn default() -> Self {
         Self {
             output_hash: md5::compute(""),
-            input_string: Some(String::new()),
-            input_file: None,
-            file_name: None,
+            input: Input::String(String::new()),
             hash_from_file: None,
         }
     }
@@ -56,44 +57,49 @@ impl eframe::App for App {
             });
             ui.separator();
 
-            if let Some(s) = self.input_string.as_mut() {
+            if let Input::String(s) = &mut self.input {
                 ui.vertical(|ui| {
                     let label = ui.label("String to hash: ");
                     ui.text_edit_singleline(s).labelled_by(label.id);
                 });
+                self.output_hash = md5::compute(s.as_bytes());
             }
             ui.horizontal(|ui| {
                 if ui.button("Select File").clicked() {
                     if let Some(path) = rfd::FileDialog::new().pick_file() {
-                        let mut file = File::open(&path).unwrap();
-                        let mut buf = Vec::new();
-                        file.read_to_end(&mut buf).unwrap();
-                        self.file_name = path.file_name().map(|s| s.to_string_lossy().to_string());
-                        self.input_file = Some(buf);
-                        self.input_string.take();
+                        let file = File::open(&path).unwrap();
+                        let len = file.metadata().unwrap().len();
+                        let buf_len = len.min(1024 * 1024) as usize;
+                        let mut reader = BufReader::with_capacity(buf_len, file);
+                        let mut ctx = md5::Context::new();
+                        loop {
+                            let part = reader.fill_buf().unwrap();
+                            if part.is_empty() {
+                                break;
+                            }
+                            ctx.consume(part);
+                            let part_len = part.len();
+                            reader.consume(part_len);
+                        }
+                        self.output_hash = ctx.compute();
+                        self.input = Input::File {
+                            name: path
+                                .file_name()
+                                .map(|s| s.to_string_lossy().to_string())
+                                .unwrap(),
+                        };
                     }
                 }
-                if let Some(name) = &self.file_name {
+                if let Input::File { name } = &self.input {
                     ui.label(name);
-                }
-                if self.input_file.is_some() {
                     if ui.button("x").clicked() {
-                        self.file_name.take();
-                        self.input_file.take();
-                        self.input_string = Some(String::new());
+                        self.input = Input::String(String::new());
                         self.hash_from_file.take();
                     }
                 }
             });
 
-            let bytes = if let Some(s) = &self.input_string {
-                s.as_bytes()
-            } else {
-                self.input_file.as_ref().unwrap()
-            };
-            self.output_hash = md5::compute(bytes);
-
-            if self.input_file.is_some() {
+            if matches!(self.input, Input::File { .. }) {
                 ui.separator();
                 ui.heading("Check file integrity");
 

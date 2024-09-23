@@ -1,0 +1,25 @@
+[package]
+name = "lab3"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "rc5"
+path = "src/lib.rs"
+
+[[bin]]
+name = "app"
+path = "src/main.rs"
+
+[dependencies]
+tokio = { version = "1.40.0", default-features = false, features = ["macros", "rt-multi-thread", "sync"] }
+eframe = { version = "0.28.1", default-features = false, features = ["wayland", "wgpu", "default_fonts"] }
+rfd = "0.14.1"
+
+random = { package = "lab1", path = "../lab1" }
+md5 = { package = "lab2", path = "../lab2" }
+not_my_rc5 = { package = "rc5-rs", version = "0.1" }
+secrecy = "0.8"
+num = "0.4"
+num-bytes = "0.4"
+thiserror = "1.0.64"

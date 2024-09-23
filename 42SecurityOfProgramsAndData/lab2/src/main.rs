@@ -1,13 +1,15 @@
 use std::{
     fs::File,
-    io::{self, BufRead, BufReader, Read, Write},
+    io::{BufRead, BufReader, Read, Write},
     num::ParseIntError,
 };
 
 use eframe::egui;
 use md5::Digest;
+use tokio::sync::oneshot;
 
-fn main() -> eframe::Result {
+#[tokio::main]
+async fn main() -> eframe::Result {
     let options = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default().with_inner_size([400.0, 240.0]),
         ..Default::default()
@@ -24,6 +26,7 @@ struct App {
     output_hash: Digest,
     input: Input,
     hash_from_file: Option<Digest>,
+    rx: Option<oneshot::Receiver<Digest>>,
 }
 
 impl Default for App {
@@ -32,6 +35,7 @@ impl Default for App {
             output_hash: md5::compute(""),
             input: Input::String(String::new()),
             hash_from_file: None,
+            rx: None,
         }
     }
 }
@@ -67,27 +71,38 @@ impl eframe::App for App {
             ui.horizontal(|ui| {
                 if ui.button("Select File").clicked() {
                     if let Some(path) = rfd::FileDialog::new().pick_file() {
-                        let file = File::open(&path).unwrap();
-                        let len = file.metadata().unwrap().len();
-                        let buf_len = len.min(1024 * 1024) as usize;
-                        let mut reader = BufReader::with_capacity(buf_len, file);
-                        let mut ctx = md5::Context::new();
-                        loop {
-                            let part = reader.fill_buf().unwrap();
-                            if part.is_empty() {
-                                break;
-                            }
-                            ctx.consume(part);
-                            let part_len = part.len();
-                            reader.consume(part_len);
-                        }
-                        self.output_hash = ctx.compute();
                         self.input = Input::File {
                             name: path
                                 .file_name()
                                 .map(|s| s.to_string_lossy().to_string())
                                 .unwrap(),
                         };
+                        let (tx, rx) = oneshot::channel();
+                        self.rx = Some(rx);
+                        tokio::spawn(async move {
+                            let file = File::open(&path).unwrap();
+                            let len = file.metadata().unwrap().len();
+                            let buf_len = len.min(1024 * 1024) as usize;
+                            let mut reader = BufReader::with_capacity(buf_len, file);
+                            let mut ctx = md5::Context::new();
+                            loop {
+                                let part = reader.fill_buf().unwrap();
+                                if part.is_empty() {
+                                    break;
+                                }
+                                ctx.consume(part);
+                                let part_len = part.len();
+                                reader.consume(part_len);
+                            }
+                            tx.send(ctx.compute()).unwrap();
+                        });
+                    }
+                }
+                if let Some(rx) = &mut self.rx {
+                    ui.spinner();
+                    if let Ok(hash) = rx.try_recv() {
+                        self.output_hash = hash;
+                        self.rx.take();
                     }
                 }
                 if let Input::File { name } = &self.input {

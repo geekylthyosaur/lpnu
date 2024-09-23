@@ -17,3 +17,9 @@ venv/
 *.toc
 target
 output.txt
+Debug
+Core
+Drivers
+Middlewares
+USB_HOST
+*.ld

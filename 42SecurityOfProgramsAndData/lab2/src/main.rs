@@ -44,18 +44,27 @@ impl eframe::App for App {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.horizontal(|ui| {
-                ui.label(format!("MD5 hash: {:X}", self.output_hash));
-                if ui.button("Write to file").clicked() {
-                    if let Some(path) = rfd::FileDialog::new().pick_file() {
-                        let mut file = File::options()
-                            .create(true)
-                            .write(true)
-                            .truncate(true)
-                            .open(&path)
-                            .unwrap();
+                ui.label("MD5 hash:");
+                if let Some(rx) = &mut self.rx {
+                    ui.spinner();
+                    if let Ok(hash) = rx.try_recv() {
+                        self.output_hash = hash;
+                        self.rx.take();
+                    }
+                } else {
+                    ui.label(format!("{:X}", self.output_hash));
+                    if ui.button("Write to file").clicked() {
+                        if let Some(path) = rfd::FileDialog::new().pick_file() {
+                            let mut file = File::options()
+                                .create(true)
+                                .write(true)
+                                .truncate(true)
+                                .open(&path)
+                                .unwrap();
 
-                        file.write_all(format!("{:X}", self.output_hash).as_bytes())
-                            .unwrap();
+                            file.write_all(format!("{:X}", self.output_hash).as_bytes())
+                                .unwrap();
+                        }
                     }
                 }
             });
@@ -96,13 +105,6 @@ impl eframe::App for App {
                             }
                             tx.send(ctx.compute()).unwrap();
                         });
-                    }
-                }
-                if let Some(rx) = &mut self.rx {
-                    ui.spinner();
-                    if let Ok(hash) = rx.try_recv() {
-                        self.output_hash = hash;
-                        self.rx.take();
                     }
                 }
                 if let Input::File { name } = &self.input {

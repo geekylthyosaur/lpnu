@@ -53,7 +53,6 @@ macro_rules! implement {
 implement!(LowerHex, "{:02x}");
 implement!(UpperHex, "{:02X}");
 
-/// A context.
 #[derive(Clone)]
 pub struct Context {
     buffer: [u8; 64],

@@ -3,7 +3,7 @@
 
 use std::{
     fs::File,
-    io::{BufRead, BufReader, Read, Write},
+    io::{Read, Write},
     path::PathBuf,
 };
 
@@ -68,7 +68,7 @@ impl eframe::App for App {
 }
 
 async fn encrypt(path: PathBuf, key: Key) {
-    let input_file = File::open(&path).unwrap();
+    let mut input_file = File::open(&path).unwrap();
     let mut output_path = path;
     output_path.add_extension("encrypted");
     let mut output_file = File::options()
@@ -77,22 +77,15 @@ async fn encrypt(path: PathBuf, key: Key) {
         .truncate(true)
         .open(output_path)
         .unwrap();
-    let mut reader = BufReader::new(input_file);
-    let mut part = [0u8; 1024 * 1024];
-    loop {
-        reader.read_exact(&mut part).unwrap(); // TODO panic
-        if part.is_empty() {
-            break;
-        }
-        let output = rc5::encrypt::<u64>(&key, &part, ROUNDS).unwrap();
-        output_file.write_all(&output).unwrap();
-        let part_len = part.len();
-        reader.consume(part_len);
-    }
+    let mut bytes = Vec::new();
+    input_file.read_to_end(&mut bytes).unwrap();
+    pad(&mut bytes, 16);
+    let output = rc5::encrypt::<u64>(&key, &bytes, ROUNDS).unwrap();
+    output_file.write_all(&output).unwrap();
 }
 
 async fn decrypt(path: PathBuf, key: Key) {
-    let input_file = File::open(&path).unwrap();
+    let mut input_file = File::open(&path).unwrap();
     let output_path = PathBuf::from(path.file_stem().unwrap());
     let mut output_file = File::options()
         .create(true)
@@ -100,16 +93,23 @@ async fn decrypt(path: PathBuf, key: Key) {
         .truncate(true)
         .open(output_path)
         .unwrap();
-    let mut reader = BufReader::new(input_file);
-    let mut part = [0u8; 1024 * 1024];
-    loop {
-        reader.read_exact(&mut part).unwrap();
-        if part.is_empty() {
-            break;
+    let mut bytes = Vec::new();
+    input_file.read_to_end(&mut bytes).unwrap();
+    let mut output = rc5::decrypt::<u64>(&key, &bytes, ROUNDS).unwrap();
+    unpad(&mut output);
+    output_file.write_all(&output).unwrap();
+}
+
+fn pad(bytes: &mut Vec<u8>, block_size: usize) {
+    let padding_len = block_size - (bytes.len() % block_size);
+    bytes.extend(vec![padding_len as u8; padding_len]);
+}
+
+fn unpad(bytes: &mut Vec<u8>) {
+    if let Some(&last_byte) = bytes.last() {
+        let padding_len = last_byte as usize;
+        if bytes.len() >= padding_len {
+            bytes.truncate(bytes.len() - padding_len);
         }
-        let output = rc5::decrypt::<u64>(&key, &part, ROUNDS).unwrap();
-        output_file.write_all(&output).unwrap();
-        let part_len = part.len();
-        reader.consume(part_len);
     }
 }

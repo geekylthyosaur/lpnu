@@ -79,30 +79,9 @@ impl<W: Word> Context<W> {
 }
 
 pub fn encrypt<W: Word>(key: &[u8], plaintext: &[u8], rounds: usize) -> Result<Vec<u8>, Error> {
-    let mut plaintext = plaintext.to_vec();
-    pad(&mut plaintext, size_of::<W>() * 8);
     Context::<W>::new(key.to_vec(), rounds)?.encrypt(&plaintext)
 }
 
 pub fn decrypt<W: Word>(key: &[u8], ciphertext: &[u8], rounds: usize) -> Result<Vec<u8>, Error> {
-    Context::<W>::new(key.to_vec(), rounds)?
-        .decrypt(ciphertext)
-        .map(|mut plaintext| {
-            unpad(&mut plaintext);
-            plaintext
-        })
-}
-
-fn pad(bytes: &mut Vec<u8>, block_size: usize) {
-    let padding_len = block_size - (bytes.len() % block_size);
-    bytes.extend(vec![padding_len as u8; padding_len]);
-}
-
-fn unpad(bytes: &mut Vec<u8>) {
-    if let Some(&last_byte) = bytes.last() {
-        let padding_len = last_byte as usize;
-        if bytes.len() >= padding_len {
-            bytes.truncate(bytes.len() - padding_len);
-        }
-    }
+    Context::<W>::new(key.to_vec(), rounds)?.decrypt(ciphertext)
 }

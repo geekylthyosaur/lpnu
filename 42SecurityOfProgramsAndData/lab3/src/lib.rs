@@ -25,7 +25,7 @@ impl<W: Word> Context<W> {
         })
     }
 
-    pub fn encrypt(&self, plaintext: &[u8]) -> Result<Vec<u8>, Error> {
+    pub fn encrypt(&self, plaintext: &[u8], iv: &[u8]) -> Result<Vec<u8>, Error> {
         let word_bytes = size_of::<W>();
         let block_size = 2 * word_bytes;
 
@@ -33,25 +33,31 @@ impl<W: Word> Context<W> {
             return Err(Error::InvalidInputLength);
         }
 
+        let mut prev_block = [
+            W::from_le_bytes(&iv[0..word_bytes])?,
+            W::from_le_bytes(&iv[word_bytes..block_size])?,
+        ];
         let mut ciphertext = Vec::with_capacity(plaintext.len());
         for block in plaintext.chunks(block_size) {
-            let block = [
+            let mut block = [
                 W::from_le_bytes(&block[0..word_bytes])?,
                 W::from_le_bytes(&block[word_bytes..block_size])?,
             ];
 
-            ciphertext.extend(
-                encrypt_block::<W>(self.expanded_key.expose_secret(), block)?
-                    .into_iter()
-                    .map(|w| w.to_le_bytes())
-                    .flatten(),
-            );
+            block[0] = block[0].bitxor(prev_block[0]);
+            block[1] = block[1].bitxor(prev_block[1]);
+
+            let encrypted_block = encrypt_block::<W>(self.expanded_key.expose_secret(), block)?;
+
+            ciphertext.extend(encrypted_block.iter().flat_map(|w| w.to_le_bytes()));
+
+            prev_block = encrypted_block;
         }
 
         Ok(ciphertext)
     }
 
-    pub fn decrypt(&self, ciphertext: &[u8]) -> Result<Vec<u8>, Error> {
+    pub fn decrypt(&self, ciphertext: &[u8], iv: &[u8]) -> Result<Vec<u8>, Error> {
         let word_bytes = size_of::<W>();
         let block_size = 2 * word_bytes;
 
@@ -59,6 +65,10 @@ impl<W: Word> Context<W> {
             return Err(Error::InvalidInputLength);
         }
 
+        let mut prev_block = [
+            W::from_le_bytes(&iv[0..word_bytes])?,
+            W::from_le_bytes(&iv[word_bytes..block_size])?,
+        ];
         let mut plaintext = Vec::with_capacity(ciphertext.len());
         for block in ciphertext.chunks(block_size) {
             let block = [
@@ -69,8 +79,12 @@ impl<W: Word> Context<W> {
             plaintext.extend(
                 decrypt_block::<W>(self.expanded_key.expose_secret(), block)?
                     .into_iter()
-                    .map(|w| w.to_le_bytes())
-                    .flatten(),
+                    .enumerate()
+                    .flat_map(|(i, mut w)| {
+                        w = w.bitxor(prev_block[i]);
+                        prev_block[i] = block[i];
+                        w.to_le_bytes()
+                    }),
             );
         }
 
@@ -78,10 +92,32 @@ impl<W: Word> Context<W> {
     }
 }
 
-pub fn encrypt<W: Word>(key: &[u8], plaintext: &[u8], rounds: usize) -> Result<Vec<u8>, Error> {
-    Context::<W>::new(key.to_vec(), rounds)?.encrypt(&plaintext)
+pub fn encrypt<W: Word>(
+    key: &[u8],
+    plaintext: &[u8],
+    rounds: usize,
+    iv_seed: usize,
+) -> Result<Vec<u8>, Error> {
+    let rng = random::Random::new((u32::MAX - 1) as usize, 16807, 17711, iv_seed);
+    let iv = rng
+        .skip(10)
+        .take(2)
+        .flat_map(|n| n.to_le_bytes())
+        .collect::<Vec<_>>();
+    Context::<W>::new(key.to_vec(), rounds)?.encrypt(&plaintext, &iv)
 }
 
-pub fn decrypt<W: Word>(key: &[u8], ciphertext: &[u8], rounds: usize) -> Result<Vec<u8>, Error> {
-    Context::<W>::new(key.to_vec(), rounds)?.decrypt(ciphertext)
+pub fn decrypt<W: Word>(
+    key: &[u8],
+    ciphertext: &[u8],
+    rounds: usize,
+    iv_seed: usize,
+) -> Result<Vec<u8>, Error> {
+    let rng = random::Random::new((u32::MAX - 1) as usize, 16807, 17711, iv_seed);
+    let iv = rng
+        .skip(10)
+        .take(2)
+        .flat_map(|n| n.to_le_bytes())
+        .collect::<Vec<_>>();
+    Context::<W>::new(key.to_vec(), rounds)?.decrypt(ciphertext, &iv)
 }

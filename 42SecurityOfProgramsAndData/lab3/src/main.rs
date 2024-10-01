@@ -27,7 +27,6 @@ async fn main() -> eframe::Result {
 struct App {
     password: String,
     key: Key,
-    iv_seed: usize,
     handle: Option<JoinHandle<()>>,
 }
 
@@ -40,10 +39,6 @@ impl eframe::App for App {
                     .labelled_by(label.id);
                 let hash = md5::compute(&self.password);
                 self.key = *hash.0.split_array_ref::<8>().0;
-
-                let label = ui.label("IV seed: ");
-                ui.add(egui::DragValue::new(&mut self.iv_seed).speed(1))
-                    .labelled_by(label.id);
             });
 
             ui.separator();
@@ -57,12 +52,12 @@ impl eframe::App for App {
                 } else {
                     if ui.button("Encrypt").clicked() {
                         if let Some(path) = rfd::FileDialog::new().pick_file() {
-                            self.handle = Some(tokio::spawn(encrypt(path, self.key, self.iv_seed)));
+                            self.handle = Some(tokio::spawn(encrypt(path, self.key)));
                         }
                     }
                     if ui.button("Decrypt").clicked() {
                         if let Some(path) = rfd::FileDialog::new().pick_file() {
-                            self.handle = Some(tokio::spawn(decrypt(path, self.key, self.iv_seed)));
+                            self.handle = Some(tokio::spawn(decrypt(path, self.key)));
                         }
                     }
                 }
@@ -71,7 +66,7 @@ impl eframe::App for App {
     }
 }
 
-async fn encrypt(path: PathBuf, key: Key, iv_seed: usize) {
+async fn encrypt(path: PathBuf, key: Key) {
     let mut input_file = File::open(&path).unwrap();
     let mut output_path = path;
     output_path.add_extension("encrypted");
@@ -84,11 +79,11 @@ async fn encrypt(path: PathBuf, key: Key, iv_seed: usize) {
     let mut bytes = Vec::new();
     input_file.read_to_end(&mut bytes).unwrap();
     pad(&mut bytes, 16);
-    let output = rc5::encrypt::<u64>(&key, &bytes, ROUNDS, iv_seed).unwrap();
+    let output = rc5::encrypt::<u64>(&key, &bytes, ROUNDS).unwrap();
     output_file.write_all(&output).unwrap();
 }
 
-async fn decrypt(path: PathBuf, key: Key, iv_seed: usize) {
+async fn decrypt(path: PathBuf, key: Key) {
     let mut input_file = File::open(&path).unwrap();
     let output_path = PathBuf::from(path.file_stem().unwrap());
     let mut output_file = File::options()
@@ -99,7 +94,7 @@ async fn decrypt(path: PathBuf, key: Key, iv_seed: usize) {
         .unwrap();
     let mut bytes = Vec::new();
     input_file.read_to_end(&mut bytes).unwrap();
-    let mut output = rc5::decrypt::<u64>(&key, &bytes, ROUNDS, iv_seed).unwrap();
+    let mut output = rc5::decrypt::<u64>(&key, &bytes, ROUNDS).unwrap();
     unpad(&mut output);
     output_file.write_all(&output).unwrap();
 }

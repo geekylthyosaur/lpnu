@@ -94,10 +94,89 @@
 
     \section*{Лабораторне завдання}
 	\begin{enumerate}
-		\item 
+		\item Відкрити оснащення mmc "Group Policy". Перейти в гілку "Password
+		Policy", задати мінімальну довжину пароля. Після цього
+		спробувати змінити власний пароль на такий, довжина якого менша за вказану в
+		політиці, переконатись в неможливості такої дії. Повторити такі дії з
+		параметрами "Password must meet complexity requirements" та "Store passwords
+		using reversible encryption".
+		\item Перейти в гілку "Account lockout threshold", задати граничне
+		значення блокування. Після цього спробувати декілька разів зайти в
+		систему з неправильним вводом пароля – переконатись у спрацюванні
+		блокування. Увійти в систему як адміністратор – зняти блокування
+		вручну з оснастки "Local Users and Groups" у властивостях заблокованого
+		облікового запису.
+		\item Перейти в гілку "Software Restriction Policies". Створити
+		нову політику. Не змінюючи політики за замовчуванням створити нове правило
+		(правила), що забороняє виконання програм з будь-якого тому крім "С:" (при
+		потребі створити логічні диски або розділи). Спробувати виконати
+		будь-який файл з цього тому. Створити нове правило для хешу
+		програми, яке дозволить виконувати саме цей вказаний файл.
+		Спробувати запустити на виконання цей файл.
+		\item Відкрити оснастку mmc "Security Configuration and Analysis" . Створити нову базу даних, яка буде відображати стан налаштування політик
+		комп’ютера за певним шаблоном.
 	\end{enumerate}
 
 	\section*{Хід роботи}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\columnwidth]{1}
+		\caption{Встановлення групової політики для паролів}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\columnwidth]{2}
+		\caption{Результат встановлення групової політики для паролів}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\columnwidth]{3}
+		\caption{Результат встановлення групової політики для паролів}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\columnwidth]{4}
+		\caption{Встановлення групової політики на заборону вимкнення}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\columnwidth]{5}
+		\caption{Результат встановлення групової політики}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\columnwidth]{6}
+		\caption{Встановлення групової політики}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\columnwidth]{7}
+		\caption{Встановлення групової політики}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\columnwidth]{8}
+		\caption{Результат встановлення групової політики}
+	\end{figure}
+	
+		\begin{figure}[H]
+		\centering
+		\includegraphics[width=\columnwidth]{9}
+		\caption{Встановлення групової політики}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=\columnwidth]{10}
+		\caption{Встановлення шаблону}
+	\end{figure}
 	
 	\section*{Висновки}
 	Під час виконання лабораторної роботи я ознайомився зі структурою, принципом роботи та

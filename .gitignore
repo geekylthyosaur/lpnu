@@ -18,7 +18,11 @@ venv/
 target
 output.txt
 Debug
-Core
+**/Core/Startup/*
+**/Core/Inc/*
+**/Core/Src/*
+!**/Core/Src/*.h
+!**/Core/Src/main.c
 Drivers
 Middlewares
 USB_HOST

@@ -9,6 +9,7 @@
 #define SRC_SENSOR_H_
 
 #include "stdbool.h"
+#include "Legacy/stm32_hal_legacy.h"
 
 static TIM_HandleTypeDef* objSP_delay_timer;
 static GPIO_TypeDef* objSP_sensor_port;
@@ -22,8 +23,8 @@ void delay_init(TIM_HandleTypeDef* objLP_timer)
 
 void delay_us(uint32_t u32L_time_us)
 {
-	uint32_t u32_crnt_time = HAL_TIM_GetCounter(objSP_delay_timer);
-	while ( HAL_TIM_GetCounter(objSP_delay_timer) - u32_crnt_time < u32L_time_us);
+	uint32_t u32_crnt_time = __HAL_TIM_GetCounter(objSP_delay_timer);
+	while ( __HAL_TIM_GetCounter(objSP_delay_timer) - u32_crnt_time < u32L_time_us);
 }
 
 void delay_ms(uint32_t u32L_time_ms)
@@ -106,6 +107,18 @@ uint8_t DHT11_Read_Bit(void)
 		delay_us(1);
 	}
 	return u16L_retry < 30 ? 0 : 1;
+}
+
+uint8_t DHT11_Read_Byte(void)
+{
+	uint8_t u8L_data;
+	u8L_data = 0;
+	for (uint8_t u8L_i = 0; u8L_i < 8; u8L_i++)
+	{
+		u8L_data <<= 1;
+		u8L_data |= HAL_GPIO_ReadPin(objSP_sensor_port, u16L_sensor_pin);
+	}
+	return u8L_data;
 }
 
 uint8_t DHT11_Read_Data(uint8_t* u8P_temp, uint8_t* u8P_humi)

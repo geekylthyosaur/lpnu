@@ -3,4 +3,18 @@ name = "lab4"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "lib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "app"
+path = "src/main.rs"
+
 [dependencies]
+tokio = { version = "1.40.0", default-features = false, features = ["macros", "rt-multi-thread", "sync"] }
+eframe = { version = "0.28.1", default-features = false, features = ["wayland", "wgpu", "default_fonts"] }
+rfd = "0.14.1"
+rsa = "0.9.6"
+rand = "0.8.5"
+

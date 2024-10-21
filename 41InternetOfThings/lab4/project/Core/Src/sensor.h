@@ -108,7 +108,7 @@ uint8_t DHT11_Read_Bit(void)
 	}
 	return u16L_retry < 30 ? 0 : 1;
 }
-
+/*
 uint8_t DHT11_Read_Byte(void)
 {
 	uint8_t u8L_data;
@@ -119,6 +119,25 @@ uint8_t DHT11_Read_Byte(void)
 		u8L_data |= HAL_GPIO_ReadPin(objSP_sensor_port, u16L_sensor_pin);
 	}
 	return u8L_data;
+}
+*/
+
+uint8_t DHT11_Read_Byte(void)
+{
+	int i;
+	unsigned char tmp=0;
+
+	for(i = 0; i < 8; i++)
+	{
+		while(HAL_GPIO_ReadPin(objSP_sensor_port,u16L_sensor_pin)==0);
+		delay_us(30);
+		if(HAL_GPIO_ReadPin(objSP_sensor_port,u16L_sensor_pin) == 1)
+		{
+			tmp |= 1 << (7-i);
+			while(HAL_GPIO_ReadPin(objSP_sensor_port,u16L_sensor_pin)==1);
+		}
+	}
+	return tmp;
 }
 
 uint8_t DHT11_Read_Data(uint8_t* u8P_temp, uint8_t* u8P_humi)

@@ -2,13 +2,17 @@
 
 use std::{
     fmt,
-    fs::File,
+    fs::{read_to_string, File},
     io::{Read, Write},
     path::PathBuf,
 };
 
 use eframe::egui;
-use rsa::{Pkcs1v15Encrypt, RsaPrivateKey, RsaPublicKey};
+use rsa::{
+    pkcs1::{DecodeRsaPrivateKey, DecodeRsaPublicKey, EncodeRsaPrivateKey, EncodeRsaPublicKey},
+    pkcs8::LineEnding,
+    Pkcs1v15Encrypt, RsaPrivateKey, RsaPublicKey,
+};
 use tokio::task::JoinHandle;
 
 type RsaKeypair = (RsaPublicKey, RsaPrivateKey);
@@ -36,7 +40,15 @@ impl eframe::App for App {
                 ui.label("Keypair");
                 if self.keypair.is_none() {
                     if ui.button("Import").clicked() {
-                        todo!()
+                        if let Some(path) = rfd::FileDialog::new().pick_folder() {
+                            let public = read_to_string(path.join("public_key.pem")).unwrap();
+                            let public = RsaPublicKey::from_pkcs1_pem(&public).unwrap();
+
+                            let private = read_to_string(path.join("private_key.pem")).unwrap();
+                            let private = RsaPrivateKey::from_pkcs1_pem(&private).unwrap();
+
+                            self.keypair = Some((public, private));
+                        }
                     }
                     if ui.button("Generate").clicked() {
                         let mut rng = rand::thread_rng();
@@ -45,9 +57,18 @@ impl eframe::App for App {
                         let public = RsaPublicKey::from(&private);
                         self.keypair = Some((public, private));
                     }
-                } else {
+                } else if let Some((public, private)) = &self.keypair {
                     if ui.button("Export").clicked() {
-                        todo!()
+                        if let Some(path) = rfd::FileDialog::new().pick_folder() {
+                            let public = public.to_pkcs1_pem(LineEnding::LF).unwrap();
+                            let private = private.to_pkcs1_pem(LineEnding::LF).unwrap().to_string();
+
+                            let mut pub_file = File::create(path.join("public_key.pem")).unwrap();
+                            pub_file.write_all(public.as_bytes()).unwrap();
+
+                            let mut priv_file = File::create(path.join("private_key.pem")).unwrap();
+                            priv_file.write_all(private.as_bytes()).unwrap();
+                        }
                     }
                     if ui.button("Clear").clicked() {
                         self.keypair = None;
@@ -97,7 +118,7 @@ const RSA_KEY_SIZE: usize = 2048;
 async fn encrypt(path: PathBuf, keypair: RsaKeypair) {
     let mut input_file = File::open(&path).unwrap();
     let mut output_path = path.clone();
-    output_path.set_extension("encrypted");
+    output_path.add_extension("encrypted");
     let mut output_file = File::options()
         .create(true)
         .write(true)

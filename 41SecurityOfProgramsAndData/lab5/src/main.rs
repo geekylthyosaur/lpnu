@@ -8,7 +8,10 @@ use std::{
 };
 
 use dsa::{
-    pkcs8::der::{Decode, Encode},
+    pkcs8::{
+        der::{Decode, Encode},
+        DecodePrivateKey, EncodePrivateKey,
+    },
     signature::{Signer, Verifier},
     Components, KeySize, Signature, SigningKey, VerifyingKey,
 };
@@ -44,7 +47,18 @@ impl eframe::App for App {
                 ui.label("Keypair");
                 if self.keypair.is_none() {
                     if ui.button("Import").clicked() {
-                        todo!();
+                        if let Some(path) = rfd::FileDialog::new().pick_file() {
+                            let bytes = std::fs::read(path).unwrap();
+                            let signing_key = SigningKey::from_pkcs8_der(&bytes).unwrap();
+                            let verifying_key = signing_key.verifying_key().to_owned();
+                            self.keypair = Some(Keypair {
+                                signing_key,
+                                verifying_key,
+                            });
+                            self.verify_result = None;
+                            self.signature = None;
+                            self.action = Action::default();
+                        }
                     }
                     if ui.button("Generate").clicked() {
                         let mut csprng = rand::thread_rng();
@@ -55,13 +69,25 @@ impl eframe::App for App {
                             signing_key,
                             verifying_key,
                         });
+                        self.signature = None;
+                        self.verify_result = None;
+                        self.action = Action::default();
                     }
-                } else {
+                } else if let Some(Keypair { signing_key, .. }) = &self.keypair {
                     if ui.button("Export").clicked() {
-                        todo!();
+                        if let Some(path) = rfd::FileDialog::new().save_file() {
+                            let signing_key_der = signing_key.to_pkcs8_der().unwrap();
+                            std::fs::write(path, signing_key_der.as_bytes()).unwrap();
+                            self.signature = None;
+                            self.verify_result = None;
+                            self.action = Action::default();
+                        }
                     }
                     if ui.button("Clear").clicked() {
-                        self.keypair.take();
+                        self.signature = None;
+                        self.keypair = None;
+                        self.verify_result = None;
+                        self.action = Action::default();
                     }
                 }
             });
@@ -76,10 +102,12 @@ impl eframe::App for App {
                         ui.menu_button(self.action.to_string(), |ui| {
                             if ui.button(Action::default().to_string()).clicked() {
                                 self.action = Action::default();
+                                self.verify_result = None;
                                 ui.close_menu();
                             }
-                            if ui.button(Action::Verify.to_string()).clicked() {
-                                self.action = Action::Verify;
+                            if ui.button(Action::Verify(None).to_string()).clicked() {
+                                self.action = Action::Verify(None);
+                                self.signature = None;
                                 ui.close_menu();
                             }
                         });
@@ -138,23 +166,21 @@ impl eframe::App for App {
                                 }
                             };
                         }
-                        Action::Verify => {
-                            if let Some(signature_hex) = &self.signature {
-                                if ui.button("Verify Signature").clicked() {
-                                    let message = "Example text to verify".as_bytes();
-                                    let signature =
-                                        Signature::from_der(&hex::decode(signature_hex).unwrap())
-                                            .unwrap();
-                                    self.verify_result =
-                                        Some(verify_signature(message, &signature, verifying_key));
-                                }
-                                if ui.button("Verify File").clicked() {
-                                    if let Some(path) = rfd::FileDialog::new().pick_file() {
+                        Action::Verify(p) => {
+                            ui.horizontal(|ui| {
+                                if ui.button("Select").clicked() {
+                                    if let Some(path) = rfd::FileDialog::new()
+                                        .set_title("File to verify")
+                                        .pick_file()
+                                    {
                                         let mut file = File::open(&path).unwrap();
                                         let mut content = Vec::new();
                                         file.read_to_end(&mut content).unwrap();
 
-                                        if let Some(sig_path) = rfd::FileDialog::new().pick_file() {
+                                        if let Some(sig_path) = rfd::FileDialog::new()
+                                            .set_title("Signature")
+                                            .pick_file()
+                                        {
                                             let sig_hex = read_to_string(sig_path).unwrap();
                                             let signature =
                                                 Signature::from_der(&hex::decode(sig_hex).unwrap())
@@ -164,25 +190,42 @@ impl eframe::App for App {
                                                 &signature,
                                                 verifying_key,
                                             ));
+                                            *p = Some(path);
                                         }
                                     }
+                                }
+                                if let Some(p) = p {
+                                    ui.label(format!("{}", p.to_string_lossy()));
+                                }
+                                if p.is_some() && ui.button("x").clicked() {
+                                    self.verify_result = None;
+                                    *p = None;
+                                }
+                            });
+                            if let Some(result) = self.verify_result {
+                                if result {
+                                    ui.label("Signature matches!");
+                                } else {
+                                    ui.label("Signature does not match!");
                                 }
                             }
                         }
                     }
                 }
                 ui.horizontal(|ui| {
-                    if let Some(sig) = &self.signature {
-                        if ui.button("Export").clicked() {
-                            if let Some(path) = rfd::FileDialog::new().save_file() {
-                                let mut signature_file =
-                                    File::create(path.with_extension("sig")).unwrap();
-                                signature_file.write_all(sig.as_bytes()).unwrap();
+                    if matches!(&self.action, Action::Sign { .. }) {
+                        if let Some(sig) = &self.signature {
+                            if ui.button("Export").clicked() {
+                                if let Some(path) = rfd::FileDialog::new().save_file() {
+                                    let mut signature_file =
+                                        File::create(path.with_extension("sig")).unwrap();
+                                    signature_file.write_all(sig.as_bytes()).unwrap();
+                                }
                             }
+                            ui.with_layout(egui::Layout::default().with_main_wrap(true), |ui| {
+                                ui.label(format!("Signature: {}", sig))
+                            });
                         }
-                        ui.with_layout(egui::Layout::default().with_main_wrap(true), |ui| {
-                            ui.label(format!("Signature: {}", sig))
-                        });
                     }
                 });
             });
@@ -197,7 +240,7 @@ enum Input {
 
 enum Action {
     Sign { input: Input },
-    Verify,
+    Verify(Option<PathBuf>),
 }
 
 impl Default for Action {
@@ -223,7 +266,7 @@ impl fmt::Display for Action {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Self::Sign { .. } => write!(f, "Sign"),
-            Self::Verify => write!(f, "Verify"),
+            Self::Verify(_) => write!(f, "Verify"),
         }
     }
 }

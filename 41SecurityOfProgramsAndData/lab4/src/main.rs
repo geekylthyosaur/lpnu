@@ -23,7 +23,7 @@ async fn main() -> eframe::Result {
         viewport: egui::ViewportBuilder::default().with_inner_size([400.0, 240.0]),
         ..Default::default()
     };
-    eframe::run_native("Lab 3", options, Box::new(|_| Ok(Box::<App>::default())))
+    eframe::run_native("Lab 4", options, Box::new(|_| Ok(Box::<App>::default())))
 }
 
 #[derive(Default)]
@@ -39,6 +39,13 @@ impl eframe::App for App {
             ui.horizontal(|ui| {
                 ui.label("Keypair");
                 if self.keypair.is_none() {
+                    if ui.button("Generate").clicked() {
+                        let mut rng = rand::thread_rng();
+                        let bits = 2048;
+                        let private = RsaPrivateKey::new(&mut rng, bits).unwrap();
+                        let public = RsaPublicKey::from(&private);
+                        self.keypair = Some((public, private));
+                    }
                     if ui.button("Import").clicked() {
                         if let Some(path) = rfd::FileDialog::new().pick_folder() {
                             let public = read_to_string(path.join("public_key.pem")).unwrap();
@@ -49,13 +56,6 @@ impl eframe::App for App {
 
                             self.keypair = Some((public, private));
                         }
-                    }
-                    if ui.button("Generate").clicked() {
-                        let mut rng = rand::thread_rng();
-                        let bits = 2048;
-                        let private = RsaPrivateKey::new(&mut rng, bits).unwrap();
-                        let public = RsaPublicKey::from(&private);
-                        self.keypair = Some((public, private));
                     }
                 } else if let Some((public, private)) = &self.keypair {
                     if ui.button("Export").clicked() {
@@ -104,8 +104,6 @@ impl eframe::App for App {
                     if handle.is_finished() {
                         self.handle.take();
                     }
-                } else {
-                    ui.label(self.action.to_string());
                 }
             });
         });

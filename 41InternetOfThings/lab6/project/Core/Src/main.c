@@ -1,9 +1,9 @@
 /* USER CODE BEGIN Header */
 /**
-  ******************************************************************************
+  ***************************************
   * @file           : main.c
   * @brief          : Main program body
-  ******************************************************************************
+  ********************************************
   * @attention
   *
   * Copyright (c) 2024 STMicroelectronics.
@@ -13,34 +13,36 @@
   * in the root directory of this software component.
   * If no LICENSE file comes with this software, it is provided AS-IS.
   *
-  ******************************************************************************
+  *************************************
   */
 /* USER CODE END Header */
-/* Includes ------------------------------------------------------------------*/
+/* Includes ---------------------------------------*/
 #include "main.h"
 #include "usb_host.h"
 
-/* Private includes ----------------------------------------------------------*/
+/* Private includes --------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+#include "display.h"
 
 /* USER CODE END Includes */
 
-/* Private typedef -----------------------------------------------------------*/
+/* Private typedef ---------------------------------------*/
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
 
-/* Private define ------------------------------------------------------------*/
+/* Private define -------------------------------------------*/
 /* USER CODE BEGIN PD */
 
 /* USER CODE END PD */
 
-/* Private macro -------------------------------------------------------------*/
+/* Private macro -------------------------------------------*/
 /* USER CODE BEGIN PM */
 
 /* USER CODE END PM */
 
-/* Private variables ---------------------------------------------------------*/
+/* Private variables -------------------------------------*/
 ADC_HandleTypeDef hadc1;
 
 I2C_HandleTypeDef hi2c1;
@@ -51,7 +53,7 @@ SPI_HandleTypeDef hspi1;
 
 /* USER CODE END PV */
 
-/* Private function prototypes -----------------------------------------------*/
+/* Private function prototypes ----------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
@@ -63,7 +65,7 @@ void MX_USB_HOST_Process(void);
 
 /* USER CODE END PFP */
 
-/* Private user code ---------------------------------------------------------*/
+/* Private user code -----------------------------------*/
 /* USER CODE BEGIN 0 */
 
 static uint16_t u16S_adc;
@@ -89,7 +91,7 @@ int main(void)
 
   /* USER CODE END 1 */
 
-  /* MCU Configuration--------------------------------------------------------*/
+  /* MCU Configuration-------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
@@ -129,6 +131,8 @@ int main(void)
     MX_USB_HOST_Process();
 
     /* USER CODE BEGIN 3 */
+    clear();
+    char str[16];
 
 	if (HAL_GetTick() - u16L_timer > 10)
 	{
@@ -141,10 +145,13 @@ int main(void)
 	if (u16L_period != 0)
 	{
 	u16S_beat_count = 60000 / u16L_period;
+	sprintf(str, "%d", u16S_beat_count);
 	}
 	u16L_saved_time = HAL_GetTick();
 	}
 	u16L_old_value = u16S_adc;
+	setCursor(0, 0);
+	lcdString(str);
   }
   /* USER CODE END 3 */
 }

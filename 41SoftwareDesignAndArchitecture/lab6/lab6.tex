@@ -102,119 +102,121 @@
     
     \section*{Хід роботи}
     \subsection*{Можливість використання патернів у розробляємому модулі}
-    У модулі проектування для віртуальної лабораторії можна використати кілька шаблонів проектування, що підвищать модульність, гнучкість і підтримуваність системи. Розглянемо два популярні шаблони, які можуть бути корисними в цьому контексті: Factory Method та Observer.
+    У модулі проектування для віртуальної лабораторії можна використати кілька шаблонів проектування, що підвищать модульність, гнучкість і підтримуваність системи. Розглянемо популярний шаблон, що може бути корисними в цьому контексті: Decorator.
     
-    \subsection*{Factory Method}
-    Шаблон Factory Method дозволяє створювати об'єкти певного типу, не вказуючи конкретного класу, що їх реалізує. Це особливо корисно для модулю проектування, де користувачі можуть створювати різноманітні типи діаграм (наприклад, діаграми класів, послідовностей, станів тощо). Замість того, щоб кожного разу безпосередньо викликати конструктор певного типу діаграми, Factory Method може надавати спрощений інтерфейс для створення діаграм, що відповідає конкретним параметрам або типу. Це дозволяє легко додавати нові типи діаграм без внесення змін до існуючого коду, що підвищує розширюваність системи. Наприклад, клас DiagramFactory може визначати метод createDiagram(type: String), який повертає потрібний об'єкт діаграми залежно від значення type.
-    
-    \subsection*{Observer}
-    Шаблон Observer підходить для ситуацій, коли є потреба повідомляти кілька компонентів про зміну стану іншого об’єкта. В модулі проектування цей шаблон може бути використаний для оновлення інтерфейсу в режимі реального часу при зміні даних діаграми. Наприклад, коли користувач змінює діаграму, різні частини інтерфейсу, такі як панель властивостей, журнал змін чи візуальний редактор, повинні бути оновлені автоматично. За допомогою Observer можна налаштувати, щоб діаграма як "спостережуваний" об'єкт надсилала повідомлення всім "спостерігачам" (різним компонентам інтерфейсу), коли відбуваються зміни. Це полегшує синхронізацію даних і покращує взаємодію з користувачем.
-    
-    Використання цих шаблонів у модулі проектування дозволяє не лише забезпечити легкість у підтримці та розширенні системи, але й створює більш зручний і гнучкий інтерфейс для кінцевих користувачів.
+    \subsection*{Декоратор}
+    Декоратор — це патерн проєктування, що дозволяє динамічно додавати об’єкту нові функції, не змінюючи його структуру. У коді, який ви надаєте, цей патерн використовується для надання елементам UML діаграм різних властивостей залежно від режиму або стану додатку.
     
     \subsection*{Діаграма класів}
     \begin{figure}[H]
     	\centering
     	\includegraphics[width=\columnwidth]{1}
-    	\caption{Діаграма класів}
+    	\caption{Декоратор}
     \end{figure}
+    \begin{small}
+    	\begin{lstlisting}
+const features = { ...UMLElements, ...UMLRelationships }[props.type].features as UMLElementFeatures &
+UMLRelationshipFeatures;
+const component = props.type in UMLRelationshipType ? CanvasRelationship : CanvasElement;
+const decorators = [];
+
+if (props.mode === ApollonMode.Assessment) {
+decorators.push(assessable, updatable, selectable, hoverable);
+} else if (props.readonly) {
+decorators.push(selectable, hoverable);
+} else if (props.view === ApollonView.Exporting || props.view === ApollonView.Highlight) {
+decorators.push(interactable, hoverable);
+} else if (props.view === ApollonView.Modelling) {
+if (props.features.hoverable && features.hoverable) {
+	decorators.push(hoverable);
+}
+if (features.reconnectable) {
+	decorators.push(reconnectable);
+}
+if (props.features.selectable && features.selectable) {
+	decorators.push(selectable);
+}
+if (props.features.movable && features.movable) {
+	decorators.push(movable);
+}
+if (props.features.resizable && features.resizable) {
+	const options = {
+		preventY: features.resizable === 'WIDTH',
+		preventX: features.resizable === 'HEIGHT',
+	};
+	decorators.push(resizable(options));
+}
+if (props.features.connectable && features.connectable) {
+	decorators.push(connectable);
+}
+if (props.features.updatable && features.updatable) {
+	decorators.push(updatable);
+}
+if (props.features.droppable && features.droppable) {
+	decorators.push(droppable);
+}
+}
+
+type Compose = ConnectedComponent<
+ComponentType<
+UMLElementComponentProps & {
+child: React.ComponentClass<any>;
+}
+>,
+any
+>;
+
+// reverse, because compose creates one function by composing the given functions from right to left
+return {
+component: compose<Compose>(...decorators.reverse())(component),
+};
+    	\end{lstlisting}
+    \end{small}
     
-    \begin{lstlisting}
-    	class DiagramFactory {
-    		createDiagram(type) {
-    			throw "Method not implemented.";
-    		}
-    	}
-    	
-    	class ConcreteDiagramFactory extends DiagramFactory {
-    		createDiagram(type) {
-    			switch (type) {
-    				case "class":
-    				return new ClassDiagram();
-    				case "sequence":
-    				return new SequenceDiagram();
-    				default:
-    				throw "Unknown diagram type";
-    			}
-    		}
-    	}
-    	
-    	class Diagram {
-    		draw() {
-    			throw "Method not implemented.";
-    		}
-    	}
-    	
-    	class ClassDiagram extends Diagram {
-    		draw() {
-    			console.log("Drawing Class Diagram");
-    		}
-    	}
-    	
-    	class SequenceDiagram extends Diagram {
-    		draw() {
-    			console.log("Drawing Sequence Diagram");
-    		}
-    	}
-    	
-    	const factory = new ConcreteDiagramFactory();
-    	const diagram = factory.createDiagram("class");
-    	diagram.draw();
-    	
-    \end{lstlisting}
     
-    \begin{lstlisting}
-    	class DiagramEditor {
-    		constructor() {
-    			this.observers = [];
-    		}
-    		
-    		attach(observer) {
-    			this.observers.push(observer);
-    		}
-    		
-    		detach(observer) {
-    			this.observers = this.observers.filter(obs => obs !== observer);
-    		}
-    		
-    		notifyObservers() {
-    			this.observers.forEach(observer => observer.update());
-    		}
-    		
-    		change() {
-    			console.log("Diagram changed");
-    			this.notifyObservers();
-    		}
-    	}
+    \begin{enumerate}
+    	\item \textbf{Ініціалізація компонентів та функцій:}
+    	\begin{itemize}
+    		\item Спочатку визначається об'єкт \texttt{features}, що комбінує властивості \texttt{UMLElements} та \texttt{UMLRelationships} в залежності від типу елемента (вказаного в \texttt{props.type}).
+    		\item Залежно від цього типу обирається відповідний компонент: \textit{CanvasRelationship} або \textit{CanvasElement}.
+    	\end{itemize}
     	
-    	class DiagramObserver {
-    		update() {
-    			throw "Method not implemented.";
-    		}
-    	}
+    	\item \textbf{Вибір декораторів залежно від умов:}
+    	\begin{enumerate}
+    		\item Якщо режим \texttt{props.mode} є \texttt{Assessment}, додаються декоратори:
+    		\begin{itemize}
+    			\item \texttt{assessable}
+    			\item \texttt{updatable}
+    			\item \texttt{selectable}
+    			\item \texttt{hoverable}
+    		\end{itemize}
+    		\item Якщо \texttt{props.readonly} дорівнює \texttt{true}, додаються:
+    		\begin{itemize}
+    			\item \texttt{selectable}
+    			\item \texttt{hoverable}
+    		\end{itemize}
+    		\item Якщо \texttt{props.view} має значення \texttt{Exporting} або \texttt{Highlight}, додаються:
+    		\begin{itemize}
+    			\item \texttt{interactable}
+    			\item \texttt{hoverable}
+    		\end{itemize}
+    		\item Якщо \texttt{props.view} дорівнює \texttt{Modelling}, додаються декоратори в залежності від властивостей:
+    		\begin{itemize}
+    			\item \texttt{hoverable} (якщо \texttt{features.hoverable} активне)
+    			\item \texttt{reconnectable} (якщо доступно)
+    			\item \texttt{movable} (якщо доступно)
+    			\item \texttt{resizable} (з параметрами, якщо доступно)
+    			\item \texttt{connectable} (якщо доступно)
+    			\item \texttt{updatable} (якщо доступно)
+    			\item \texttt{droppable} (якщо доступно)
+    		\end{itemize}
+    	\end{enumerate}
     	
-    	class PropertyPanel extends DiagramObserver {
-    		update() {
-    			console.log("Property Panel updated");
-    		}
-    	}
-    	
-    	class ChangeLogPanel extends DiagramObserver {
-    		update() {
-    			console.log("Change Log updated");
-    		}
-    	}
-    	
-    	const editor = new DiagramEditor();
-    	const propertyPanel = new PropertyPanel();
-    	const changeLogPanel = new ChangeLogPanel();
-    	
-    	editor.attach(propertyPanel);
-    	editor.attach(changeLogPanel);
-    	
-    	editor.change();
-    	
-    \end{lstlisting}
+    	\item \textbf{Композиція декораторів:}
+    	\begin{itemize}
+    		\item Використовується функція \texttt{compose} для композиції декораторів у зворотному порядку. Всі декоратори додаються до компонента, створюючи новий компонент з усіма необхідними властивостями.
+    	\end{itemize}
+    \end{enumerate}
     
 	\section*{Висновки}
 	У ході виконання лабораторної роботи ми ознайомилися з основними шаблонами проектування, навчилися застосовувати їх при проектуванні і розробці ПЗ.

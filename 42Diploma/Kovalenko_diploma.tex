@@ -1,0 +1,92 @@
+\documentclass[14pt]{extreport}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T2A]{fontenc}
+\usepackage[english,ukrainian]{babel}
+\usepackage{tempora}
+
+\linespread{1.5}
+\usepackage{indentfirst}
+
+\usepackage[a4paper,top=20mm,bottom=20mm,left=25mm,right=10mm]{geometry}
+
+\usepackage{fancyhdr}
+\fancypagestyle{plain}{
+  \pagestyle{myheadings}
+}
+\pagestyle{myheadings}
+\setcounter{page}{4}
+
+\usepackage{titlesec}
+\titleformat{\chapter}{\centering\bfseries\MakeUppercase}{\chaptername~\thechapter.}{1pc}{}
+\titleformat{\section}{\bfseries}{\thesection.}{1pc}{}
+\titlespacing*{\chapter}{0pt}{-30pt}{0pt}
+
+\begin{document}
+  \chapter*{Анотація}
+  
+  \tableofcontents
+  \newpage
+  
+  \chapter*{Вступ}
+  \addcontentsline{toc}{chapter}{Вступ}
+  
+  
+  % Оглядовий розділ
+  \chapter{Аналіз сучасних технологій та інструментів для побудови децентралізованих систем голосування}
+
+  \section{Огляд електронних систем голосування}
+  
+  
+  \section{Основи технології блокчейн та її застосування у голосуваннях}
+  
+  
+  \section{Характеристики платформи Solana для смарт-контрактів}
+  
+  
+  \section{Порівняльний аналіз платформ для розробки децентралізованих додатків}
+  
+  
+  \section{Висновки до розділу}
+  
+
+  % Розділ постановки завдання
+  \chapter{Постановка задачі розробки системи для голосування на базі блокчейну Solana}
+
+  \section{Формулювання проблеми}
+  \section{Основні вимоги до системи}
+  \section{Сценарії використання}
+  \section{Специфікація вимог до системи}
+  \section{Висновки до розділу}
+
+  % Проєктний розділ
+  \chapter{Проєктування системи для проведення голосувань}
+
+  \section{Загальна архітектура системи}
+  \section{Проектування смарт-контракту для голосувань}
+  \section{Моделювання клієнтської частини та API}
+  \section{Забезпечення безпеки та стійкості системи}
+  \section{Висновки до розділу}
+  
+  % Розділ програмної реалізації та тестування
+  \chapter{<Розділ програмної реалізації та тестування>}
+  
+  % Розділ з економіки
+  \chapter{<Розділ з економіки>}
+  
+  \chapter*{Висновки}
+  \addcontentsline{toc}{chapter}{Висновки}
+  
+  \renewcommand\bibname{\MakeUppercase{Список літератури}}
+  \addcontentsline{toc}{chapter}{Список літератури}
+  \begin{thebibliography}{99}
+    \bibitem{source1} Автор. Назва книги. Видавництво, рік.
+  \end{thebibliography}
+  
+  \appendix
+  \renewcommand{\thechapter}{\Alph{chapter}}
+  \renewcommand{\chaptername}{Додаток}
+  
+  \chapter{<Назва додатку>}
+  
+\end{document}

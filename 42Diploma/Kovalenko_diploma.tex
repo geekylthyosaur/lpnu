@@ -18,13 +18,22 @@
 \pagestyle{myheadings}
 \setcounter{page}{4}
 
+\setcounter{secnumdepth}{3}
+\newcounter{req}[subsubsection]
+\newcommand\req{\stepcounter{req}\arabic{req}}
+
 \usepackage{titlesec}
 \titleformat{\chapter}{\centering\bfseries\MakeUppercase}{\chaptername~\thechapter.}{1pc}{}
 \titleformat{\section}{\bfseries}{\thesection.}{1pc}{}
 \titleformat{\subsection}{\bfseries}{\thesubsection.}{1pc}{}
+\titleformat{\subsubsection}{\bfseries}{\thesubsubsection.}{1pc}{}
+\titleformat{\paragraph}{\bfseries}{\theparagraph.}{1pc}{}
+
 \titlespacing*{\chapter}{0pt}{10mm}{14pt}
 \titlespacing*{\section}{\parindent}{14pt}{0pt}
 \titlespacing*{\subsection}{\parindent}{0pt}{0pt}
+\titlespacing*{\subsubsection}{\parindent}{0pt}{0pt}
+\titlespacing*{\paragraph}{\parindent}{0pt}{0pt}
 
 \usepackage{enumitem}
 \setlist{nolistsep}
@@ -137,14 +146,41 @@
 
   Таким чином, обрані технології, алгоритми та інструменти забезпечують реалізацію надійної, ефективної та безпечної системи голосування, яка відповідає сучасним вимогам.
   
-  \section{Специфікація вимог}
+  \section{Специфікація вимог}  
   \subsection{Вступ}
-  \subsection{Загальний опис}
-  \subsection{Характеристики системи}
-  \subsection{Вимоги зовнішніх інтерфейсів}
-  \subsection{Інші нефункційні вимоги}
-  \subsection{Інші вимоги}
+  \subsubsection{Призначення, мета}
+  Призначенням системи є забезпечення прозорого, безпечного та незмінного процесу голосування завдяки використанню технології блокчейну. Метою є створення платформи, яка дозволяє організаторам легко створювати голосування, а учасникам брати участь із гарантією достовірності результатів.
   
+  \subsubsection{Продукти-аналоги}
+  
+  \subsection{Загальний опис}
+  \subsubsection{Характеристики продукту}  
+  \subsubsection{Класи користувачів та їх характеристики}
+  \subsubsection{Середовище функціонування}
+
+  \subsection{Характеристики системи}
+  \subsubsection{<Характеристика 1>}
+  \paragraph{Опис:}
+  
+  \paragraph{Пріоритет:}
+  
+  \paragraph{Послідовність дія/відгук:}
+  \begin{enumerate}
+    \item 
+  \end{enumerate}
+  
+  \paragraph{Функціональні вимоги:}
+  \begin{list}{REQ-\arabic{subsubsection}.\req:}{}
+    \item Програма повинна.
+    \item Програма повинна.
+    \item Програма повинна.
+  \end{list}
+
+  \subsection{Вимоги зовнішніх інтерфейсів}  
+
+  \subsection{Інші нефункційні вимоги}
+
+  \subsection{Інші вимоги}
   
   \section{Висновки до розділу}
   
@@ -176,7 +212,10 @@
   \renewcommand\bibname{\MakeUppercase{Список літератури}}
   \addcontentsline{toc}{chapter}{Список літератури}
   \begin{thebibliography}{99}
-    \bibitem{ivoting} Introduction to i-voting. \textit{Valimised}. URL: \url{https://www.valimised.ee/en/internet-voting/more-about-i-voting/introduction-i-voting} (дата звернення 17.01.2025)
+    \bibitem{ivoting} Introduction to i-voting. \textit{Valimised}. 
+    URL: \url{https://www.valimised.ee/en/internet-voting/more-about-i-voting/introduction-i-voting} 
+    
+    (дата звернення 17.01.2025)
   \end{thebibliography}
   
   \appendix

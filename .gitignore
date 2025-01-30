@@ -10,6 +10,7 @@ build*
 *.pdf
 !task.pdf
 !kpp.pdf
+!Kovalenko_diploma.pdf
 bin/
 obj/
 venv/

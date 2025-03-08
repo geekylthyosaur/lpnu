@@ -1,0 +1,158 @@
+\documentclass[oneside,14pt]{extarticle}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage{longtable}
+\usepackage[english,ukrainian]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{subfig}
+\usepackage{tempora}
+\renewcommand{\arraystretch}{1.5}
+\usepackage{mwe}
+\geometry{
+	a4paper,
+	left=20mm,
+	right=20mm,
+	top=15mm,
+	bottom=15mm,
+}
+\lstset{
+	language=c,
+	tabsize=4,
+	keepspaces,
+	showstringspaces=false,
+	frame=single,
+	breaklines,
+	language=C,
+}
+\graphicspath{ {./pictures} }
+\setlength{\parindent}{4em}
+
+\newcommand\subject{Програмування мікроконтролерів}
+\newcommand\lecturer{доцент кафедри ПЗ\\Марусенкова Т.А.}
+\newcommand\teacher{асистент кафедри ПЗ\\Щур В.І.}
+\newcommand\mygroup{ПЗ-42}
+\newcommand\lab{1}
+\newcommand\theme{Робота з EEPROM}
+\newcommand\purpose{Навчитися організовувати взаємодію між мікроконтролером і чіпом EEPROM за інтерфейсом І2С, а також закріпити навички роботи з технічною
+документацією}
+
+\begin{document}
+\begin{normalsize}
+	\begin{titlepage}
+		\thispagestyle{empty}
+		\begin{center}
+			\textbf{МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\\
+				НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ "ЛЬВІВСЬКА ПОЛІТЕХНІКА"}
+		\end{center}
+		\begin{flushright}
+			\textbf{ІКНІ}\\
+			Кафедра \textbf{ПЗ}
+		\end{flushright}
+		\vspace{80pt}
+		\begin{center}
+			\textbf{ЗВІТ}\\
+			\vspace{10pt}
+			до лабораторної роботи № \lab\\
+			\textbf{на тему}: <<\textit{\theme}>>\\
+			\textbf{з дисципліни}: <<\subject>>
+		\end{center}
+		\vspace{80pt}
+		\begin{flushright}
+			
+			\textbf{Лектор}:\\
+			\lecturer\\
+			\vspace{28pt}
+			\textbf{Виконав}:\\
+			
+			студенти групи \mygroup\\
+			Коваленко Д.М.\\
+			\vspace{28pt}
+			\textbf{Прийняв}:\\
+			
+			\teacher\\
+			
+			\vspace{28pt}
+			«\rule{1cm}{0.15mm}» \rule{1.5cm}{0.15mm} 2025 р.\\
+			$\sum$ = \rule{1cm}{0.15mm}……………\\
+			
+		\end{flushright}
+		\vspace{\fill}
+		\begin{center}
+			\textbf{Львів — 2025}
+		\end{center}
+	\end{titlepage}
+		
+	\begin{description}
+		\item[Тема.] \theme.
+		\item[Мета.] \purpose.
+	\end{description}
+
+  \section*{Лабораторне завдання}
+  \begin{enumerate}
+  	\item Ініціалізувати інтерфейсну схему, визначену індивідуальним варіантом, а
+також два виводи GPIO з доступного банку виводів. Наявні банки виводів
+подивитися в документації на мікроконтролер stm32f407vg.
+  \item Підключити плату розширення зі встановленим чіпом EEPROM до
+ініціалізованих виводів (можливо виконати лише в лабораторії).
+  \item Проаналізувати технічну документацію мікросхеми EEPROM (файл
+Microchip 24AA256/24LC256/24FC256 на ВНС) та зчитати основні
+характеристики цієї моделі.
+  \item Проаналізувати наданий для прикладу проект і адаптувати його до даної
+моделі EEPROM (опційний пункт, можна писати коди повністю
+самостійно, «з нуля»).
+  \item Реалізувати читання та запис одного байту та N байтів поспіль.
+Використати бібліотеку, визначену індивідуальним завданням. Варіант
+індивідуального завдання співпадає з номером студента в підгрупі.
+  \item Оформити звіт. В розділі «Теоретичні відомості» дати відповідь на
+контрольне запитання, визначене порядковим номером у підгрупі. В звіті
+навести ту частину коду проекту, що відповідає за ініціалізацію модуля
+І2С, портів вводу/виводу, адресацію пристрою, функції читання/запису та
+індивідуальне завдання. При захисті демонструється цілий проект в
+середовищі програмування.
+  \end{enumerate}
+  
+  I2C3; SPL; N = 13, початок читання – байт 10 блока №5
+  
+  \section*{Хід роботи}
+  
+  Код програми, main.c:
+  
+	{\small\begin{lstlisting}
+#define EEPROM_ADDRESS  0xA0
+#define EEPROM_PAGE_SIZE 64
+#define READ_START_ADDR (5 * EEPROM_PAGE_SIZE + 10)  // 10th byte of 5th block
+
+void I2C3_WriteByte(uint16_t addr, uint8_t data) {
+    uint8_t buffer[2] = {addr, data};
+    HAL_I2C_Master_Transmit(&hi2c3, EEPROM_ADDRESS, buffer, 2, HAL_MAX_DELAY);
+}
+
+uint8_t I2C3_ReadByte(uint16_t addr) {
+    uint8_t data;
+    HAL_I2C_Master_Transmit(&hi2c3, EEPROM_ADDRESS, (uint8_t*)&addr, 1, HAL_MAX_DELAY);
+    HAL_I2C_Master_Receive(&hi2c3, EEPROM_ADDRESS, &data, 1, HAL_MAX_DELAY);
+    return data;
+}
+
+void I2C3_ReadNBytes(uint16_t addr, uint8_t *buffer, uint16_t len) {
+    HAL_I2C_Master_Transmit(&hi2c3, EEPROM_ADDRESS, (uint8_t*)&addr, 1, HAL_MAX_DELAY);
+    HAL_I2C_Master_Receive(&hi2c3, EEPROM_ADDRESS, buffer, len, HAL_MAX_DELAY);
+}
+	
+uint8_t writeData = 0xAB;
+I2C3_WriteByte(READ_START_ADDR, writeData);
+
+uint8_t readData = I2C3_ReadByte(READ_START_ADDR);
+
+uint8_t buffer[13];
+I2C3_ReadNBytes(READ_START_ADDR, buffer, 13);\end{lstlisting}}
+	
+	\section*{Висновки}
+	Під час виконання лабораторної роботи, я навчився організовувати взаємодію між мікроконтролером і чіпом EEPROM за допомогою інтерфейсу І2С, а також закріпив навички роботи з технічною документацією.
+	    
+\end{normalsize}
+\end{document}

@@ -1,0 +1,168 @@
+\documentclass[oneside,14pt]{extarticle}
+\usepackage{cmap}
+\usepackage[utf8]{inputenc}
+\usepackage{longtable}
+\usepackage[english,ukrainian]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{listings}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{subfig}
+\usepackage{tempora}
+\renewcommand{\arraystretch}{1.5}
+\usepackage{mwe}
+\geometry{
+	a4paper,
+	left=20mm,
+	right=20mm,
+	top=15mm,
+	bottom=15mm,
+}
+\lstset{
+	language=c,
+	tabsize=4,
+	keepspaces,
+	showstringspaces=false,
+	frame=single,
+	breaklines,
+	language=C,
+}
+\graphicspath{ {./pictures} }
+\setlength{\parindent}{4em}
+
+\newcommand\subject{Програмування мікроконтролерів}
+\newcommand\lecturer{доцент кафедри ПЗ\\Марусенкова Т.А.}
+\newcommand\teacher{асистент кафедри ПЗ\\Щур В.І.}
+\newcommand\mygroup{ПЗ-42}
+\newcommand\lab{2}
+\newcommand\theme{Робота з Flash-пам'яттю на прикладі SST25VF016B}
+\newcommand\purpose{Навчитися організовувати взаємодію між мікроконтролером та Flash-
+пам’яттю SST25VF016B за інтерфейсом SPI, а також закріпити навички роботи з
+технічною документацією}
+
+\begin{document}
+\begin{normalsize}
+	\begin{titlepage}
+		\thispagestyle{empty}
+		\begin{center}
+			\textbf{МІНІСТЕРСТВО ОСВІТИ І НАУКИ УКРАЇНИ\\
+				НАЦІОНАЛЬНИЙ УНІВЕРСИТЕТ "ЛЬВІВСЬКА ПОЛІТЕХНІКА"}
+		\end{center}
+		\begin{flushright}
+			\textbf{ІКНІ}\\
+			Кафедра \textbf{ПЗ}
+		\end{flushright}
+		\vspace{80pt}
+		\begin{center}
+			\textbf{ЗВІТ}\\
+			\vspace{10pt}
+			до лабораторної роботи № \lab\\
+			\textbf{на тему}: <<\textit{\theme}>>\\
+			\textbf{з дисципліни}: <<\subject>>
+		\end{center}
+		\vspace{80pt}
+		\begin{flushright}
+			
+			\textbf{Лектор}:\\
+			\lecturer\\
+			\vspace{28pt}
+			\textbf{Виконав}:\\
+			
+			студенти групи \mygroup\\
+			Коваленко Д.М.\\
+			\vspace{28pt}
+			\textbf{Прийняв}:\\
+			
+			\teacher\\
+			
+			\vspace{28pt}
+			«\rule{1cm}{0.15mm}» \rule{1.5cm}{0.15mm} 2025 р.\\
+			$\sum$ = \rule{1cm}{0.15mm}……………\\
+			
+		\end{flushright}
+		\vspace{\fill}
+		\begin{center}
+			\textbf{Львів — 2025}
+		\end{center}
+	\end{titlepage}
+		
+	\begin{description}
+		\item[Тема.] \theme.
+		\item[Мета.] \purpose.
+	\end{description}
+
+  \section*{Лабораторне завдання}
+  \begin{enumerate}
+  	\item Адаптувати наведені коди для однієї з перелічених бібліотек: SPL, HAL або
+CMSIS Driver. Використати бібліотеку згідно з індивідуальним завданням.
+Згідно зі схемою підключення використано саме SPI1, однак теоретично міг
+би бути застосований і інший модуль. Адаптувати коди для іншого модуля,
+визначеного індивідуальним варіантом. Номер індивідуального варіанту
+співпадає з номером студента в підгрупі. Таким чином, має бути дві версії
+кодів: для SPI1 (що може бути відтестована на реальній платі) та для
+деякого іншого модуля (що перевіряється лише інспекцією коду).
+  \item Здійснити читання даних з регістру Статусу для перевірки працездатності
+адаптованих згідно індивідуального завдання функцій.
+  \item Встановити відповідний режим роботи Flash-пам'яті.
+  \item Виконати дії, що описані у пункті 2. У якості підтвердження успішного
+встановлення режиму роботи Flash-пам'яті додати у звіт знімки екрану на
+при виконанні п.2 та п.4.
+  \item Перевірити правильність запису даних, а також їх наявність та цілісність
+даних після повторного увімкнення живлення плати.
+  \item Оформити звіт. В розділі «Теоретичні відомості» дати відповідь на
+контрольне запитання, визначене порядковим номером у підгрупі. В звіті
+навести ту частину коду проекту, що відповідає за ініціалізацію модуля SPI
+(у двох версіях), портів вводу/виводу, адресацію пристрою, функції
+читання/запису та індивідуальне завдання. При захисті демонструється
+цілий проект в середовищі програмування.
+  \end{enumerate}
+  
+  AAI – Yes; CMSIS Driver; N = 10; SPI2
+  
+  \section*{Хід роботи}
+  
+  Код програми, main.c:
+  
+	{\small\begin{lstlisting}
+	#include "stm32f4xx.h"
+
+#define CS_LOW()  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET)
+#define CS_HIGH() HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET)
+#define RDSR_CMD  0x05
+#define DUMMY_BYTE 0xFF
+
+extern SPI_HandleTypeDef hspi1;
+
+uint8_t SPI_Transfer(uint8_t data) {
+    uint8_t received;
+    HAL_SPI_TransmitReceive(&hspi1, &data, &received, 1, HAL_MAX_DELAY);
+    return received;
+}
+
+uint8_t Read_Status_Register(void) {
+    uint8_t status;
+    CS_LOW();
+    SPI_Transfer(RDSR_CMD);
+    status = SPI_Transfer(DUMMY_BYTE);
+    CS_HIGH();
+    return status;
+}
+
+int main(void) {
+    HAL_Init();
+    SystemClock_Config();
+    MX_GPIO_Init();
+    MX_SPI1_Init();
+    while (1) {
+        uint8_t status = Read_Status_Register();
+    }
+}\end{lstlisting}}
+	
+	\section*{Висновки}
+	Під час виконання лабораторної роботи, я навчився організовувати взаємодію між мікроконтролером та Flash-
+пам’яттю SST25VF016B за інтерфейсом SPI, а також закріпив навички роботи з
+технічною документацією.
+	    
+\end{normalsize}
+\end{document}

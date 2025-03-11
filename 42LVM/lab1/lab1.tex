@@ -6,6 +6,7 @@
 \usepackage{tempora}
 \usepackage{float}
 \linespread{1.5}
+\usepackage{longtable}
 \setlength{\parskip}{0pt}
 \usepackage{indentfirst}
 \usepackage{graphicx}
@@ -101,23 +102,47 @@
   
   \section*{Хід роботи}
   
-  \begin{table}[H]
-  \centering
+   % Add this to the preamble
+
   \renewcommand{\tablename}{Таблиця}
   \renewcommand{\thetable}{\arabic{table}}
   \captionsetup{justification=raggedleft, singlelinecheck=false, labelsep=period}
-  \caption{}
-  \textbf{Результати проектування інтерфейсу\vspace{5pt}}
-  \resizebox{\textwidth}{!}{
-  \begin{tabular}{|l|p{4cm}|p{4cm}|p{3cm}|p{3cm}|}
-  \hline
-  \textbf{№} & \textbf{Формат діалогу} & \textbf{Шаблон кадру} & \textbf{Множина процедур введення даних} & \textbf{Ергономічні часові межі} \\ \hline
-  \textbf{1} &  &  &  & 0,1 \\ \hline
-  \textbf{2} &  &  &  & 0,1 \\ \hline
-  \textbf{3} &  &  &  & 0,1 \\ \hline
-  \end{tabular}
-  }
-  \end{table}
+
+\begin{longtable}{|l|p{4cm}|p{4cm}|p{3cm}|p{3cm}|}
+\caption{Результати проектування інтерфейсу} \\
+\hline
+\textbf{№} & \textbf{Формат діалогу} & \textbf{Шаблон кадру} & \textbf{Множина процедур введення даних} & \textbf{Ергономічні часові межі} \\ \hline
+\endfirsthead
+\multicolumn{5}{c}%
+{} \\
+\hline
+\textbf{№} & \textbf{Формат діалогу} & \textbf{Шаблон кадру} & \textbf{Множина процедур введення даних} & \textbf{Ергономічні часові межі} \\ \hline
+\endhead
+\endfoot
+\hline
+\endlastfoot
+\textbf{1} & Головне вікно моніторингу загроз. Відображає стан трьох цехів заводу. & Вікно містить три секції, кожна з яких відображає стан одного цеху (номер цеху, статус загрози, іконка). Кнопка "Змінити" дозволяє вручну змінити стан загрози. & Введення даних через кнопку "Змінити" та діалогове вікно. & 0,1 \\ \hline
+\textbf{2} & Вікно повідомлення про загрозу. Викликається з головного вікна. & Вікно містить вибір типу загрози (пожежа, витік газу, замикання) та кнопки "Підтвердити" або "Відбій". & Введення типу загрози через випадаючий список. & 0,1 \\ \hline
+\textbf{3} & Вікно оповіщення. Викликається автоматично при зміні стану загрози. & Вікно містить повідомлення про загрозу або її відбій, іконку стану та кнопку "OK". & Відображення повідомлення про загрозу або її відбій. & 0,1 \\ \hline
+\end{longtable}
+	
+	\begin{figure}[H]
+	  \centering
+	  \includegraphics[scale=0.8]{1}
+	  \caption{Вікно моніторингу появи та відбою загроз (вікно №1)}
+	\end{figure}
+	
+	\begin{figure}[H]
+	  \centering
+	  \includegraphics[scale=0.8]{2}
+	  \caption{Вікно повідомлення про появу та відбій загроз (вікно №2)}
+	\end{figure}
+	
+	\begin{figure}[H]
+	  \centering
+	  \includegraphics[scale=0.8]{3}
+	  \caption{Вікно оповіщення про появу та відбій загроз (вікно №3)}
+	\end{figure}
 	
 	\section*{Висновки}
 	

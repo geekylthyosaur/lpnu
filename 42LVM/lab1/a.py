@@ -26,7 +26,7 @@ class MonitoringWindow(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Моніторинг загроз")
-        self.geometry("600x450")  # Increased height to accommodate the new button
+        self.geometry("500x350")  # Increased height to accommodate the new button
         self.configure(bg="#CCCCCC")  # Background color from the image
 
         # Load and resize images from local files
@@ -72,7 +72,7 @@ class MonitoringWindow(tk.Tk):
         else:
             self.icon_labels[workshop_id].config(image=self.images[threat.lower().replace(" ", "_")])
         
-        AlertWindow(workshop_id, threat, cancel, self.images["alert_icon"])
+        AlertWindow(workshop_id, threat, cancel, self.images["ok"] if cancel else self.images["alert_icon"])
 
     def toggle_random_alert(self):
         # Randomly select a workshop and a threat type
@@ -123,7 +123,7 @@ class AlertWindow(tk.Toplevel):
         self.configure(bg="#CCCCCC")
 
         message = f"Відбій загрози в цеху {workshop_id+1}" if cancel else f"Загроза {threat} в цеху {workshop_id+1}!"
-        tk.Label(self, text=message, fg="#FF0000" if not cancel else "#00FF00", bg="#CCCCCC").pack(pady=20)
+        tk.Label(self, text=message, fg="#FF0000" if not cancel else "#00CC00", bg="#CCCCCC").pack(pady=20)
         
         icon_label = tk.Label(self, image=alert_icon, bg="#CCCCCC")
         icon_label.pack(pady=10)

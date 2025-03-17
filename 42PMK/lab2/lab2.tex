@@ -125,38 +125,47 @@ CMSIS Driver. Використати бібліотеку згідно з інд
   Код програми, main.c:
   
 	{\small\begin{lstlisting}
-	#include "stm32f4xx.h"
+#include "Driver_SPI.h"
 
-#define CS_LOW()  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_RESET)
-#define CS_HIGH() HAL_GPIO_WritePin(GPIOB, GPIO_PIN_12, GPIO_PIN_SET)
-#define RDSR_CMD  0x05
-#define DUMMY_BYTE 0xFF
+extern ARM_DRIVER_SPI Driver_SPI1;
+extern ARM_DRIVER_SPI Driver_SPI2;
 
-extern SPI_HandleTypeDef hspi1;
+static ARM_DRIVER_SPI *hspi1 = &Driver_SPI1;
+static ARM_DRIVER_SPI *hspi2 = &Driver_SPI2;
 
-uint8_t SPI_Transfer(uint8_t data) {
-    uint8_t received;
-    HAL_SPI_TransmitReceive(&hspi1, &data, &received, 1, HAL_MAX_DELAY);
-    return received;
+void SPI_Init(void) {
+    hspi1->Initialize(NULL);
+    hspi1->PowerControl(ARM_POWER_FULL);
+    hspi1->Control(ARM_SPI_MODE_MASTER | ARM_SPI_CPOL1_CPHA1 | ARM_SPI_MSB_LSB, 1000000);
+    hspi1->Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_INACTIVE);
+
+    hspi2->Initialize(NULL);
+    hspi2->PowerControl(ARM_POWER_FULL);
+    hspi2->Control(ARM_SPI_MODE_MASTER | ARM_SPI_CPOL1_CPHA1 | ARM_SPI_MSB_LSB, 1000000);
+    hspi2->Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_INACTIVE);
 }
 
-uint8_t Read_Status_Register(void) {
-    uint8_t status;
-    CS_LOW();
-    SPI_Transfer(RDSR_CMD);
-    status = SPI_Transfer(DUMMY_BYTE);
-    CS_HIGH();
-    return status;
+uint8_t SPI2_TransferByte(uint8_t data) {
+    uint8_t rx_data = 0;
+    hspi2->Transfer(&data, &rx_data, 1);
+    while (hspi2->GetStatus().busy);
+    return rx_data;
 }
 
-int main(void) {
-    HAL_Init();
-    SystemClock_Config();
-    MX_GPIO_Init();
-    MX_SPI1_Init();
-    while (1) {
-        uint8_t status = Read_Status_Register();
-    }
+void SPI2_EnableCS(void) {
+    hspi2->Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_ACTIVE);
+}
+
+void SPI2_DisableCS(void) {
+    hspi2->Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_INACTIVE);
+}
+
+int main() {
+  SPI_Init();
+  SPI2_EnableCS();q
+  uint8_t status = SPI2_TransferByte(0x05);
+  uint8_t data = SPI2_TransferByte(0x00);
+  SPI2_DisableCS();
 }\end{lstlisting}}
 	
 	\section*{Висновки}

@@ -1,0 +1,88 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64; rv:128.0) Gecko/20100101 Firefox/128.0" version="26.0.6">
+  <diagram name="Page-1" id="X5kyW-1S6zltUGnEC9vl">
+    <mxGraphModel dx="880" dy="463" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="12vThCAdGUd4qF9EgEHA-1" value="Клієнтська частина" style="shape=folder;fontStyle=1;tabWidth=110;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;recursiveResize=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="370" y="80" width="360" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-5" value="React Frontend" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="12vThCAdGUd4qF9EgEHA-1">
+          <mxGeometry x="10" y="40" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-6" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" vertex="1" parent="12vThCAdGUd4qF9EgEHA-5">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-27" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-7" value="Phantom Wallet" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="12vThCAdGUd4qF9EgEHA-1">
+          <mxGeometry x="180" y="130" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-8" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" vertex="1" parent="12vThCAdGUd4qF9EgEHA-7">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-27" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-18" value="" style="endArrow=open;endFill=1;endSize=12;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="12vThCAdGUd4qF9EgEHA-1" source="12vThCAdGUd4qF9EgEHA-5" target="12vThCAdGUd4qF9EgEHA-7">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="-340" y="140" as="sourcePoint" />
+            <mxPoint x="-180" y="140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-19" value="&lt;div&gt;Передача&lt;/div&gt;&lt;div&gt;команд&lt;br&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="12vThCAdGUd4qF9EgEHA-18">
+          <mxGeometry x="-0.1196" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-3" value="Блокчейн" style="shape=folder;fontStyle=1;tabWidth=110;tabHeight=30;tabPosition=left;html=1;boundedLbl=1;labelInHeader=1;container=1;collapsible=0;recursiveResize=0;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="240" y="320" width="360" height="200" as="geometry" />
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-9" value="Smart Contract" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="12vThCAdGUd4qF9EgEHA-3">
+          <mxGeometry x="10" y="40" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-10" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" vertex="1" parent="12vThCAdGUd4qF9EgEHA-9">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-27" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-11" value="Solana RPC Network" style="html=1;dropTarget=0;whiteSpace=wrap;" vertex="1" parent="12vThCAdGUd4qF9EgEHA-3">
+          <mxGeometry x="180" y="130" width="170" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-12" value="" style="shape=module;jettyWidth=8;jettyHeight=4;" vertex="1" parent="12vThCAdGUd4qF9EgEHA-11">
+          <mxGeometry x="1" width="20" height="20" relative="1" as="geometry">
+            <mxPoint x="-27" y="7" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-20" value="" style="endArrow=open;endFill=1;endSize=12;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="12vThCAdGUd4qF9EgEHA-3" source="12vThCAdGUd4qF9EgEHA-9" target="12vThCAdGUd4qF9EgEHA-11">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="-160" y="-100" as="sourcePoint" />
+            <mxPoint y="-100" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-21" value="&lt;div&gt;Виконання&lt;/div&gt;&lt;div&gt;команд&lt;br&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="12vThCAdGUd4qF9EgEHA-20">
+          <mxGeometry x="-0.1372" y="2" relative="1" as="geometry">
+            <mxPoint x="7" y="6" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-13" value="&lt;div&gt;Підписані&lt;/div&gt;&lt;div&gt;транзакції&lt;br&gt;&lt;/div&gt;" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="12vThCAdGUd4qF9EgEHA-7" target="12vThCAdGUd4qF9EgEHA-11">
+          <mxGeometry x="-0.503" y="9" relative="1" as="geometry">
+            <mxPoint x="170" y="410" as="sourcePoint" />
+            <mxPoint x="90" y="410" as="targetPoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-14" value="" style="endArrow=open;endFill=1;endSize=12;html=1;rounded=0;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="12vThCAdGUd4qF9EgEHA-9" target="12vThCAdGUd4qF9EgEHA-5">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="100" y="420" as="sourcePoint" />
+            <mxPoint x="520" y="180" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="12vThCAdGUd4qF9EgEHA-15" value="&lt;div&gt;Результати&lt;/div&gt;&lt;div&gt;голосування&lt;br&gt;&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="12vThCAdGUd4qF9EgEHA-14">
+          <mxGeometry x="-0.0913" y="-2" relative="1" as="geometry">
+            <mxPoint x="-13" y="23" as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

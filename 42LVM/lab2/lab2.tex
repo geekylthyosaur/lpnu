@@ -111,7 +111,7 @@
 
   \renewcommand{\tablename}{Таблиця}
   \renewcommand{\thetable}{\arabic{table}}
-  \captionsetup{justification=raggedleft, singlelinecheck=false, labelsep=period}
+  \captionsetup[longtable]{justification=raggedleft, singlelinecheck=false, labelsep=period}
 
 \begin{longtable}{|l|p{4cm}|p{4cm}|p{3cm}|p{3cm}|}
 \caption{Результати проектування інтерфейсу} \\
@@ -164,19 +164,19 @@
 	
 	\begin{figure}[H]
 	  \centering
-	  \includegraphics[scale=0.7]{1}
+	  \includegraphics[scale=0.7, trim=0 50pt 0 50pt, clip]{1}
 	  \caption{Вікно моніторингу появи та відбою загроз (вікно №1)}
 	\end{figure}
 	
 	\begin{figure}[H]
 	  \centering
-	  \includegraphics[scale=0.8]{2}
+	  \includegraphics[scale=0.7, trim=0 50pt 0 50pt, clip]{2}
 	  \caption{Вікно повідомлення про появу та відбій загроз (вікно №2)}
 	\end{figure}
 	
 	\begin{figure}[H]
 	  \centering
-	  \includegraphics[scale=0.8]{3}
+	  \includegraphics[scale=0.7, trim=0 50pt 0 50pt, clip]{3}
 	  \caption{Вікно оповіщення про появу та відбій загроз (вікно №3)}
 	\end{figure}
 	

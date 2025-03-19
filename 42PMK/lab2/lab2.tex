@@ -127,6 +127,13 @@ CMSIS Driver. Використати бібліотеку згідно з інд
 	{\small\begin{lstlisting}
 #include "Driver_SPI.h"
 
+#define FLASH_WRITE_ENABLE  0x06
+#define FLASH_READ_DATA     0x03
+#define FLASH_PAGE_PROGRAM  0x02
+#define FLASH_SECTOR_ERASE  0x20
+#define FLASH_READ_STATUS   0x05
+#define FLASH_BUSY_MASK     0x01
+
 extern ARM_DRIVER_SPI Driver_SPI1;
 extern ARM_DRIVER_SPI Driver_SPI2;
 
@@ -134,38 +141,86 @@ static ARM_DRIVER_SPI *hspi1 = &Driver_SPI1;
 static ARM_DRIVER_SPI *hspi2 = &Driver_SPI2;
 
 void SPI_Init(void) {
-    hspi1->Initialize(NULL);
-    hspi1->PowerControl(ARM_POWER_FULL);
-    hspi1->Control(ARM_SPI_MODE_MASTER | ARM_SPI_CPOL1_CPHA1 | ARM_SPI_MSB_LSB, 1000000);
-    hspi1->Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_INACTIVE);
+  hspi1->Initialize(NULL);
+  hspi1->PowerControl(ARM_POWER_FULL);
+  hspi1->Control(ARM_SPI_MODE_MASTER | ARM_SPI_CPOL1_CPHA1 | ARM_SPI_MSB_LSB, 1000000);
+  hspi1->Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_INACTIVE);
 
-    hspi2->Initialize(NULL);
-    hspi2->PowerControl(ARM_POWER_FULL);
-    hspi2->Control(ARM_SPI_MODE_MASTER | ARM_SPI_CPOL1_CPHA1 | ARM_SPI_MSB_LSB, 1000000);
-    hspi2->Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_INACTIVE);
+  hspi2->Initialize(NULL);
+  hspi2->PowerControl(ARM_POWER_FULL);
+  hspi2->Control(ARM_SPI_MODE_MASTER | ARM_SPI_CPOL1_CPHA1 | ARM_SPI_MSB_LSB, 1000000);
+  hspi2->Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_INACTIVE);
 }
 
 uint8_t SPI2_TransferByte(uint8_t data) {
-    uint8_t rx_data = 0;
-    hspi2->Transfer(&data, &rx_data, 1);
-    while (hspi2->GetStatus().busy);
-    return rx_data;
+  uint8_t rx_data = 0;
+  hspi2->Transfer(&data, &rx_data, 1);
+  while (hspi2->GetStatus().busy);
+  return rx_data;
 }
 
 void SPI2_EnableCS(void) {
-    hspi2->Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_ACTIVE);
+  hspi2->Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_ACTIVE);
 }
 
 void SPI2_DisableCS(void) {
-    hspi2->Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_INACTIVE);
+  hspi2->Control(ARM_SPI_CONTROL_SS, ARM_SPI_SS_INACTIVE);
+}
+
+void Flash_WriteEnable(void) {
+  SPI2_EnableCS();
+  SPI2_TransferByte(FLASH_WRITE_ENABLE);
+  SPI2_DisableCS();
+}
+
+void Flash_WaitForReady(void) {
+  uint8_t status;
+  do {
+    SPI2_EnableCS();
+    SPI2_TransferByte(FLASH_READ_STATUS);
+    status = SPI2_TransferByte(0x00);
+    SPI2_DisableCS();
+  } while (status & FLASH_BUSY_MASK);
+}
+
+void Flash_WriteData(uint32_t address, uint8_t *data, uint16_t length) {
+  Flash_WriteEnable();
+  SPI2_EnableCS();
+  SPI2_TransferByte(FLASH_PAGE_PROGRAM);
+  SPI2_TransferByte((address >> 16) & 0xFF);
+  SPI2_TransferByte((address >> 8) & 0xFF);
+  SPI2_TransferByte(address & 0xFF);
+  for (uint16_t i = 0; i < length; i++) {
+    SPI2_TransferByte(data[i]);
+  }
+  SPI2_DisableCS();
+  Flash_WaitForReady();
+}
+
+void Flash_ReadData(uint32_t address, uint8_t *buffer, uint16_t length) {
+  SPI2_EnableCS();
+  SPI2_TransferByte(FLASH_READ_DATA);
+  SPI2_TransferByte((address >> 16) & 0xFF);
+  SPI2_TransferByte((address >> 8) & 0xFF);
+  SPI2_TransferByte(address & 0xFF);
+  for (uint16_t i = 0; i < length; i++) {
+    buffer[i] = SPI2_TransferByte(0x00);
+  }
+  SPI2_DisableCS();
 }
 
 int main() {
   SPI_Init();
-  SPI2_EnableCS();q
-  uint8_t status = SPI2_TransferByte(0x05);
-  uint8_t data = SPI2_TransferByte(0x00);
-  SPI2_DisableCS();
+  uint32_t data_addr = 0x0;
+  uint8_t write_data[] = {0xAB, 0xCD};
+  uint8_t read_data[4] = {0};
+
+  Flash_WriteData(data_addr, write_data, sizeof(write_data));
+  Flash_ReadData(data_addr, read_data, sizeof(read_data));
+
+  if (memcmp(write_data, read_data, sizeof(write_data)) == 0) {
+	  // TODO
+  }
 }\end{lstlisting}}
 	
 	\section*{Висновки}

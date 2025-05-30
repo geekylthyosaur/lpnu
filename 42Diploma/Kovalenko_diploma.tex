@@ -62,7 +62,7 @@
 \setlist{nolistsep}
 
 \usepackage{hyperref}
-\def\UrlBreaks{\do\/\do-}
+\def\UrlBreaks{\do\/\do-\do o}
 
 \usepackage[acronym, nonumberlist]{glossaries}
 \makeglossaries
@@ -120,7 +120,7 @@
 \begin{document}
   \plainchap{Анотація}
   
-  Коваленко Д.М., Кулик І.В. (керівник). Застосунок для проведення голосувань з використанням технології блокчейну. Бакалаврська кваліфікаційна робота, спеціальність F2 «Інженерія програмного забезпечення». -- Національний університет <<Львівська політехніка>>, Львів, 2025. -- 78 с.
+  Коваленко Д.М., Кулик І.В. (керівник). Застосунок для проведення голосувань з використанням технології блокчейну. Бакалаврська кваліфікаційна робота, спеціальність F2 <<Інженерія програмного забезпечення>>. -- Національний університет <<Львівська політехніка>>, Львів, 2025. -- 80 с.
   
   \textit{Актуальність теми} дослідження зумовлена потребою у створенні прозорих, безпечних та децентралізованих систем електронного голосування, які можуть забезпечити довіру до результатів та запобігти фальсифікаціям. Традиційні централізовані системи мають низку недоліків, таких як вразливість до атак, відсутність прозорості та залежність від довірених органів. Використання блокчейн-технологій дозволяє усунути ці проблеми, забезпечуючи незмінність даних, децентралізацію та автоматизовану перевірку результатів~\ref{lit:1}.
 
@@ -128,9 +128,9 @@
 
   Серед \textit{аналогічних рішень} можна відзначити систему Voatz, яка також використовує блокчейн для голосування, але критикується за закритість коду~\ref{lit:3}, та естонську систему i-Voting, що базується на електронній ідентифікації~\ref{lit:4}. На відміну від них, запропонований застосунок поєднує відкритість, високу продуктивність Solana та зручний інтерфейс.
 
-  \textit{Середовищем функціонування застосунку} є браузер із підключенням до блокчейн-мережі Solana (локальна мережа або devnet) та наявність криптогаманця Phantom Wallet. Застосунок може використовуватися для проведення локальних опитувань, корпоративних голосувань або як основа для подальших досліджень у сфері децентралізованих виборчих систем.
+  \textit{Середовищем функціонування застосунку} є браузер із підключенням до блокчейн мережі Solana (локальна мережа або devnet) та наявність криптогаманця Phantom Wallet. Застосунок може використовуватися для проведення локальних опитувань, корпоративних голосувань або як основа для подальших досліджень у сфері децентралізованих виборчих систем.
 
-  \textit{Структура пояснювальної записки БКР}. Анотація, вступ, п’ять розділів, висновки, список літератури, додатки. Загальний обсяг роботи становить 78 сторінок, у тому числі 53 сторінки основного тексту, 14 рисунки, 15 таблиць та 6 додатків. Бібліографічний опис містить посилання на 11 використаних літературних джерел.
+  \textit{Структура пояснювальної записки БКР}. Анотація, вступ, п’ять розділів, висновки, список літератури, додатки. Загальний обсяг роботи становить 80 сторінок, у тому числі 53 сторінки основного тексту, 14 рисунки, 15 таблиць та 6 додатків. Бібліографічний опис містить посилання на 11 використаних літературних джерел.
 
   \textit{Ключові слова}. Solana, смарт-контракт, вебзастосунок, електронне голосування, децентралізований застосунок.
 
@@ -140,6 +140,30 @@
     \item \label{lit:3} Security and technology. \textit{Voatz}. URL: \url{https://voatz.com/security-and-technology/}.
     \item \label{lit:4} Introduction to i-voting. \textit{Valimised}. URL: \url{https://www.valimised.ee/en/internet-voting/more-about-i-voting/introduction-i-voting}.
   \end{enumerate}
+  
+  \plainchap{Abstract}
+  
+  Kovalenko D.M., Kulyk I.V. (supervisor). Application for conducting voting using blockchain technology. Bachelor's qualification work, specialty F2 <<Software Engineering>>. -- National University <<Lviv Polytechnic>>, Lviv, 2025. -- 80 p.
+
+  \textit{Relevance of the topic} is driven by the need to create transparent, secure, and decentralized electronic voting systems that can ensure trust in results and prevent fraud. Traditional centralized systems have a number of disadvantages, such as vulnerability to attacks, lack of transparency, and dependence on trusted authorities. The use of blockchain technologies eliminates these problems by ensuring data immutability, decentralization, and automated result verification~\ref{lit:1}.
+
+  \textit{The aim of the work} was to develop a functional web application for electronic voting based on blockchain. The application allows organizers to create votes and participants to cast their votes through an intuitive interface. The voting results are stored on the blockchain, ensuring their immutability and transparency. Rust was used to implement smart contracts, the Anchor framework for their development, and TypeScript, React, and Tailwind CSS for the client side. Solana was chosen as the blockchain platform for its high performance and ease of use~\ref{lit:2}.
+
+  Among \textit{similar solutions}, the Voatz system can be mentioned, which also uses blockchain for voting but is criticized for its closed source code~\ref{lit:3}, and the Estonian i-Voting system based on electronic identification~\ref{lit:4}. Unlike them, the proposed application combines openness, high Solana performance, and a convenient interface.
+
+  \textit{The application runs} in a browser connected to the Solana blockchain network (local network or devnet) with a Phantom Wallet crypto wallet. The application can be used for local surveys, corporate voting, or as a foundation for further research in the field of decentralized voting systems.
+
+  \textit{Structure of the explanatory note of the Bachelor's qualification work}. Abstract, introduction, five chapters, conclusions, bibliography, appendices. The total volume is 80 pages, including 53 pages of main text, 14 figures, 15 tables, and 6 appendices. The bibliography contains references to 11 sources.
+
+  \textit{Keywords}. Solana, smart contract, web application, electronic voting, decentralized application.
+
+  \begin{enumerate}[label={[\arabic*]}]
+    \item \label{lit:1} Awosika E. What Is Blockchain Voting?. URL: \url{https://second-pocket-shoot-73.hashnode.dev/what-is-blockchain-voting}.
+    \item \label{lit:2} Network Performance Report - October 2022. \textit{Solana}. URL: \url{https://solana.com/news/network-performance-report-october-2022}.
+    \item \label{lit:3} Security and technology. \textit{Voatz}. URL: \url{https://voatz.com/security-and-technology/}.
+    \item \label{lit:4} Introduction to i-voting. \textit{Valimised}. URL: \url{https://www.valimised.ee/en/internet-voting/more-about-i-voting/introduction-i-voting}.
+  \end{enumerate}
+
   
   \tableofcontents
   \newpage
@@ -223,7 +247,7 @@
   
   \section{Огляд та аналіз існуючих рішень для організації голосувань}
 
-  Системи голосування постійно еволюціонують, охоплюючи як традиційні офлайн та онлайн централізовані моделі, так і новітні децентралізовані рішення. Вибір підходу залежить від цілей, масштабу, вимог до безпеки та ступеня довіри між учасниками процесу.
+  Системи голосування постійно еволюціонують, охоплюючи як традиційні оф-лайн та онлайн централізовані моделі, так і новітні децентралізовані рішення. Вибір підходу залежить від цілей, масштабу, вимог до безпеки та ступеня довіри між учасниками процесу.
 
   Одним із найпоширеніших підходів є централізовані офлайн-системи голосування, які використовуються на виборчих дільницях. Вони базуються на спеціалізованому апаратному та програмному забезпеченні (електронні урни, сканери бюлетенів), контрольованому єдиним оператором або групою довірених органів. Такі системи забезпечують високу швидкість обробки голосів і зручність для виборчих комісій. Проте вони мають суттєві недоліки: обмежена прозорість для виборців, потреба в повній довірі до адміністратора системи, ризики технічних збоїв або втручання в ланцюг постачання обладнання.
 
@@ -461,7 +485,7 @@
 
   \section{Проєктування загальної архітектури застосунку}
   
-  Архітектура застосунку для проведення голосувань базується на принципах децентралізації, прозорості та безпеки, що є фундаментальними вимогами для сучасних електронних систем голосування. Застосунок складається з чотирьох основних компонентів: клієнтської частини, гаманця Phantom Wallet, смарт-контракту та блокчейн-платформи Solana. Кожен з них виконує окремі функції у процесі голосування, забезпечуючи ефективну, безпечну та прозору взаємодію між користувачем і блокчейном. Схематичне відображення взаємодії між компонентами представлено на діаграмі компонентів на рисунку~\ref{fig:UMLComponent}.
+  Архітектура застосунку для проведення голосувань базується на принципах децентралізації, прозорості та безпеки, що є фундаментальними вимогами для сучасних електронних систем голосування. Застосунок складається з чотирьох основних компонентів: клієнтської частини, Phantom Wallet, смарт-контракту та блокчейн-платформи Solana. Кожен з них виконує окремі функції у процесі голосування, забезпечуючи ефективну, безпечну та прозору взаємодію між користувачем і блокчейном. Схематичне відображення взаємодії між компонентами представлено на діаграмі компонентів на рисунку~\ref{fig:UMLComponent}.
 
   \begin{figure}[H]
     \centering

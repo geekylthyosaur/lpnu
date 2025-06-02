@@ -1,9 +1,12 @@
 \documentclass[14pt]{extreport}
-
-\usepackage[utf8]{inputenc}
-\usepackage[T2A]{fontenc}
-\usepackage[english,ukrainian]{babel}
-\usepackage{tempora}
+\usepackage{indentfirst}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{ukrainian}
+\setotherlanguage{english}
+\newfontfamily\cyrillicfont{Times New Roman}
+\newfontfamily\cyrillicfonttt{Courier New}
+\newcommand{\gq}[1]{\guillemotleft{}#1\guillemotright{}}
 
 \usepackage{float}
 \usepackage{caption}
@@ -23,14 +26,14 @@
 }
 \newenvironment{tight}{
   \begingroup
-  \linespread{1.15}\selectfont
+  \fontsize{13}{15.6}\selectfont
 }{
   \endgroup
 }
 
 \linespread{1.5}
 \setlength{\parskip}{0pt}
-\usepackage{indentfirst}
+\setlength{\parindent}{1.25cm}
 
 \usepackage[a4paper,top=20mm,bottom=20mm,left=25mm,right=10mm]{geometry}
 
@@ -62,7 +65,7 @@
 \setlist{nolistsep}
 
 \usepackage{hyperref}
-\def\UrlBreaks{\do\/\do-\do o}
+\def\UrlBreaks{\do\/\do-\do o\do a}
 
 \usepackage[acronym, nonumberlist]{glossaries}
 \makeglossaries
@@ -84,6 +87,7 @@
 \newacronym{http}{HTTP}{Hypertext Transfer Protocol}
 \newacronym{https}{HTTPS}{Hypertext Transfer Protocol Secure}
 \newacronym{pda}{PDA}{Program Derived Address}
+\newacronym{api}{API}{Application Programming Interface}
 
 \newcommand{\plainchap}[1]{
   \chapter*{#1}
@@ -104,23 +108,29 @@
 \renewcommand{\ttdefault}{pcr}
 \lstset{
   basicstyle=\ttfamily,
-	tabsize=2,
-	inputencoding=utf8,
-	texcl=true,
-	extendedchars=true,
-	keepspaces,
-	showstringspaces=false,
-	breaklines,
-	literate=
-    {→}{{$\rightarrow$}}1
-    {×}{{$\times$}}1
-    {←}{{$\leftarrow$}}1
+  tabsize=2,
+  texcl=true,
+  keepspaces=true,
+  showstringspaces=false,
+  breaklines=true,
+  literate={→}{{$\rightarrow$}}1
+           {×}{{$\times$}}1
+           {←}{{$\leftarrow$}}1
 }
+
+\newcommand{\nocontentsline}[3]{}
+\newcommand{\tocless}[2]{\bgroup\let\addcontentsline=\nocontentsline#1{#2}\egroup}
+
+\makeatletter
+\newcommand{\@cyrillic@alph}[1]{%
+  \ifcase#1\or А\or Б\or В\or Г\or Ґ\or Д\or Е\or Є\or Ж\or З\or И\or І\or Ї\or Й\or К\or Л\or М\or Н\or О\or П\or Р\or С\or Т\or У\or Ф\or Х\or Ц\or Ч\or Ш\or Щ\or Ь\or Ю\or Я\else ?\fi}
+\newcommand{\cyrillicAlph}[1]{\expandafter\@cyrillic@alph\csname c@#1\endcsname}
+\makeatother
 
 \begin{document}
   \plainchap{Анотація}
   
-  Коваленко Д.М., Кулик І.В. (керівник). Застосунок для проведення голосувань з використанням технології блокчейну. Бакалаврська кваліфікаційна робота, спеціальність F2 <<Інженерія програмного забезпечення>>. -- Національний університет <<Львівська політехніка>>, Львів, 2025. -- 80 с.
+  Коваленко Д.М., Кулик І.В. (керівник). Застосунок для проведення голосувань з використанням технології блокчейну. Бакалаврська кваліфікаційна робота, спеціальність F2 \gq{Інженерія програмного забезпечення}. – Національний університет \gq{Львівська політехніка}, Львів, 2025. – 78 с.
   
   \textit{Актуальність теми} дослідження зумовлена потребою у створенні прозорих, безпечних та децентралізованих систем електронного голосування, які можуть забезпечити довіру до результатів та запобігти фальсифікаціям. Традиційні централізовані системи мають низку недоліків, таких як вразливість до атак, відсутність прозорості та залежність від довірених органів. Використання блокчейн-технологій дозволяє усунути ці проблеми, забезпечуючи незмінність даних, децентралізацію та автоматизовану перевірку результатів~\ref{lit:1}.
 
@@ -130,7 +140,7 @@
 
   \textit{Середовищем функціонування застосунку} є браузер із підключенням до блокчейн мережі Solana (локальна мережа або devnet) та наявність криптогаманця Phantom Wallet. Застосунок може використовуватися для проведення локальних опитувань, корпоративних голосувань або як основа для подальших досліджень у сфері децентралізованих виборчих систем.
 
-  \textit{Структура пояснювальної записки БКР}. Анотація, вступ, п’ять розділів, висновки, список літератури, додатки. Загальний обсяг роботи становить 80 сторінок, у тому числі 53 сторінки основного тексту, 14 рисунки, 15 таблиць та 6 додатків. Бібліографічний опис містить посилання на 11 використаних літературних джерел.
+  \textit{Структура пояснювальної записки БКР}. Анотація, вступ, п’ять розділів, висновки, список літератури, додатки. Загальний обсяг роботи становить 78 сторінок, у тому числі 53 сторінки основного тексту, 14 рисунки, 15 таблиць та 6 додатків. Бібліографічний опис містить посилання на 11 використаних літературних джерел.
 
   \textit{Ключові слова}. Solana, смарт-контракт, вебзастосунок, електронне голосування, децентралізований застосунок.
 
@@ -138,37 +148,37 @@
     \item \label{lit:1} Awosika E. What Is Blockchain Voting?. URL: \url{https://second-pocket-shoot-73.hashnode.dev/what-is-blockchain-voting}.
     \item \label{lit:2} Network Performance Report - October 2022. \textit{Solana}. URL: \url{https://solana.com/news/network-performance-report-october-2022}.
     \item \label{lit:3} Security and technology. \textit{Voatz}. URL: \url{https://voatz.com/security-and-technology/}.
-    \item \label{lit:4} Introduction to i-voting. \textit{Valimised}. URL: \url{https://www.valimised.ee/en/internet-voting/more-about-i-voting/introduction-i-voting}.
+    \item \label{lit:4} I-voting. \textit{Valimised}. URL: \url{https://www.valimised.ee/en/internet-voting/more-about-i-voting/introduction-i-voting}.
   \end{enumerate}
   
   \plainchap{Abstract}
   
-  Kovalenko D.M., Kulyk I.V. (supervisor). Application for conducting voting using blockchain technology. Bachelor's qualification work, specialty F2 <<Software Engineering>>. -- National University <<Lviv Polytechnic>>, Lviv, 2025. -- 80 p.
+  Kovalenko D.M., Kulyk I.V. (supervisor). Voting application using blockchain techno-logy. Bachelor's qualification work, specialty F2 \gq{Software Engineering}. – National University \gq{Lviv Polytechnic}, Lviv, 2025. – 78 p.
 
-  \textit{Relevance of the topic} is driven by the need to create transparent, secure, and decentralized electronic voting systems that can ensure trust in results and prevent fraud. Traditional centralized systems have a number of disadvantages, such as vulnerability to attacks, lack of transparency, and dependence on trusted authorities. The use of blockchain technologies eliminates these problems by ensuring data immutability, decentralization, and automated result verification~\ref{lit:1}.
+  \textit{Relevance of the topic} is driven by the need to create transparent, secure, and decen-tralized electronic voting systems that can ensure trust in results and prevent fraud. Traditional centralized systems have a number of disadvantages, such as vulnera-bility to attacks, lack of transparency, and dependence on trusted authorities. The use of blockchain technologies eliminates these problems by ensuring data immutability, de-centralization, and automated result verification~\ref{lit:11}.
 
-  \textit{The aim of the work} was to develop a functional web application for electronic voting based on blockchain. The application allows organizers to create votes and participants to cast their votes through an intuitive interface. The voting results are stored on the blockchain, ensuring their immutability and transparency. Rust was used to implement smart contracts, the Anchor framework for their development, and TypeScript, React, and Tailwind CSS for the client side. Solana was chosen as the blockchain platform for its high performance and ease of use~\ref{lit:2}.
+  \textit{The aim of the work} was to develop a functional web application for electronic voting based on blockchain. The application allows organizers to create votes and parti-cipants to cast their votes through an intuitive interface. The voting results are stored on the blockchain, ensuring their immutability and transparency. Rust was used to implement smart contracts, Anchor framework for their development, and TypeScript, React and Tailwind CSS for the client side. Solana was chosen as the blockchain plat-form for its high performance and ease of use~\ref{lit:21}.
 
-  Among \textit{similar solutions}, the Voatz system can be mentioned, which also uses blockchain for voting but is criticized for its closed source code~\ref{lit:3}, and the Estonian i-Voting system based on electronic identification~\ref{lit:4}. Unlike them, the proposed application combines openness, high Solana performance, and a convenient interface.
+  Among \textit{similar solutions}, the Voatz system can be mentioned, which also uses block-chain for voting but is criticized for its closed source code~\ref{lit:31}, and the Estonian i-Voting system based on electronic identification~\ref{lit:41}. Unlike them, the proposed applica-tion combines openness, high Solana performance, and a convenient interface.
 
   \textit{The application runs} in a browser connected to the Solana blockchain network (local network or devnet) with a Phantom Wallet crypto wallet. The application can be used for local surveys, corporate voting, or as a foundation for further research in the field of decentralized voting systems.
 
-  \textit{Structure of the explanatory note of the Bachelor's qualification work}. Abstract, introduction, five chapters, conclusions, bibliography, appendices. The total volume is 80 pages, including 53 pages of main text, 14 figures, 15 tables, and 6 appendices. The bibliography contains references to 11 sources.
+  \textit{Structure of the explanatory note of the Bachelor's qualification work}. Abstract, introduction, five chapters, conclusions, bibliography, appendices. The total volume is 78 pages, including 53 pages of main text, 14 figures, 15 tables, and 6 appendices. The bibliography contains references to 11 sources.
 
-  \textit{Keywords}. Solana, smart contract, web application, electronic voting, decentralized application.
+  \textit{Keywords}. Solana, smart contract, web application, electronic voting, decentrali-zed application.
 
   \begin{enumerate}[label={[\arabic*]}]
-    \item \label{lit:1} Awosika E. What Is Blockchain Voting?. URL: \url{https://second-pocket-shoot-73.hashnode.dev/what-is-blockchain-voting}.
-    \item \label{lit:2} Network Performance Report - October 2022. \textit{Solana}. URL: \url{https://solana.com/news/network-performance-report-october-2022}.
-    \item \label{lit:3} Security and technology. \textit{Voatz}. URL: \url{https://voatz.com/security-and-technology/}.
-    \item \label{lit:4} Introduction to i-voting. \textit{Valimised}. URL: \url{https://www.valimised.ee/en/internet-voting/more-about-i-voting/introduction-i-voting}.
+    \item \label{lit:11} Awosika E. What Is Blockchain Voting?. URL: \url{https://second-pocket-shoot-73.hashnode.dev/what-is-blockchain-voting}.
+    \item \label{lit:21} Network Performance Report - October 2022. \textit{Solana}. URL: \url{https://solana.com/news/network-performance-report-october-2022}.
+    \item \label{lit:31} Security and technology. \textit{Voatz}. URL: \url{https://voatz.com/security-and-technology/}.
+    \item \label{lit:41} I-voting. \textit{Valimised}. URL: \url{https://www.valimised.ee/en/internet-voting/more-about-i-voting/introduction-i-voting}.
   \end{enumerate}
 
   
   \tableofcontents
   \newpage
 
-  \tocchap{Перелік скорочень, символів і спеціальних термінів}
+  \tocchap{Перелік скорочень}
   
   \printglossaries
   
@@ -253,7 +263,7 @@
 
   Іншим різновидом є централізовані онлайн-системи голосування, які забезпечують дистанційну участь виборців через інтернет. Вони реалізуються як веб- або мобільні застосунки і особливо корисні в умовах пандемій чи для виборців за кордоном. Попри зручність, ці системи мають свої виклики: захист від кібератак, гарантія цілісності та конфіденційності голосів, запобігання повторному голосуванню, а також складність незалежної верифікації результатів.
   
-  У зв’язку з викликами, притаманними централізованим рішенням, зростає зацікавленість у децентралізованих системах голосування, зокрема на основі блокчейн-технологій. У таких системах дані про голоси зберігаються в розподіленому реєстрі, змінити який без консенсусу учасників мережі практично неможливо. Платформи на кшталт Voatz декларують використання блокчейну для досягнення прозорості, незмінності та довіри \cite{voatz}. Водночас Voatz критикували за закритість вихідного коду та виявлені вразливості \cite{voatzcriticism}, що підкреслює важливість відкритості й незалежного аудиту в таких рішеннях.
+  У зв’язку з викликами, притаманними централізованим рішенням, зростає зацікавленість у децентралізованих системах голосування, зокрема на основі блокчейн технологій. У таких системах дані про голоси зберігаються в розподіленому реєстрі, змінити який без консенсусу учасників мережі практично неможливо. Платформи на кшталт Voatz декларують використання блокчейну для досягнення прозорості, незмінності та довіри \cite{voatz}. Водночас Voatz критикували за закритість вихідного коду та виявлені вразливості \cite{voatzcriticism}, що підкреслює важливість відкритості й незалежного аудиту в таких рішеннях.
 
   Ще одним прикладом масштабного впровадження електронного голосування є система i-Voting в Естонії \cite{ivoting}, яка з 2017 року дає громадянам змогу голосувати онлайн із використанням електронного підпису. Хоча ця система не базується на блокчейні, вона спирається на перевірену інфраструктуру електронної ідентифікації та шифрування й продемонструвала на практиці свою ефективність у загальнодержавному масштабі.
   
@@ -292,7 +302,7 @@
   
   \begin{enumerate}
     \item Розробити деталізовану архітектуру системи електронного голосування, визначивши ключові модулі, їхню взаємодію та відповідальність. Архітектурне рішення має враховувати вимоги до безпеки, масштабованості та зручності використання.
-    \item Реалізувати програмну частину системи, включаючи смарт-контракти на блокчейн-платформі, а також клієнтський вебінтерфейс для взаємодії користувачів із системою.
+    \item Реалізувати програмну частину системи, включаючи смарт-контракти на блокчейн платформі, а також клієнтський вебінтерфейс для взаємодії користувачів із системою.
     \item Забезпечити інтеграцію з криптовалютним гаманцем для безпечної аутентифікації користувачів та підписання транзакцій голосування.
     \item Створити та провести тестування розробленої системи на відповідність визначеним функціональним та нефункціональним вимогам, включаючи перевірку безпеки, продуктивності та зручності використання.
     \item Підготувати технічну документацію, що описує процес розробки, архітектуру системи, інструкції з використання та результати тестування.
@@ -305,8 +315,8 @@
   Вхідними даними для розробленого програмного забезпечення є:
   
   \begin{itemize}
-    \item Реєстраційна інформація користувачів (ідентифікатори, публічні ключі гаманців), що отримується з підключеного гаманця. Формат представлення – дані, що передаються через вебформи та API гаманця.
-    \item Параметри голосування, що задаються організатором через вебінтерфейс (назва, опис, перелік варіантів вибору, тривалість голосування). Формат представлення – структуровані дані, що передаються через вебформи.
+    \item Реєстраційна інформація користувачів (ідентифікатори, публічні ключі гаманців), що отримується з підключеного гаманця. Формат представлення – дані, що передаються через вебформи та \gls{api} гаманця.
+    \item Параметри голосування, що задаються організатором через вебінтерфейс (назва, опис, перелік варіантів вибору, тривалість). Формат представлення – структуровані дані, що передаються через вебформи.
     \item Подані голоси користувачів, що вибираються ними через вебінтерфейс та підписуються за допомогою їхніх приватних ключів. Формат представлення – ідентифікатор обраного варіанту та криптографічний підпис транзакції.
   \end{itemize}
   
@@ -324,7 +334,7 @@
 
   Мову програмування для розробки смарт-контрактів було обрано Rust. Однією з основних причин вибору Rust є його висока продуктивність та безпека. Rust дозволяє контролювати управління пам'яттю без використання збирача сміття, що дозволяє досягати кращої ефективності та передбачуваності в порівнянні з іншими мовами. Мова забезпечує гарантії безпеки пам'яті через систему власності і запозичення, що дозволяє уникати багатьох типових помилок, таких як витоки пам'яті або доступ до неініціалізованої пам'яті, зберігаючи високу продуктивність. Такий підхід є особливо важливим при розробці смарт-контрактів для блокчейн-платформи, де потрібно обробляти великі обсяги транзакцій і зберігати ефективність виконання програм при обмежених ресурсах. Завдяки цьому Rust є ідеальним вибором для розробки смарт-контрактів на Solana.
 
-  Для спрощення процесу розробки смарт-контрактів на Solana було обрано використання бібліотеки Anchor. Anchor - це фреймворк для розробки смарт-контрактів, який забезпечує більш високий рівень абстракції і значно спрощує роботу з Solana, дозволяючи швидше і безпечніше створювати смарт-контракти. Anchor також допомагає в автоматизації багатьох аспектів розробки, таких як перевірка транзакцій, підписання і виконання, що дозволяє зосередитися на бізнес-логіці, а не на низькорівневих деталях взаємодії з блокчейном.
+  Для спрощення процесу розробки смарт-контрактів на Solana було обрано використання бібліотеки Anchor. Anchor - це фреймворк для розробки смарт-конт-рактів, який забезпечує більш високий рівень абстракції і значно спрощує роботу з Solana, дозволяючи швидше і безпечніше створювати смарт-контракти. Anchor також допомагає в автоматизації багатьох аспектів розробки, таких як перевірка транзакцій, підписання і виконання, що дозволяє зосередитися на бізнес-логіці, а не на низькорівневих деталях взаємодії з блокчейном.
 
   % TODO: any other will do
   Важливою частиною застосунку є інтеграція з криптовалютним гаманцем для забезпечення безпечного доступу користувачів до системи. Вибір Phantom Wallet зумовлений не лише його популярністю серед користувачів Solana, а й зручністю для розробників. Phantom надає простий інтерфейс для взаємодії зі смарт-контрактами, що значно спрощує інтеграцію з блокчейном і пришвидшує розробку. Він також підтримує безпечне зберігання ключів і легке підтвердження транзакцій, що робить його оптимальним вибором для системи голосування.
@@ -442,14 +452,14 @@
   Система взаємодіє з наступними програмними компонентами:
   \begin{itemize}
     \item Блокчейн Solana — через \gls{rpc}-сервіси для запису та зчитування даних смарт-контрактів.
-    \item Криптовалютний гаманець Phantom Wallet — через його API для аутентифікації користувачів та підписання транзакцій.
+    \item Криптовалютний гаманець Phantom Wallet — через його \gls{api} для аутентифікації користувачів та підписання транзакцій.
     \item Браузери (сучасні версії Chrome, Firefox, Safari, Edge, тощо).
     \item Бібліотека Anchor для спрощення взаємодії зі смарт-контрактами Solana.
     \item Бібліотека React для розробки клієнтського вебінтерфейсу.
   \end{itemize}
   
   \subsubsection{Комунікаційні інтерфейси}
-  Вебзастосунок використовує стандартні протоколи \gls{http}, \gls{https} для взаємодії з \gls{rpc}-сервісами Solana. Для взаємодії з гаманцем Phantom Wallet використовуються специфічні методи, передбачені його API. Безпека комунікацій забезпечується використанням протоколу \gls{https}.
+  Вебзастосунок використовує стандартні протоколи для взаємодії з \gls{rpc}-сервісами Solana: \gls{http} та \gls{https}. Для взаємодії з гаманцем Phantom Wallet використовуються специфічні методи, передбачені його \gls{api}. Безпека комунікацій забезпечується використанням протоколу \gls{https}.
   
   \subsection{Інші нефункційні вимоги}
   \subsubsection{Вимоги продуктивності}
@@ -485,7 +495,7 @@
 
   \section{Проєктування загальної архітектури застосунку}
   
-  Архітектура застосунку для проведення голосувань базується на принципах децентралізації, прозорості та безпеки, що є фундаментальними вимогами для сучасних електронних систем голосування. Застосунок складається з чотирьох основних компонентів: клієнтської частини, Phantom Wallet, смарт-контракту та блокчейн-платформи Solana. Кожен з них виконує окремі функції у процесі голосування, забезпечуючи ефективну, безпечну та прозору взаємодію між користувачем і блокчейном. Схематичне відображення взаємодії між компонентами представлено на діаграмі компонентів на рисунку~\ref{fig:UMLComponent}.
+  Архітектура застосунку для проведення голосувань базується на принципах децентралізації, прозорості та безпеки, що є фундаментальними вимогами для сучасних електронних систем голосування. Застосунок складається з чотирьох основних компонентів: клієнтської частини, Phantom Wallet, смарт-контракту та блок-чейн-платформи Solana. Кожен з них виконує окремі функції у процесі голосування, забезпечуючи ефективну, безпечну та прозору взаємодію між користувачем і блокчейном. Схематичне відображення взаємодії між компонентами представлено на діаграмі компонентів на рисунку~\ref{fig:UMLComponent}.
 
   \begin{figure}[H]
     \centering
@@ -506,7 +516,7 @@
   
   \section{Проєктування функціональних модулів клієнтської частини}
   
-  Функціональність клієнтської частини застосунку організована навколо шести ключових модулів, які забезпечують повний цикл взаємодії користувачів із системою електронного голосування, починаючи від перегляду інформації про власний обліковий запис до безпосередньої участі у голосуваннях та ознайомлення з їхніми результатами. Ці модулі побудовані таким чином, щоб забезпечити інтуїтивно зрозумілий процес для різних категорій користувачів, використовуючи при цьому можливості блокчейн-платформи Solana для гарантування безпеки та прозорості. Взаємодія між користувачами різних ролей та функціональними можливостями системи наочно представлена на діаграмі прецедентів, відображеній на рисунку~\ref{fig:UMLUseCase}.
+  Функціональність клієнтської частини організована навколо шести ключових модулів, які забезпечують повний цикл взаємодії користувачів із системою електронного голосування, починаючи від перегляду інформації про власний обліковий запис до безпосередньої участі у голосуваннях та ознайомлення з їхніми результатами. Ці модулі побудовані таким чином, щоб забезпечити інтуїтивно зрозумілий процес для різних категорій користувачів, використовуючи при цьому можливості блокчейн-платформи Solana для гарантування безпеки та прозорості. Взаємодія між користувачами різних ролей та функціональними можливостями системи наочно представлена на діаграмі прецедентів, відображеній на рисунку~\ref{fig:UMLUseCase}.
 
 Діаграма прецедентів ілюструє, як дві основні ролі користувачів – "Виборець" та "Організатор" – взаємодіють із застосунком. "Виборець" має можливість переглядати інформацію про свій обліковий запис, включаючи баланс та історію транзакцій, обирати кластер мережі Solana для роботи, переглядати результати вже завершених голосувань, додавати власну адресу кластеру та, що є його основною функцією, брати участь у голосуваннях шляхом вибору одного з доступних варіантів. Процес голосування є складною дією, яка включає попередній вибір варіанту.
 
@@ -667,7 +677,7 @@
   
   \subsubsection{Тестування продуктивності}
   
-  Тестування продуктивності застосунку проводилось з використанням утиліти solana-bench-tps, яка є стандартним інструментом для вимірювання пропускної здатності кластерів у мережі Solana. Утиліта генерує навантаження, надсилаючи велику кількість транзакцій на зазначений RPC-ендпоінт, після чого вимірює максимальний та середній рівень \gls{tps}, загальну кількість оброблених транзакцій, відсоток втрат транзакцій. Це дозволило оцінити масштабованість та стабільність системи.
+  Тестування продуктивності застосунку проводилось з використанням утиліти sol-ana-bench-tps, яка є стандартним інструментом для вимірювання пропускної здатності кластерів у мережі Solana. Утиліта генерує навантаження, надсилаючи велику кількість транзакцій на зазначений RPC-ендпоінт, після чого вимірює максимальний та середній рівень \gls{tps}, загальну кількість оброблених транзакцій, відсоток втрат транзакцій. Це дозволило оцінити масштабованість та стабільність системи.
   
   \subsection{Функціональне тестування}
   
@@ -688,7 +698,7 @@
   
   \subsubsection*{Відомі дефекти}
 
-  \paragraph{Дефект:} Як описано в тестовому сценарії №5.1 --- якщо користувач подасть голос за гранично можливий час до завершення голосування --- голос не було зараховано.
+  \paragraph{Дефект:} Як описано в тестовому сценарії №5.1 — якщо користувач подасть голос за гранично можливий час до завершення голосування — голос не було зараховано.
 
   \paragraph{Причина:} Проблема полягає в недостатній кількості часу для передачі даних та успішного оброблення транзакції. Мережеві затримки, навантаження на мережу, час обробки транзакцій, а також внутрішня робота в застосунку займають час, протягом якого транзакція не може бути завершена.
 
@@ -747,7 +757,7 @@
   
   \subsection{Метрики}
   
-  Для оцінки якості та успішності тестування системи електронного голосування було використано декілька ключових метрик. Відсоток успішності тестових сценаріїв показує, наскільки коректно реалізовано функціонал, вимірюючи частку успішно виконаних тестів у кожній категорії. Для оцінки продуктивності системи були важливими метрики пропускної здатності --- максимальна та середня кількість транзакцій за секунду, а також відсоток втрат транзакцій, що свідчить про стабільність системи під навантаженням.
+  Для оцінки якості та успішності тестування системи електронного голосування було використано декілька ключових метрик. Відсоток успішності тестових сценаріїв показує, наскільки коректно реалізовано функціонал, вимірюючи частку успішно виконаних тестів у кожній категорії. Для оцінки продуктивності системи були важливими метрики пропускної здатності — максимальна та середня кількість транзакцій за секунду, а також відсоток втрат транзакцій, що свідчить про стабільність системи під навантаженням.
   
   \subsection{Критерій прийняття/відхилення релізу}
   
@@ -796,7 +806,7 @@
     \label{tab:ek1}\\\hline
     \multicolumn{1}{|c|}{\textbf{Фактори}} & \textbf{Середня експертна оцінка, бали} & \textbf{Середня вагомість факторів} & \textbf{Зважений рівень впливу, бали} \\\hline
     \multicolumn{1}{|c|}{\textbf{1}} & \textbf{2} & \textbf{3} & \textbf{4} \\\endfirsthead
-    \multicolumn{4}{r}{Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
+    \multicolumn{4}{r}{\fontsize{14}{16.8}\selectfont Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
     \multicolumn{4}{|c|}{\textit{Фактори зовнішнього середовища}} \\\hline
     Споживачі & 4 & 0,11 & 0,44 \\\hline
     Постачальники & 1 & 0,10 & 0,10 \\\hline
@@ -842,7 +852,7 @@
     \caption{\\\centering\textbf{Бюджет витрат матеріалів та комплектуючих виробів}}
     \label{tab:ek2}\\\hline
     \textbf{Назва матеріалів та комплектуючих} & \textbf{Марка, тип, модель} & \textbf{Кіль-кість, шт.} & \textbf{Ціна за одиницю, грн.} & \textbf{Разом, грн.} \\\hline\endfirsthead
-    \multicolumn{5}{r}{Продовження табл. \thetable} \\\endhead\hline
+    \multicolumn{5}{r}{\fontsize{14}{16.8}\selectfont Продовження табл. \thetable} \\\endhead\hline
     Зовнішній SSD-диск для зберігання резервних копій & Samsung T7 Shield 1TB USB 3.2 & 1 & 3\,400.00 & 3\,400.00 \\\hline
     Набір канцелярії & A4, ручки, стікери & 1 комплект & 300.00 & 300.00 \\\hline
     \textbf{Разом} &&& & \textbf{3\,700.00} \\\hline
@@ -852,10 +862,11 @@
   У таблиці \ref{tab:ek3} показано бюджет на купівлю основних засобів, де вказані кількість одиниць, ціна, термін експлуатації амортизація.
 
   \begin{tight}
-  \begin{longtable}{|C{0.12}|C{0.12}|C{0.095}|C{0.12}|C{0.12}|C{0.09}|C{0.11}|}
+  \begin{longtable}{|C{0.12}|C{0.12}|C{0.095}|C{0.12}|C{0.1}|C{0.09}|C{0.13}|}
     \caption{\\\centering\textbf{Бюджет витрат на купівлю основних засобів}}
     \label{tab:ek3}\\\hline
-    \textbf{Витрати на куповані засоби} & \textbf{Марка, тип, модель} & \textbf{Кіль-кість, шт.} & \textbf{Ціна за одиницю, грн.} & \textbf{Разом, грн.} & \textbf{Термін експлуатації, років} & \textbf{Місячна сума амортизації, грн.} \\\hline
+    \textbf{Витрати на куповані засоби} & \textbf{Марка, тип, модель} & \textbf{Кіль-кість, шт.} & \textbf{Ціна за одиницю, грн.} & \textbf{Разом, грн.} & \textbf{Термін експлуатації, років} & \textbf{Місячна сума амортизації, грн.} \\\endfirsthead\hline
+    \multicolumn{7}{r}{\fontsize{14}{16.8}\selectfont Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
     Ноутбук розробника & ASUS Vivobook Pro 15 OLED & 3 & 20\,000.00 & 60\,000.00 & 4 & 1\,250.00 \\\hline
     Смартфон для тестування мобільного застосунку & Samsung Galaxy A34 5G 6/128GB & 1 & 10\,500.00 & 10\,500.00 & 3 & 291.67 \\\hline
     Монітор зовнішній & LG 24MP60G-B 24” IPS FHD & 1 & 5\,000.00 & 5\,000.00 & 5 & 83.33 \\\hline
@@ -870,7 +881,7 @@
     \caption{\vspace{0.35em}\\\centering\textbf{Бюджет витрат на оплату праці}}
     \label{tab:ek4}\\\hline
     \textbf{Посада, спеціальність} & \textbf{Кількість працівників, осіб} & \textbf{Час роботи, дні} & \textbf{Денна заробітна плата працівників, грн.} & \textbf{Сума витрат на оплату праці, грн.} \\\hline\endfirsthead
-    \multicolumn{5}{r}{Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
+    \multicolumn{5}{r}{\fontsize{14}{16.8}\selectfont Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
     \multicolumn{5}{|c|}{\textit{Основна заробітна плата}} \\\hline
     Керівник проєкту & 1 & 22 & 1\,000.00 & 22\,000.00 \\\hline
     Розробник ПЗ & 1 & 10 & 2\,000.00 & 20\,000.00 \\\hline
@@ -884,14 +895,14 @@
   \end{longtable}
   \end{tight}
 
-  В таблиці \ref{tab:ek5} наведено розрахунок обов’язкових відрахувань і податків, зокрема єдиного внеску на соціальне страхування, який становить 22\% від зарплати.
+  В таблиці \ref{tab:ek5} наведено розрахунок обов’язкових відрахувань і податків, зок-рема єдиного внеску на соціальне страхування, який становить 22\% від зарплати.
 
   \begin{tight}
-  \begin{longtable}{|C{0.2}|C{0.15}|C{0.15}|C{0.166}|C{0.16}|}
+  \begin{longtable}{|C{0.16}|C{0.15}|C{0.15}|C{0.166}|C{0.2}|}
     \caption{\vspace{0.35em}\\\centering\textbf{Бюджет обов'язкових відрахувань та податків}}
     \label{tab:ek5}\\\hline
     \textbf{Посада, спеціальність} & \textbf{Сума основної заробітної плати} & \textbf{Сума додаткової заробітної плати} & \textbf{Разом витрат на оплату праці} & \textbf{Сума єдиного внеску на соціальне страхування, грн.} \\\hline\endfirsthead
-    \multicolumn{5}{r}{Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
+    \multicolumn{5}{r}{\fontsize{14}{16.8}\selectfont Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
     Керівник проєкту & 22\,000.00 & 2\,200.00 & 24\,200.00 & 5\,324.00 \\\hline
     Розробник ПЗ & 20\,000.00 & 2\,000.00 & 22\,000.00 & 4\,840.00 \\\hline
     Менеджер зі збуту & 22\,000.00 & 2\,200.00 & 24\,200.00 & 5\,324.00 \\\hline
@@ -906,7 +917,7 @@
     \caption{\vspace{0.35em}\\\centering\textbf{Бюджет загальновиробничих витрат}}
     \label{tab:ek6}\\\hline
     \multicolumn{1}{|c|}{\textbf{Статті витрат}} & \textbf{Сума, грн.} \\\hline\endfirsthead
-    \multicolumn{2}{r}{Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
+    \multicolumn{2}{r}{\fontsize{14}{16.8}\selectfont Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
     \multicolumn{2}{|c|}{\textit{Змінні загальновиробничі витрати}} \\\hline
     Заробітна плата допоміжного персоналу & 0.00 \\ \hline
     Витрати на МШП & 3\,700.00 \\ \hline
@@ -933,7 +944,7 @@
     \label{tab:ek7}\\\hline
     \multicolumn{1}{|c|}{\textbf{Статті витрат}} & \textbf{Сума, грн.} \\\hline
     \multicolumn{1}{|c|}{\textbf{1}} & \textbf{2} \\\endfirsthead
-    \multicolumn{2}{r}{Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
+    \multicolumn{2}{r}{\fontsize{14}{16.8}\selectfont Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
     \multicolumn{2}{|c|}{\textit{Адміністративні витрати}} \\ \hline
     Заробітна плата адміністративного персоналу & 22\,000.00\\ \hline
     Витрати на МШП & 3\,700.00 \\ \hline
@@ -965,7 +976,7 @@
     \caption{\vspace{0.35em}\\\centering\textbf{Зведений кошторис витрат на розробку проєктного рішення (продукту)}}
     \label{tab:ek8}\\\hline
     \multicolumn{1}{|c|}{\textbf{Статті витрат}} & \textbf{Разом, грн.} \\\hline\endfirsthead
-    \multicolumn{2}{r}{Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
+    \multicolumn{2}{r}{\fontsize{14}{16.8}\selectfont Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
     Купівельні напівфабрикати та комплектуючі вироби & 3\,700.00 \\\hline
     Паливо та електроенергія на технологічні цілі & 1\,000.00 \\\hline
     Амортизаційні відрахування основних фондів & 1\,625.00\\\hline
@@ -992,7 +1003,7 @@
     \hline
     \multicolumn{1}{|c|}{\textbf{Показники}} & \textbf{Сума, грн.} \\\hline
     \multicolumn{1}{|c|}{\textbf{1}} & \textbf{2} \\\endfirsthead
-    \multicolumn{2}{r}{Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
+    \multicolumn{2}{r}{\fontsize{14}{16.8}\selectfont Продовження табл. \thetable\vspace{0.35em}} \\\endhead\hline
     Дохід від реалізації продукції & 701\,434.50 \\\hline
     Податок на додану вартість & 140\,286.90 \\\hline
     Чистий дохід від реалізації продукції & 561\,147.60 \\\hline
@@ -1013,7 +1024,7 @@
 
   Обрана стратегія — стратегія нового продукту, що передбачає впровадження інноваційного рішення з унікальними властивостями. Такий підхід відповідає ринковим тенденціям і дозволяє максимально задовольнити потреби цільової аудиторії.
 
-  Ціна програмного забезпечення становить 140\,286.90 грн. За прогнозом, реалізація обраної стратегії забезпечить чистий прибуток у розмірі 275\,400.77 грн, що свідчить про економічну ефективність проєкту та його перспективність для інвесторів.
+  Ціна програмного забезпечення становить 140\,286.90 грн. За прогнозом, реалізація обраної стратегії забезпечить чистий прибуток у розмірі 275\,400.77 грн, що свідчить про перспективність та економічну ефективність проєкту.
   
   \tocchap{Висновки}
   
@@ -1061,7 +1072,7 @@
   \end{thebibliography}
   
   \appendix
-  \renewcommand{\thechapter}{\Alph{chapter}}
+  \renewcommand{\thechapter}{\cyrillicAlph{chapter}}
   \renewcommand{\chaptername}{Додаток}
  
   \tocnumchap{Приклад інтерфейсу користувача}
@@ -1112,7 +1123,7 @@
   \tocnumchap{Інструкція користувача}
   \label{app:instruction}
   
-  \section*{Компоненти ПЗ}
+  \tocless\section{Компоненти ПЗ}
   
   Розроблене програмне забезпечення реалізовано з використанням мови програмування Rust. Як середовище розробки застосовано редактор коду Helix та термінал fish. Було використано систему керування пакетами Cargo для збирання проєкту, а також бібліотеки, пов’язані із взаємодією з блокчейн-платформою Solana. Серверна логіка реалізована як смарт-контракт, який виконується на блокчейні, а клієнтська частина – у вигляді React-застосунку.
 
@@ -1123,7 +1134,7 @@
     \caption{\vspace{0.35em}\\\centering\textbf{Основні файли проєкту}}
     \label{tab:instr1}\\\hline
     \textbf{№} & \textbf{Файл} & \multicolumn{1}{|c|}{\textbf{Призначення}} \\\hline\endfirsthead
-    \multicolumn{3}{r}{Продовження табл. \thetable\vspace{0.35em}} \\\hline
+    \multicolumn{3}{r}{\fontsize{14}{16.8}\selectfont Продовження табл. \thetable\vspace{0.35em}} \\\hline
     \textbf{№} & \textbf{Файл} & \multicolumn{1}{|c|}{\textbf{Призначення}} \\\hline\endhead\hline
     1 & anchor/Anchor.toml & Файл конфігурації Anchor, що містить налаштування проєкту, адресу програми, параметри середовища та кластерів для розгортання. \\\hline
     2 & anchor/target/idl/*.json & Опис інтерфейсу смарт-контракту у форматі JSON, який використовується для взаємодії клієнтської частини з програмою. \\\hline
@@ -1132,25 +1143,25 @@
   \end{longtable}
   \end{tight}
   
-  \section*{Встановлення ПЗ}
+  \tocless\section{Встановлення ПЗ}
   
   Для встановлення застосунку необхідно мати встановлені Solana CLI (версія 2.1.17), Anchor CLI (версія 0.30.1) та Node.js (версія 22.14.0).  
 
   Перед розгортанням смарт-контракту потрібно згенерувати файл з парою ключів програми keypair.json і вказати його шлях у anchor/Anchor.toml.
 
-  Для розгортання смарт-контракту слід задати адресу потрібного кластера Solana у файлі anchor/Anchor.toml, після чого виконати команду npm run anchor deploy.
+  Для розгортання смарт-контракту слід задати адресу потрібного кластера So-lana у файлі anchor/Anchor.toml, після чого виконати команду npm run anchor deploy.
   
   Для розгортання клієнтської частини достатньо виконати команду npm install \&\& npm run build \&\& npm start.
   
-  \section*{Налаштування ПЗ}
+  \tocless\section{Налаштування ПЗ}
   
   Для коректної роботи програми необхідно налаштувати підключення до мережі Solana, вказати адресу кластера, а також забезпечити наявність достатнього балансу SOL на акаунті користувача. Крім того, слід правильно розгорнути смарт-контракт.
   
-  \section*{Базові функції ПЗ}
+  \tocless\section{Базові функції ПЗ}
   
-  Розроблене програмне забезпечення дозволяє створювати та проводити голосування на базі блокчейну Solana. Один зі способів доступу до функцій — через клієнтський веб-інтерфейс, який забезпечує взаємодію користувача з системою.
+  Розроблене програмне забезпечення дозволяє створювати та проводити голосування на базі блокчейну Solana. Один зі способів доступу до функцій — через клієнтський вебінтерфейс, який забезпечує взаємодію користувача з системою.
   
-  \section*{Аналіз помилок}
+  \tocless\section{Аналіз помилок}
   
   Якщо клієнтський інтерфейс відображає помилку доступу до програми, необхідно впевнитися в успішному розгортанні смарт-контракту.
   
@@ -1160,22 +1171,290 @@
   
   \tocnumchap{Програмний код}
   \label{app:code}
-  
+ 
+  \tocless\section{Лістинг файлу create\_poll.rs}
+ 
   \begin{multicols}{2}
-  
-  \textbf{Файл create\_poll.rs}
   {\lstset{basicstyle=\fontsize{8}{10}\selectfont\ttfamily}
   \lstinputlisting{~/Repositories/voting-dapp/anchor/programs/votingdapp/src/instructions/create_poll.rs}
   }
+  \end{multicols}
   
-  \textbf{Файл vote.rs}
+  \tocless\section{Лістинг файлу edit\_poll.rs}
+  
+  \begin{multicols}{2}
+  {\lstset{basicstyle=\fontsize{8}{10}\selectfont\ttfamily}
+  \lstinputlisting{~/Repositories/voting-dapp/anchor/programs/votingdapp/src/instructions/edit_poll.rs}
+  }
+  \end{multicols}
+  
+  \tocless\section{Лістинг файлу vote.rs}
+  
+  \begin{multicols}{2}
   {\lstset{basicstyle=\fontsize{8}{10}\selectfont\ttfamily}
   \lstinputlisting{~/Repositories/voting-dapp/anchor/programs/votingdapp/src/instructions/vote.rs}
   }
+  \end{multicols}
   
-  \textbf{Файл votingsdapp-ui.tsx}
+  \tocless\section{Лістинг файлу votingsdapp-ui.tsx}
+  
+  \begin{multicols}{2}
   {\lstset{basicstyle=\fontsize{8}{10}\selectfont\ttfamily}
-  \lstinputlisting{~/Repositories/voting-dapp/src/components/votingdapp/votingdapp-ui.tsx}
+  \begin{lstlisting}
+...
+
+function PollResultsView({
+  candidates,
+  onBack
+}: {
+  candidates: { name: string; votesCount: BN }[],
+  onBack: () => void
+}) {
+  const totalVotes = useMemo(() => {
+    return candidates.reduce((sum, candidate) => sum + candidate.votesCount.toNumber(), 0)
+  }, [candidates])
+
+  return (
+    <div className="w-full p-6">
+      <div className="flex items-center mb-6">
+        <button
+          onClick={onBack}
+          className="text-lg bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-full px-3 py-1"
+        >
+          ←
+        </button>
+      </div>
+
+      <h3 className="text-xl font-bold mb-4">Poll Results</h3>
+
+      <div className="space-y-4 mb-6">
+        {candidates.map((candidate) => {
+          const votes = candidate.votesCount.toNumber()
+          const percentage = totalVotes > 0 ? (votes / totalVotes * 100) : 0
+
+          return (
+            <div key={candidate.name} className="space-y-2">
+              <div className="flex justify-between">
+                <span className="font-medium">{candidate.name}</span>
+                <span>{votes} votes ({percentage.toFixed(1)}%)</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-4">
+                <div
+                  className="bg-blue-600 h-4 rounded-full"
+                  style={{ width: `${percentage}%` }}
+                ></div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      <div className="bg-gray-100 p-4 rounded-lg">
+        <h4 className="font-semibold mb-2">Summary</h4>
+        <p>Total votes cast: {totalVotes}</p>
+        {totalVotes > 0 && (
+          <p>
+            Leading: {candidates.reduce((prev, current) =>
+              prev.votesCount.gt(current.votesCount) ? prev : current
+            ).name}
+          </p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+...
+
+export function VotingdappList() {
+  const { accounts, getProgramAccount } = useVotingdappProgram()
+
+  if (getProgramAccount.isLoading) {
+    return <div className="flex justify-center items-center h-full">
+      <span className="loading loading-spinner loading-lg"></span>
+    </div>
+  }
+  if (!getProgramAccount.data?.value) {
+    return (
+      <div className="alert alert-info flex justify-center">
+        <span>Program account not found. Make sure you have deployed the program and are on the correct cluster.</span>
+      </div>
+    )
+  }
+
+  return (
+    <div className={'space-y-6'}>
+      {accounts.isLoading ? (
+        <div className="flex justify-center items-center h-full">
+          <span className="loading loading-spinner loading-lg"></span>
+        </div>
+      ) : accounts.data?.length ? (
+        <div className="grid md:grid-cols-2 gap-4">
+          {accounts.data?.map((account) => (
+            <VotingdappCard key={account.publicKey.toString()} account={account.publicKey} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-center">
+          <h2 className={'text-2xl'}>No polls</h2>
+          No polls found. Create one to get started.
+        </div>
+      )}
+    </div>
+  )
+}
+
+...
+
+function VotingdappCardPopup({ account, onClose }: { account: PublicKey, onClose: () => void }) {
+  const { voteMutation } = useVotingdappProgram()
+  const { accountQuery } = useVotingdappProgramAccount({ account })
+
+  type LoadingState = { [key: string]: boolean }
+  const [loadingState, setLoadingState] = useState<LoadingState>({})
+  const [viewMode, setViewMode] = useState<'main' | 'edit' | 'results'>('main')
+  const { publicKey } = useWallet()
+
+  const isCreator = useMemo(() => {
+    const creator = accountQuery.data?.creator?.toString()
+    return creator && publicKey ? creator === publicKey.toBase58() : false
+  }, [accountQuery.data?.creator, publicKey])
+
+  const name = useMemo(() => accountQuery.data?.name ?? '', [accountQuery.data?.name])
+  const description = useMemo(() => accountQuery.data?.description, [accountQuery.data?.description])
+  const timestamp = accountQuery.data?.timestamp?.toNumber()
+  const timeLeft = useCountdown(timestamp)
+  const candidates = useMemo(() => accountQuery.data?.candidates, [accountQuery.data?.candidates])
+
+  const {
+    error,
+    duration,
+    setDuration,
+    durationUnit,
+    setDurationUnit,
+    handleEdit
+  } = useEditPoll()
+
+  const handleVoteClick = async (candidate: { name: string; votesCount: BN }) => {
+    setLoadingState((prevState) => ({
+      ...prevState,
+      [candidate.name]: true,
+    }))
+
+    try {
+      await voteMutation.mutateAsync({ name: name, candidate: candidate.name })
+      await accountQuery.refetch()
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setLoadingState((prevState) => ({
+        ...prevState,
+        [candidate.name]: false,
+      }))
+    }
+  }
+
+  const onSaveEdit = async () => {
+    const timestamp = await handleEdit()
+    if (timestamp) {
+      // await editPollMutation.mutateAsync({ timestamp })
+      setViewMode('main')
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white rounded-xl w-full max-w-md shadow-lg relative overflow-hidden">
+        <div
+          className="flex w-[300%] transition-transform duration-500 ease-in-out"
+          style={{
+            transform: viewMode === 'edit' ? 'translateX(0)' :
+              viewMode === 'main' ? 'translateX(-33.33%)' :
+                'translateX(-66.66%)'
+          }}
+        >
+          <PollEditView
+            onSave={onSaveEdit}
+            onBack={() => setViewMode('main')}
+            error={error}
+            duration={duration}
+            setDuration={setDuration}
+            durationUnit={durationUnit}
+            setDurationUnit={setDurationUnit}
+          />
+
+          <div className="w-full p-6" style={{ flex: '0 0 33.33%' }}>
+            <h2 className="text-2xl font-bold text-center">{name}</h2>
+            <p className="text-gray-700 text-center mt-2">
+              {description}
+              <div className="text-gray-600 text-sm">
+                {timeLeft === 0 ? 'Voting has ended' : `Time left: ${formatTime(timeLeft)}`}
+              </div>
+            </p>
+            <div className="mt-6 space-y-4">
+              <h3 className="text-lg font-semibold">Candidates</h3>
+              {candidates?.map((candidate: { name: string; votesCount: BN }) => (
+                <div
+                  key={candidate.name}
+                  className="flex items-center justify-between border p-3 rounded-md"
+                >
+                  <div>
+                    <p className="font-medium">{candidate.name}</p>
+                    <p className="text-sm text-gray-500">{candidate.votesCount.toString()} votes</p>
+                  </div>
+                  <button
+                    className="bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={() => handleVoteClick(candidate)}
+                    disabled={loadingState[candidate.name] || timeLeft === 0}
+                  >
+                    {loadingState[candidate.name] ? (
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      "Vote"
+                    )}
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="flex justify-between mt-4">
+              {isCreator && (
+                <button
+                  className="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600"
+                  onClick={() => setViewMode('edit')}
+                >
+                  Edit Poll
+                </button>
+              )}
+              {timeLeft === 0 && (
+                <button
+                  className="px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600"
+                  onClick={() => setViewMode('results')}
+                >
+                  View Results
+                </button>
+              )}
+            </div>
+          </div>
+
+          <PollResultsView
+            candidates={candidates || []}
+            onBack={() => setViewMode('main')}
+          />
+        </div>
+
+        <div className="p-6">
+          <button
+            className="w-full px-4 py-2 bg-gray-300 text-gray-800 rounded-md"
+            onClick={onClose}
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+...\end{lstlisting}
   }
 
   \end{multicols}
@@ -1188,7 +1467,7 @@
     \caption{\vspace{0.35em}\\\centering\textbf{Тестові випадки функціональних тестів}}
     \label{tab:functests}\\\hline
     \textbf{ID | Name} & \multicolumn{2}{|c|}{\textbf{Опис}} \\\hline\endfirsthead
-    \multicolumn{3}{r}{Продовження табл. \thetable\vspace{0.35em}} \\\hline\endhead\hline
+    \multicolumn{3}{r}{\fontsize{14}{16.8}\selectfont Продовження табл. \thetable\vspace{0.35em}} \\\hline\endhead\hline
     
     №1.1 | Створення опитування & \multicolumn{2}{|L{0.375}|}{Перевірка успішного створення нового опитування} \\\hline
     \textbf{Кроки} & \textbf{Очікування} & \textbf{Результат} \\\hline
@@ -1281,7 +1560,7 @@
     \caption{\vspace{0.35em}\\\centering\textbf{Тестові випадки тестів безпеки}}
     \label{tab:sectests}\\\hline
     \textbf{ID | Name} & \multicolumn{2}{|c|}{\textbf{Опис}} \\\hline\endfirsthead
-    \multicolumn{3}{r}{Продовження табл. \thetable\vspace{0.35em}} \\\hline\endhead\hline
+    \multicolumn{3}{r}{\fontsize{14}{16.8}\selectfont Продовження табл. \thetable\vspace{0.35em}} \\\hline\endhead\hline
     
     №1.1 | Голосування з невірним \gls{pda} & \multicolumn{2}{|L{0.375}|}{Спроба проголосувати, використовуючи невірний \gls{pda}} \\\hline
     \textbf{Кроки} & \textbf{Очікування} & \textbf{Результат} \\\hline
@@ -1331,7 +1610,7 @@
     \caption{\vspace{0.35em}\\\centering\textbf{Тестові випадки тестів графічного інтерфейсу}}
     \label{tab:guitests}\\\hline
     \textbf{ID | Name} & \multicolumn{2}{|c|}{\textbf{Опис}} \\\hline\endfirsthead
-    \multicolumn{3}{r}{Продовження табл. \thetable\vspace{0.35em}} \\\hline\endhead\hline
+    \multicolumn{3}{r}{\fontsize{14}{16.8}\selectfont Продовження табл. \thetable\vspace{0.35em}} \\\hline\endhead\hline
 
     №1.1 | Відкриття модального вікна & \multicolumn{2}{|L{0.375}|}{Перевірка відкриття вікна створення опитування} \\\hline
     \textbf{Кроки} & \textbf{Очікування} & \textbf{Результат} \\\hline
